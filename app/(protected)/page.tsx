@@ -1,5 +1,5 @@
 import { format } from "date-fns";
-import { CheckCircleIcon, TriangleAlertIcon } from "lucide-react";
+import { AlertTriangleIcon, CheckIcon } from "lucide-react";
 import { getBarbers } from "@/features/barber/services/barbers.repository";
 import { NextBooking } from "@/features/booking/components/next-booking";
 import { getNextBooking } from "@/features/booking/functions/get-bookings";
@@ -8,6 +8,7 @@ import BarberItem from "@/shared/components/barber-item";
 import Footer from "@/shared/components/footer";
 import Header from "@/shared/components/header";
 import { Alert, AlertTitle } from "@/shared/components/ui/alert";
+import { Avatar, AvatarImage } from "@/shared/components/ui/avatar";
 import {
   PageContainer,
   PageSection,
@@ -32,66 +33,43 @@ const Home = async () => {
   return (
     <main className="flex min-h-screen flex-col justify-around">
       <Header />
-      <div className="mx-auto px-12">
-        <Alert variant={user ? "success" : "warn"} className="mb-2">
-          <AlertTitle className="flex items-center gap-4">
-            {user?.name ? (
-              <>
-                <CheckCircleIcon />
-                <p>Logado com sucesso: Olá, {user.name}!</p>
-              </>
-            ) : (
-              <>
-                <TriangleAlertIcon />
-                <p>Login não realizado ainda</p>
-              </>
-            )}
-          </AlertTitle>
-        </Alert>
-        <Alert
-          variant={plan.hasPlan ? "success" : "destructive"}
-          className="mb-2"
-        >
-          <AlertTitle className="flex items-center gap-4">
-            {plan.hasPlan ? (
-              <>
-                <CheckCircleIcon />
-                <p>
-                  Você está incluso no plano: {plan.name}
-                  <br />
-                  Válido até{" "}
-                  {format(
-                    new Date(plan.validUntil ? plan.validUntil : ""),
-                    "dd/MM/yyyy",
-                  )}
-                </p>
-              </>
-            ) : (
-              <>
-                <TriangleAlertIcon />
-                <p>Ainda não é assinante</p>
-              </>
-            )}
-          </AlertTitle>
-        </Alert>
-        <Alert variant={"warn"} className="mb-2">
-          <AlertTitle className="flex items-center gap-4">
-            <TriangleAlertIcon />
-            <p>
-              O sistema está em fase beta, para realizar agendamentos é
-              necessário estar logado.
-            </p>
-          </AlertTitle>
-        </Alert>
-      </div>
       <PageContainer>
-        {/* <SearchInput /> */}
-        {/* <Image
-          src={banner} // Fazemos isso para otimizar a imagem e evitar problemas de Cumulative Layout Shift (CLS)
-          alt="Banner"
-          sizes="100vw"
-          className="h-auto w-full"
-        /> */}
+        <PageSection>
+          <div className="flex items-center gap-2">
+            <Avatar className="size-12">
+              <AvatarImage
+                src={user?.imageUrl ?? ""}
+                alt={user?.name ?? "User Avatar"}
+              />
+            </Avatar>
+            <div>
+              <p className="font-semibold text-base">Olá, {user?.name}!</p>
+              <p className="text-muted-foreground text-xs">
+                Bem-vindo de volta!
+              </p>
+            </div>
+          </div>
+
+          <Alert>
+            <AlertTitle>
+              {plan.hasPlan ? (
+                <div>
+                  <CheckIcon />
+                  Você está no plano {plan.name}, válido até
+                  {plan.validUntil
+                    ? format(plan.validUntil, "dd/MM/yyyy")
+                    : "data desconhecida"}
+                  `
+                </div>
+              ) : (
+                <div className="flex items-center gap-2">
+                  <AlertTriangleIcon />
+                  Você não possui um plano ativo.
+                </div>
+              )}
+            </AlertTitle>
+          </Alert>
+        </PageSection>
 
         <PageSection>
           <PageSectionTitle>Próximo agendamento</PageSectionTitle>

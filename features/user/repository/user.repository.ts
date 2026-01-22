@@ -18,6 +18,7 @@ export const verifySession = cache(async () => {
     id: session.user.id,
     name: session.user.name,
     email: session.user.email,
+    imageUrl: session.user.image,
     role: session.user.role,
     stripeCustomerId: session.user.stripeCustomerId,
   };

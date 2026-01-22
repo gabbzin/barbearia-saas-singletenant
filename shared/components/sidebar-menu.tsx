@@ -82,31 +82,38 @@ export const SidebarMenu = ({
           <SheetTitle className="font-bold text-lg">Menu</SheetTitle>
         </SheetHeader>
 
-        <Separator />
+        <Separator className="p-0.5" />
 
-        {session ? (
-          <div className="flex items-center gap-3 px-5 pb-2">
-            <Avatar className="size-12">
-              <AvatarImage src={session.user.image || ""} />
-              <AvatarFallback>
-                {session.user.name?.charAt(0).toUpperCase()}
-              </AvatarFallback>
-            </Avatar>
-            <div className="flex flex-col leading-tight">
-              <p className="font-semibold text-base">{session.user.name}</p>
-              <p className="text-muted-foreground text-xs">
-                {session.user.email}
-              </p>
+        <div>
+          {session ? (
+            <div className="flex items-center gap-3 px-5 pb-2">
+              <Avatar className="size-12">
+                <AvatarImage src={session.user.image || ""} />
+                <AvatarFallback>
+                  {session.user.name?.charAt(0).toUpperCase()}
+                </AvatarFallback>
+              </Avatar>
+              <div className="flex flex-col leading-tight">
+                <p className="font-semibold text-base">{session.user.name}</p>
+                <p className="text-muted-foreground text-xs">
+                  {session.user.email}
+                </p>
+              </div>
             </div>
-          </div>
-        ) : (
-          <div className="flex items-center justify-between px-5 pb-3">
-            <p className="font-semibold text-base">Olá. Faça seu login!</p>
-            <Button onClick={() => push("/login")} size="sm" className="gap-2">
-              Login <LogIn className="size-4" />
-            </Button>
-          </div>
-        )}
+          ) : (
+            <div className="flex items-center justify-between px-5 pb-3">
+              <p className="font-semibold text-base">Olá. Faça seu login!</p>
+              <Button
+                onClick={() => push("/login")}
+                size="sm"
+                className="gap-2"
+              >
+                Login <LogIn className="size-4" />
+              </Button>
+            </div>
+          )}
+          
+        </div>
 
         <Separator className="p-0.5" />
 
