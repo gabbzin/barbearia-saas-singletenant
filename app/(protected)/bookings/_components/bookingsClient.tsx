@@ -101,7 +101,6 @@ export default function BookingsClient({ bookings }: BookingsClientProps) {
                       name: booking.service.barber.user?.name ?? "Barbeiro",
                       imageUrl: booking.service.barber.imageUrl,
                     }}
-                    status="confirmed"
                     onClick={() =>
                       handleClickBooking({
                         id: booking.id,
@@ -139,7 +138,6 @@ export default function BookingsClient({ bookings }: BookingsClientProps) {
                       name: booking.service.barber.user?.name ?? "Barbeiro",
                       imageUrl: booking.service.barber.imageUrl,
                     }}
-                    status="cancelled"
                   />
                 ))
               )}
@@ -161,7 +159,6 @@ export default function BookingsClient({ bookings }: BookingsClientProps) {
                       name: booking.service.barber.user?.name ?? "Barbeiro",
                       imageUrl: booking.service.barber.imageUrl,
                     }}
-                    status="finished"
                   />
                 ))
               )}
