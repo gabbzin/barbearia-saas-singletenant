@@ -6,6 +6,11 @@ export const getBarbers = cache(async () => {
     include: {
       user: true,
     },
+    orderBy: {
+      user: {
+        name: "asc",
+      },
+    },
   });
 });
 
