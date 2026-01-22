@@ -76,7 +76,6 @@ export function ScheduleCard({ barberId }: { barberId: string }) {
                     key={booking.id}
                     serviceName={booking.service.name}
                     date={booking.date}
-                    status="confirmed"
                     counterPart={{
                       name: booking.user.name,
                       imageUrl: booking.user.image ?? "",
@@ -97,7 +96,6 @@ export function ScheduleCard({ barberId }: { barberId: string }) {
                   key={booking.id}
                   serviceName={booking.service.name}
                   date={booking.date}
-                  status="finished"
                   counterPart={{
                     name: booking.user.name,
                     imageUrl: booking.user.image ?? "",
