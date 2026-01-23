@@ -1,5 +1,7 @@
-import { DollarSign, PlusCircle, Scissors, Users } from "lucide-react";
+import { DollarSign, PlusIcon, Scissors, Users } from "lucide-react";
+import { getBarbers } from "@/features/barber/services/barbers.repository";
 import Header from "@/shared/components/header";
+import { Avatar, AvatarImage } from "@/shared/components/ui/avatar";
 import { Button } from "@/shared/components/ui/button";
 import {
   Card,
@@ -23,45 +25,15 @@ import {
   PageSection,
   PageSectionTitle,
 } from "@/shared/components/ui/page";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/shared/components/ui/table";
 import { convertBRL } from "@/utils/convertBRL";
 import { getAdminDashboardInfos } from "./actions/getInfos";
-
-// Dados mockados para exibição
-
-const barbers = [
-  {
-    id: 1,
-    name: "João Silva",
-    email: "joao@barbearia.com",
-    status: "Ativo",
-  },
-  {
-    id: 2,
-    name: "Maria Oliveira",
-    email: "maria@barbearia.com",
-    status: "Ativo",
-  },
-  {
-    id: 3,
-    name: "Carlos Pereira",
-    email: "carlos@barbearia.com",
-    status: "Férias",
-  },
-];
 
 // Adicionar o status do barbeiro, pode ser uma opção futura para filtrar
 // ou destacar barbeiros com status diferentes.
 
 export default async function AdminPainelPage() {
   const { data: infos } = await getAdminDashboardInfos();
+  const barbers = await getBarbers();
 
   const stats = [
     {
@@ -88,6 +60,48 @@ export default async function AdminPainelPage() {
     <>
       <Header />
 
+      <Dialog>
+        <DialogTrigger asChild className="fixed right-4 bottom-4">
+          <Button className="size-12 rounded-full shadow-lg">
+            <PlusIcon className="size-4 lg:size-6" />
+          </Button>
+        </DialogTrigger>
+        <DialogContent className="sm:max-w-106.25">
+          <DialogHeader>
+            <DialogTitle>Adicionar Barbeiro</DialogTitle>
+            <DialogDescription>
+              Adicione um novo barbeiro à sua equipe. Preencha os dados abaixo.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="name" className="text-right">
+                Nome
+              </Label>
+              <Input
+                id="name"
+                placeholder="Pedro Santos"
+                className="col-span-3"
+              />
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="email" className="text-right">
+                Email
+              </Label>
+              <Input
+                id="email"
+                type="email"
+                placeholder="pedro@exemplo.com"
+                className="col-span-3"
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button type="submit">Salvar Barbeiro</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
       <PageContainer>
         <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
           <div>
@@ -98,51 +112,6 @@ export default async function AdminPainelPage() {
               Visão geral da sua barbearia e gerenciamento de equipe.
             </p>
           </div>
-          <div className="flex items-center space-x-2">
-            <Dialog>
-              <DialogTrigger asChild>
-                <Button>
-                  <PlusCircle className="mr-2 h-4 w-4" />
-                  Adicionar Barbeiro
-                </Button>
-              </DialogTrigger>
-              <DialogContent className="sm:max-w-106.25">
-                <DialogHeader>
-                  <DialogTitle>Adicionar Barbeiro</DialogTitle>
-                  <DialogDescription>
-                    Adicione um novo barbeiro à sua equipe. Preencha os dados
-                    abaixo.
-                  </DialogDescription>
-                </DialogHeader>
-                <div className="grid gap-4 py-4">
-                  <div className="grid grid-cols-4 items-center gap-4">
-                    <Label htmlFor="name" className="text-right">
-                      Nome
-                    </Label>
-                    <Input
-                      id="name"
-                      placeholder="Pedro Santos"
-                      className="col-span-3"
-                    />
-                  </div>
-                  <div className="grid grid-cols-4 items-center gap-4">
-                    <Label htmlFor="email" className="text-right">
-                      Email
-                    </Label>
-                    <Input
-                      id="email"
-                      type="email"
-                      placeholder="pedro@exemplo.com"
-                      className="col-span-3"
-                    />
-                  </div>
-                </div>
-                <DialogFooter>
-                  <Button type="submit">Salvar Barbeiro</Button>
-                </DialogFooter>
-              </DialogContent>
-            </Dialog>
-          </div>
         </div>
 
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
@@ -152,7 +121,7 @@ export default async function AdminPainelPage() {
                 <CardTitle className="font-medium text-sm">
                   {stat.title}
                 </CardTitle>
-                <stat.icon className="h-4 w-4 text-muted-foreground" />
+                <stat.icon className="size-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
                 <div className="font-bold text-2xl">{stat.value}</div>
@@ -166,28 +135,18 @@ export default async function AdminPainelPage() {
 
         <PageSection>
           <PageSectionTitle>Equipe de Barbeiros</PageSectionTitle>
-          <Card>
-            <CardContent className="p-0">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Nome</TableHead>
-                    <TableHead>Email</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {barbers.map(barber => (
-                    <TableRow key={barber.id}>
-                      <TableCell className="font-medium">
-                        {barber.name}
-                      </TableCell>
-                      <TableCell>{barber.email}</TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </CardContent>
-          </Card>
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+            {barbers.map(barber => (
+              <Card key={barber.id} className="p-2">
+                <CardContent className="flex items-center justify-start">
+                  <Avatar className="my-2 mr-4 size-12">
+                    <AvatarImage src={barber.imageUrl} />
+                  </Avatar>
+                  <p className="font-bold text-lg">{barber.user?.name}</p>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
         </PageSection>
       </PageContainer>
     </>
