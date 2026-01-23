@@ -41,12 +41,15 @@ export const auth = betterAuth({
     additionalFields: {
       role: {
         type: "string",
+        required: false,
       },
       stripeCustomerId: {
         type: "string",
+        required: false,
       },
       barberId: {
         type: "string",
+        required: false,
       },
     },
   },

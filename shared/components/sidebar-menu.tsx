@@ -7,8 +7,10 @@ import {
   Home,
   LogIn,
   LogOut,
+  type LucideIcon,
   MenuIcon,
   Scissors,
+  UserStar,
   X,
 } from "lucide-react";
 import Link from "next/link";
@@ -32,7 +34,13 @@ import {
   SheetTrigger,
 } from "./ui/sheet";
 
-const ROUTES = [
+interface Route {
+  name: string;
+  path: string;
+  icon: LucideIcon;
+}
+
+const ROUTES: Route[] = [
   { name: "Início", path: "/", icon: Home },
   { name: "Barbeiros", path: "/barber", icon: Scissors },
   { name: "Agendamentos", path: "/bookings", icon: Calendar },
@@ -40,9 +48,13 @@ const ROUTES = [
 ];
 
 // Rotas exclusivas de barbeiro
-const BARBER_ROUTES = [
-  { name: "Dashboard", path: "/barber/dashboard", icon: Home },
-  { name: "Agenda", path: "/barber/schedule", icon: Calendar },
+const BARBER_ROUTES: Route[] = [
+  { name: "Dashboard do Barbeiro", path: "/barber/dashboard", icon: Home },
+  { name: "Agenda do Barbeiro", path: "/barber/schedule", icon: Calendar },
+];
+
+const ADMIN_ROUTES: Route[] = [
+  { name: "Painel Administrativo", path: "/admin/painel", icon: UserStar },
 ];
 
 interface SidebarMenuProps {
@@ -77,12 +89,12 @@ export const SidebarMenu = ({
         </Button>
       </SheetTrigger>
 
-      <SheetContent side="right" className="w-[80vw] max-w-[370px] gap-6 p-0">
+      <SheetContent side="right" className="w-[80vw] max-w-92.5 gap-6 p-0">
         <SheetHeader className="px-5 py-2 text-left">
           <SheetTitle className="font-bold text-lg">Menu</SheetTitle>
         </SheetHeader>
 
-        <Separator className="p-0.5" />
+        <Separator className="p-0.2" />
 
         <div>
           {session ? (
@@ -112,10 +124,9 @@ export const SidebarMenu = ({
               </Button>
             </div>
           )}
-          
         </div>
 
-        <Separator className="p-0.5" />
+        <Separator className="p-0.2" />
 
         {/* ROTAS */}
         <div className="flex w-full flex-col px-2">
@@ -159,31 +170,47 @@ export const SidebarMenu = ({
           )}
         </div>
 
-        <Separator className="p-0.5" />
+        <Separator className="p-0.2" />
 
-        {role === "BARBER" && (
-          <>
-            <h3 className="text-center font-bold font-geist text-xs uppercase">
-              Área do Barbeiro
-            </h3>
-            <div className="flex w-full flex-col px-2">
-              {BARBER_ROUTES.map(route => (
-                <Button
-                  key={route.name}
-                  variant="ghost"
-                  className="w-full justify-start gap-3 rounded-full px-5 py-3"
-                  asChild
-                >
-                  <Link href={route.path}>
-                    <route.icon className="size-4" />
-                    <span className="font-medium text-sm">{route.name}</span>
-                  </Link>
-                </Button>
-              ))}
-            </div>
-            <Separator className="p-0.5" />
-          </>
+        {(role === "BARBER" || role === "ADMIN") && (
+          <div className="flex w-full flex-col px-2">
+            {BARBER_ROUTES.map(route => (
+              <Button
+                key={route.name}
+                variant="ghost"
+                className="w-full justify-start gap-3 rounded-full px-5 py-3"
+                asChild
+              >
+                <Link href={route.path}>
+                  <route.icon className="size-4" />
+                  <span className="font-medium text-sm">{route.name}</span>
+                </Link>
+              </Button>
+            ))}
+          </div>
         )}
+
+        <Separator className="p-0.2" />
+
+        {role === "ADMIN" && (
+          <div className="flex w-full flex-col px-2">
+            {ADMIN_ROUTES.map(route => (
+              <Button
+                key={route.name}
+                variant="ghost"
+                className="w-full justify-start gap-3 rounded-full px-5 py-3"
+                asChild
+              >
+                <Link href={route.path}>
+                  <route.icon className="size-4" />
+                  <span className="font-medium text-sm">{route.name}</span>
+                </Link>
+              </Button>
+            ))}
+          </div>
+        )}
+
+        <Separator className="p-0.2" />
 
         <div className="flex flex-col px-2">
           {isSubscriber && (

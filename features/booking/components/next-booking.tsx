@@ -55,6 +55,8 @@ export function NextBooking({ nextBooking }: NextBookingProps) {
   const time = nextBooking?.date;
   const timeEnd = new Date(time?.setMinutes(time.getMinutes() + 30));
 
+  const timeFormat = format(time, "HH:mm");
+
   // Atualizar para usar dados reais do nextBooking
   const eventConfig: CalendarOptions = {
     title: `${nextBooking?.service.name} com ${nextBooking?.service?.barber?.user?.name}`,
@@ -105,7 +107,7 @@ export function NextBooking({ nextBooking }: NextBookingProps) {
             </div>
             <div className="flex items-center gap-2">
               <ClockIcon size={12} />
-              <p>{format(time, "HH:mm")}</p>
+              <p>{timeFormat}</p>
             </div>
           </div>
 

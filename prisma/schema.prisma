@@ -135,6 +135,7 @@ model BarberService {
   description  String
   imageUrl     String
   priceInCents Int
+  durationInMinutes Int    @default(30)
 
   barberId String
   barber   Barber @relation(fields: [barberId], references: [id])
@@ -240,11 +241,11 @@ model Disponibility {
   barberId String 
   barber   Barber @relation(fields: [barberId], references: [id], onDelete: Cascade)
 
-  daysOfWeek Int[]
+  dayOfWeek  Int // 0 = Sunday, 1 = Monday, ..., 6 = Saturday
   startTime  String
   endTime    String
 
-  @@unique([barberId])
+  @@unique([barberId, dayOfWeek])
 }
 
 model ExceptionDate {

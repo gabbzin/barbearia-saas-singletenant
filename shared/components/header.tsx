@@ -11,11 +11,6 @@ const Header = async () => {
   const barbers = await getBarbers();
   const isSubscriber = await getCurrentSubscription();
   const session = await verifySession();
-  let rule = session?.role;
-
-  if (typeof session?.role === "undefined") {
-    rule = "USER";
-  }
 
   return (
     <header className="sticky top-0 z-50 flex items-center justify-between border-b-2 bg-background px-5 py-6">
@@ -25,7 +20,7 @@ const Header = async () => {
         <SidebarMenu
           barbers={barbers}
           isSubscriber={isSubscriber.hasPlan}
-          role={rule}
+          role={session?.role ?? "USER"}
         />
       </div>
     </header>

@@ -218,14 +218,16 @@ async function seedDatabase() {
 
     // Criar disponibilidade para os barbeiros
     for (const barber of barbershops) {
-      await prisma.disponibility.create({
-        data: {
-          barberId: barber.id,
-          daysOfWeek: [1, 2, 3, 4, 5], // Segunda-feira a sexta-feira
-          startTime: startTime,
-          endTime: endTime,
-        },
-      });
+      for (let day = 1; day <= 5; day++) {
+        await prisma.disponibility.create({
+          data: {
+            barberId: barber.id,
+            dayOfWeek: day, // Segunda-feira a sexta-feira
+            startTime: startTime,
+            endTime: endTime,
+          },
+        });
+      }
     }
 
     console.log("✅ Seed concluído com sucesso!");
