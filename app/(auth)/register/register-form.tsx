@@ -1,7 +1,6 @@
 "use client";
 
 import { useRouter } from "next/navigation"; // Use router.push em Client Components
-import { useState } from "react";
 import { toast } from "sonner";
 import {
   registerSchema,
@@ -12,32 +11,23 @@ import GenericForm from "@/shared/components/form/generic-form";
 import InputForm from "@/shared/components/form/input-form";
 import { GoogleButton } from "@/shared/components/google-button";
 import { Card, CardContent, CardHeader } from "@/shared/components/ui/card";
+import { PasswordStrength } from "../reset-password/passwordStrength";
 
 const RegisterForm = () => {
   const router = useRouter();
-  const [emailSend, setEmailSend] = useState(false);
+  // const [emailSend, setEmailSend] = useState(false);
 
   const handleRegister = async (data: registerSchemaType) => {
     try {
-      const signUp = await authClient.signUp.email({
+      await authClient.signUp.email({
         name: data.nome,
         email: data.email,
         password: data.senha,
       });
 
-      if (signUp.error) {
-        if (signUp.error.code === "EMAIL_SEND_FAILED") {
-          toast.warning(
-            "Conta criada, mas não foi possível enviar o email de verificação.",
-          );
-          router.push("/");
-          return;
-        }
-
-        throw new Error(signUp.error.message);
-      }
-
-      setEmailSend(true);
+      toast.success("Conta criada com sucesso!");
+      router.push("/");
+      return;
     } catch (error) {
       toast.error(
         error instanceof Error
@@ -47,22 +37,22 @@ const RegisterForm = () => {
     }
   };
 
-  if (emailSend) {
-    return (
-      <Card className="w-full max-w-md">
-        <CardHeader className="text-center font-bold text-3xl">
-          Verifique seu email
-        </CardHeader>
-        <CardContent className="px-8">
-          <p>
-            Um email de verificação foi enviado para o endereço fornecido
-            durante o cadastro. Por favor, verifique sua caixa de entrada e siga
-            as instruções para ativar sua conta.
-          </p>
-        </CardContent>
-      </Card>
-    );
-  }
+  // if (emailSend) {
+  //   return (
+  //     <Card className="w-full max-w-md">
+  //       <CardHeader className="text-center font-bold text-3xl">
+  //         Verifique seu email
+  //       </CardHeader>
+  //       <CardContent className="px-8">
+  //         <p>
+  //           Um email de verificação foi enviado para o endereço fornecido
+  //           durante o cadastro. Por favor, verifique sua caixa de entrada e siga
+  //           as instruções para ativar sua conta.
+  //         </p>
+  //       </CardContent>
+  //     </Card>
+  //   );
+  // }
 
   return (
     <Card className="w-full max-w-md">
@@ -94,6 +84,7 @@ const RegisterForm = () => {
             type="password"
             placeholder="Digite sua senha"
           />
+          <PasswordStrength fieldName="senha" />
         </GenericForm>
       </CardContent>
     </Card>
