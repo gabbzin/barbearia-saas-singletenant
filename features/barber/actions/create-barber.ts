@@ -10,12 +10,12 @@ import { prisma } from "@/lib/prisma";
 // Schema de validação para criar um barbeiro
 const createBarberSchema = z.object({
   name: z.string().min(2, "Nome deve ter pelo menos 2 caracteres"),
-  email: z.email("Email inválido"),
+  email: z.string().email("Email inválido"),
   password: z.string().min(8, "Senha deve ter pelo menos 8 caracteres"),
 });
 
 export const createBarber = actionClient
-  .inputSchema(createBarberSchema)
+  .schema(createBarberSchema)
   .action(async ({ parsedInput: { name, email, password } }) => {
     const user = await auth.api.signUpEmail({
       body: {
@@ -34,18 +34,17 @@ export const createBarber = actionClient
     }
 
     try {
+      // Cria o barbeiro e já define a disponibilidade padrão (Segunda a Sexta, 09:00 - 18:00)
       const barber = await prisma.barber.create({
         data: {
           userId: user.user.id,
           disponibility: {
             createMany: {
-              data: [
-                {
-                  daysOfWeek: [1, 2, 3, 4, 5],
-                  startTime: "09:00",
-                  endTime: "17:00",
-                },
-              ],
+              data: [1, 2, 3, 4, 5].map(day => ({
+                dayOfWeek: day,
+                startTime: "09:00",
+                endTime: "18:00",
+              })),
             },
           },
         },

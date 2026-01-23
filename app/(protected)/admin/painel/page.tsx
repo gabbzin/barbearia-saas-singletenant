@@ -79,6 +79,11 @@ const barbers = [
 // ou destacar barbeiros com status diferentes.
 
 export default function AdminPainelPage() {
+  
+  const data = Promise.allSettled([
+    
+  ])
+  
   return (
     <>
       <Header />
