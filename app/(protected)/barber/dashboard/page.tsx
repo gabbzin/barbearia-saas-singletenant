@@ -42,13 +42,13 @@ const BarberDashboardPage = async () => {
     ? {
         horario_abertura: horariosData.startTime,
         horario_fechamento: horariosData.endTime,
-        "0": horariosData.daysOfWeek.includes(0),
-        "1": horariosData.daysOfWeek.includes(1),
-        "2": horariosData.daysOfWeek.includes(2),
-        "3": horariosData.daysOfWeek.includes(3),
-        "4": horariosData.daysOfWeek.includes(4),
-        "5": horariosData.daysOfWeek.includes(5),
-        "6": horariosData.daysOfWeek.includes(6),
+        "0": horariosData.dayOfWeek === 0,
+        "1": horariosData.dayOfWeek === 1,
+        "2": horariosData.dayOfWeek === 2,
+        "3": horariosData.dayOfWeek === 3,
+        "4": horariosData.dayOfWeek === 4,
+        "5": horariosData.dayOfWeek === 5,
+        "6": horariosData.dayOfWeek === 6,
       }
     : undefined;
 

@@ -31,28 +31,10 @@ import {
   TableHeader,
   TableRow,
 } from "@/shared/components/ui/table";
+import { convertBRL } from "@/utils/convertBRL";
+import { getAdminDashboardInfos } from "./actions/getInfos";
 
 // Dados mockados para exibição
-const stats = [
-  {
-    title: "Receita Total",
-    value: "R$ 15.231,00",
-    icon: DollarSign,
-    description: "+20.1% em relação ao último mês",
-  },
-  {
-    title: "Agendamentos",
-    value: "+2350",
-    icon: Scissors,
-    description: "+180.1% em relação ao último mês",
-  },
-  {
-    title: "Barbeiros Ativos",
-    value: "12",
-    icon: Users,
-    description: "+2 novos barbeiros este mês",
-  },
-];
 
 const barbers = [
   {
@@ -78,12 +60,30 @@ const barbers = [
 // Adicionar o status do barbeiro, pode ser uma opção futura para filtrar
 // ou destacar barbeiros com status diferentes.
 
-export default function AdminPainelPage() {
-  
-  const data = Promise.allSettled([
-    
-  ])
-  
+export default async function AdminPainelPage() {
+  const { data: infos } = await getAdminDashboardInfos();
+
+  const stats = [
+    {
+      title: "Receita Total",
+      value: convertBRL(infos?.monthlyEarnings._sum.priceInCents ?? 0),
+      icon: DollarSign,
+      description: `${infos?.monthlyEarningsPercentageChange.toFixed(2)}% em relação ao último mês`,
+    },
+    {
+      title: "Agendamentos do mês",
+      value: infos?.monthlyEarnings._count.id,
+      icon: Scissors,
+      description: `${infos?.monthlyEarningsDifferenceCount} em relação ao último mês`,
+    },
+    {
+      title: "Barbeiros Ativos",
+      value: infos?.barbersCount,
+      icon: Users,
+      description: "",
+    },
+  ];
+
   return (
     <>
       <Header />

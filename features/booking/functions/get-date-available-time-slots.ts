@@ -1,8 +1,10 @@
 "use server";
 
 import { endOfDay, format, startOfDay } from "date-fns";
+import { returnValidationErrors } from "next-safe-action";
 // import { returnValidationErrors } from "next-safe-action";
 import z from "zod";
+import { verifySession } from "@/features/user/repository/user.repository";
 import { actionClient } from "@/lib/actionClient";
 // import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
@@ -29,15 +31,13 @@ const minutesToTime = (minutes: number) => {
 export const getDateAvailableTimeSlots = actionClient
   .inputSchema(inputSchema)
   .action(async ({ parsedInput: { barberId, date } }) => {
-    // lógica para buscar horários disponíveis para o serviço na data fornecida
-    // const { headers } = await import("next/headers");
-    // const session = await auth.api.getSession({ headers: await headers() });
+    const session = await verifySession();
 
-    // if (!session?.user) {
-    //   return returnValidationErrors(inputSchema, {
-    //     _errors: ["Unauthorized"],
-    //   });
-    // }
+    if (!session) {
+      return returnValidationErrors(inputSchema, {
+        _errors: ["Unauthorized"],
+      });
+    }
 
     const bookings = await prisma.booking.findMany({
       where: {
@@ -55,18 +55,24 @@ export const getDateAvailableTimeSlots = actionClient
       },
     });
 
+    const day = date.getDay(); // 0 (Domingo) a 6 (Sábado)
+
     const availability = await prisma.disponibility.findFirst({
       where: {
         barberId,
+        dayOfWeek: day,
+      },
+      select: {
+        dayOfWeek: true,
+        startTime: true,
+        endTime: true,
       },
     });
-
-    const day = date.getDay(); // 0 (Domingo) a 6 (Sábado)
 
     if (!availability) {
       return [];
     }
-    if (!availability.daysOfWeek.includes(day)) {
+    if (availability.dayOfWeek !== day) {
       return [];
     }
 
