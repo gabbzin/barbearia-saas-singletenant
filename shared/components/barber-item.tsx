@@ -17,7 +17,7 @@ const BarberItem = ({ barber }: BarberItemProps) => {
     >
       <div className="absolute top-0 left-0 z-10 h-full w-full rounded-lg bg-linear-to-t from-black to-transparent"></div>
       <Image
-        src={barber.imageUrl}
+        src={barber.imageUrl ?? ""}
         alt={barber.name}
         fill // Usamos fill para a imagem ocupar todo o espaço do container pai quando este tiver position relative
         className="rounded-xl object-cover"

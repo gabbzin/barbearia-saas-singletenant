@@ -3,7 +3,6 @@ import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
 import { prisma } from "./prisma";
 import { sendRecoveryEmail } from "./resend/sendRecoveryEmail";
-import { sendVerificationEmail } from "./resend/sendVerifyEmail";
 import { stripeClient } from "./stripe-client";
 
 export const auth = betterAuth({
@@ -11,7 +10,7 @@ export const auth = betterAuth({
   emailAndPassword: {
     enabled: true,
     minPasswordLength: 8,
-    requireEmailVerification: true,
+    // requireEmailVerification: true,
     sendResetPassword: async ({ user, token }) => {
       sendRecoveryEmail({
         to: [user.email],
@@ -27,16 +26,16 @@ export const auth = betterAuth({
     },
   },
 
-  emailVerification: {
-    sendVerificationEmail: async ({ user, token }) => {
-      await sendVerificationEmail({
-        to: [user.email],
-        token,
-        userName: user.name,
-      });
-    },
-    expiresIn: 60 * 15, // 15 minutes
-  },
+  // emailVerification: {
+  //   sendVerificationEmail: async ({ user, token }) => {
+  //     await sendVerificationEmail({
+  //       to: [user.email],
+  //       token,
+  //       userName: user.name,
+  //     });
+  //   },
+  //   expiresIn: 60 * 15, // 15 minutes
+  // },
 
   user: {
     additionalFields: {
