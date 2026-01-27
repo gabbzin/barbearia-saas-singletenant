@@ -41,9 +41,9 @@ export function NextBooking({ nextBooking }: NextBookingProps) {
   if (!nextBooking) {
     return (
       <Card className="flex flex-col gap-5">
-        <CardHeader className="text-md">
-          <CardTitle className="text-center">Sem agendamentos</CardTitle>
-        </CardHeader>
+        <CardContent className="text-center font-bold">
+          Sem agendamentos
+        </CardContent>
       </Card>
     );
   }

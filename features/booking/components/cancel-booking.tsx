@@ -94,7 +94,7 @@ export function CancelBooking({
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent className="w-[90%] max-w-[370px] overflow-y-auto p-0">
+      <SheetContent className="w-[90%] max-w-92.5 overflow-y-auto p-0">
         <SheetHeader className="px-5 py-6 text-left">
           <SheetTitle>Informações da Reserva</SheetTitle>
           <SheetDescription className="sr-only">
@@ -104,7 +104,7 @@ export function CancelBooking({
 
         <div className="flex flex-col gap-6 px-5 py-6">
           {/* Imagem do Mapa e Card da Barbearia */}
-          <div className="relative h-[180px] w-full overflow-hidden rounded-lg">
+          <div className="relative h-45 w-full overflow-hidden rounded-lg">
             <Image
               src="/map.png"
               alt="Mapa"

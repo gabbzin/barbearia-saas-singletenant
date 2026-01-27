@@ -53,7 +53,7 @@ export const createSignature = actionClient
     }
 
     const customerConfig = {
-      customer: user.stripeCustomerId,
+      customer: user.stripeCustomerId!,
     };
 
     try {

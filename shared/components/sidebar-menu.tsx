@@ -89,7 +89,7 @@ export const SidebarMenu = ({
         </Button>
       </SheetTrigger>
 
-      <SheetContent side="right" className="w-[80vw] max-w-92.5 gap-6 p-0">
+      <SheetContent side="right" className="w-[85vw] max-w-92.5 gap-6 p-0">
         <SheetHeader className="px-5 py-2 text-left">
           <SheetTitle className="font-bold text-lg">Menu</SheetTitle>
         </SheetHeader>
@@ -105,7 +105,7 @@ export const SidebarMenu = ({
                   {session.user.name?.charAt(0).toUpperCase()}
                 </AvatarFallback>
               </Avatar>
-              <div className="flex flex-col leading-tight">
+              <div className="flex flex-col overflow-hidden overflow-ellipsis leading-tight">
                 <p className="font-semibold text-base">{session.user.name}</p>
                 <p className="text-muted-foreground text-xs">
                   {session.user.email}
@@ -173,44 +173,46 @@ export const SidebarMenu = ({
         <Separator className="p-0.2" />
 
         {(role === "BARBER" || role === "ADMIN") && (
-          <div className="flex w-full flex-col px-2">
-            {BARBER_ROUTES.map(route => (
-              <Button
-                key={route.name}
-                variant="ghost"
-                className="w-full justify-start gap-3 rounded-full px-5 py-3"
-                asChild
-              >
-                <Link href={route.path}>
-                  <route.icon className="size-4" />
-                  <span className="font-medium text-sm">{route.name}</span>
-                </Link>
-              </Button>
-            ))}
-          </div>
+          <>
+            <div className="flex w-full flex-col px-2">
+              {BARBER_ROUTES.map(route => (
+                <Button
+                  key={route.name}
+                  variant="ghost"
+                  className="w-full justify-start gap-3 rounded-full px-5 py-3"
+                  asChild
+                >
+                  <Link href={route.path}>
+                    <route.icon className="size-4" />
+                    <span className="font-medium text-sm">{route.name}</span>
+                  </Link>
+                </Button>
+              ))}
+            </div>
+            <Separator className="p-0.2" />
+          </>
         )}
-
-        <Separator className="p-0.2" />
 
         {role === "ADMIN" && (
-          <div className="flex w-full flex-col px-2">
-            {ADMIN_ROUTES.map(route => (
-              <Button
-                key={route.name}
-                variant="ghost"
-                className="w-full justify-start gap-3 rounded-full px-5 py-3"
-                asChild
-              >
-                <Link href={route.path}>
-                  <route.icon className="size-4" />
-                  <span className="font-medium text-sm">{route.name}</span>
-                </Link>
-              </Button>
-            ))}
-          </div>
+          <>
+            <div className="flex w-full flex-col px-2">
+              {ADMIN_ROUTES.map(route => (
+                <Button
+                  key={route.name}
+                  variant="ghost"
+                  className="w-full justify-start gap-3 rounded-full px-5 py-3"
+                  asChild
+                >
+                  <Link href={route.path}>
+                    <route.icon className="size-4" />
+                    <span className="font-medium text-sm">{route.name}</span>
+                  </Link>
+                </Button>
+              ))}
+            </div>
+            <Separator className="p-0.2" />
+          </>
         )}
-
-        <Separator className="p-0.2" />
 
         <div className="flex flex-col px-2">
           {isSubscriber && (

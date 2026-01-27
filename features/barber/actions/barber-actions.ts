@@ -26,7 +26,7 @@ export async function getSettingsByBarberId({
     // Assumimos que, se editado via UI atual, o horário é igual para todos.
     return {
       barberId,
-      // daysOfWeek: disponibilities.map(d => d.daysOfWeek),
+      daysOfWeek: disponibilities.map(d => d.dayOfWeek),
       startTime: disponibilities[0].startTime,
       endTime: disponibilities[0].endTime,
     };
