@@ -26,11 +26,20 @@ import { TableSettings } from "./components/table-times-services";
 const BarberDashboardPage = async () => {
   const session = await verifySession();
 
-  if (session?.role !== "BARBER") {
+  if (!session || session?.role === "USER") {
     notFound();
   }
 
-  const barberId = session.id;
+  const barber = await prisma.barber.findUnique({
+    where: { userId: session.id },
+    select: { id: true },
+  });
+
+  if (!barber) {
+    notFound();
+  }
+
+  const barberId = barber.id;
 
   const info = await getBarberDashboardInfos({ barberId });
 
