@@ -1,7 +1,7 @@
 "use client";
 
 import type { Prisma } from "@prisma/client";
-import { format } from "date-fns";
+import { addMinutes, format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { type CalendarOptions, GoogleCalendar } from "datebook";
 import {
@@ -20,6 +20,7 @@ import {
 } from "@/shared/components/ui/card";
 import { Separator } from "@/shared/components/ui/separator";
 import AddEventCalendar from "../functions/download-ics";
+import { useEffect, useState } from "react";
 
 interface NextBookingProps {
   nextBooking: Prisma.BookingGetPayload<{
@@ -38,6 +39,12 @@ interface NextBookingProps {
 }
 
 export function NextBooking({ nextBooking }: NextBookingProps) {
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
   if (!nextBooking) {
     return (
       <Card className="flex flex-col gap-5">
@@ -48,19 +55,19 @@ export function NextBooking({ nextBooking }: NextBookingProps) {
     );
   }
 
-  const day = format(nextBooking?.date, "dd");
-  const month = format(nextBooking?.date, "MMM", {
+  const bookingDate = new Date(nextBooking.date);
+
+  const day = format(bookingDate, "dd");
+  const month = format(bookingDate, "MMM", {
     locale: ptBR,
   }).toUpperCase();
-  const time = nextBooking?.date;
-  const timeEnd = new Date(time?.setMinutes(time.getMinutes() + 30));
-
-  const timeFormat = format(time, "HH:mm");
+  const time = bookingDate;
+  const timeEnd = addMinutes(bookingDate, 30);
 
   // Atualizar para usar dados reais do nextBooking
   const eventConfig: CalendarOptions = {
     title: `${nextBooking?.service.name} com ${nextBooking?.service?.barber?.user?.name}`,
-    start: nextBooking?.date,
+    start: bookingDate,
     end: timeEnd,
     description: `Agendamento de serviço na barbearia com ${nextBooking?.service?.barber?.user?.name}.`,
     location: "Barbearia XYZ",
@@ -107,7 +114,7 @@ export function NextBooking({ nextBooking }: NextBookingProps) {
             </div>
             <div className="flex items-center gap-2">
               <ClockIcon size={12} />
-              <p>{timeFormat}</p>
+              <p>{isMounted ? format(bookingDate, "HH:mm") : "--:--"}</p>
             </div>
           </div>
 

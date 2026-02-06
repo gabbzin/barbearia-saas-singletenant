@@ -9,13 +9,8 @@ export function LogoLink() {
   };
 
   return (
-    <Image
-      src="/logo.svg"
-      alt="Aparatus"
-      width={100}
-      height={30}
-      onClick={handleLogoClick}
-      className="cursor-pointer"
-    />
+    <h1 onClick={handleLogoClick} className="cursor-pointer font-bold text-2xl">
+      Barbearia X
+    </h1>
   );
 }
