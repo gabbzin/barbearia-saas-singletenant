@@ -7,7 +7,7 @@ import { ScheduleCard } from "./components/schedule-card";
 export default async function BarberSchedulePage() {
   const session = await verifySession();
 
-  if (!session) {
+  if (!session || session.role !== "BARBER" || !session.barberId) {
     return notFound();
   }
 
@@ -16,8 +16,8 @@ export default async function BarberSchedulePage() {
       <Header />
       <main>
         <PageContainer>
-          <h1 className="mb-4 font-bold text-xl">Agenda Completa de Hoje</h1>
-          <ScheduleCard barberId={session.id} />
+          <h1 className="mb-4 font-bold text-xl">Agenda Completa</h1>
+          <ScheduleCard barberId={session.barberId} />
         </PageContainer>
       </main>
     </div>

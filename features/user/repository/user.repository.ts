@@ -14,6 +14,15 @@ export const verifySession = cache(async () => {
     return null;
   }
 
+  const barber = await prisma.barber.findUnique({
+    where: {
+      userId: session.user.id,
+    },
+    select: {
+      id: true,
+    },
+  });
+
   return {
     id: session.user.id,
     name: session.user.name,
@@ -21,6 +30,7 @@ export const verifySession = cache(async () => {
     imageUrl: session.user.image,
     role: session.user.role,
     stripeCustomerId: session.user.stripeCustomerId,
+    barberId: session.user.role === "BARBER" ? barber?.id : null,
   };
 });
 

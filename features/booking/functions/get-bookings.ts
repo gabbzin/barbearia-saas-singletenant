@@ -1,18 +1,15 @@
 "use server";
 
 import { prisma } from "@/lib/prisma";
+import { endOfDay, startOfDay } from "date-fns";
 
 export async function getBookingsBarber(barberId: string) {
-  const startDay = new Date().setHours(0, 0, 0, 0);
-  const endDay = new Date().setHours(23, 59, 59, 999);
+  const startDay = startOfDay(new Date());
+  const endDay = endOfDay(new Date());
 
-  return await prisma.booking.findMany({
+  const bookings = await prisma.booking.findMany({
     where: {
       barberId: barberId,
-      date: {
-        gte: new Date(startDay),
-        lte: new Date(endDay),
-      },
     },
     include: {
       user: true,
@@ -22,6 +19,9 @@ export async function getBookingsBarber(barberId: string) {
       date: "asc",
     },
   });
+
+  console.log(bookings);
+  return bookings;
 }
 
 export async function getBookingsUser(userId: string) {

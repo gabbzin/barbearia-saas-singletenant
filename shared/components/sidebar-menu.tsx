@@ -129,7 +129,7 @@ export const SidebarMenu = ({
         <Separator className="p-0.2" />
 
         {/* ROTAS */}
-        {role === "USER" && (
+        {(role === "USER" || role === "ADMIN") && (
           <>
             <div className="flex w-full flex-col px-2">
               {ROUTES.map(route =>

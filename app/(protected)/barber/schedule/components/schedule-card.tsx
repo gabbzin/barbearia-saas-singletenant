@@ -13,11 +13,22 @@ import {
   TabsList,
   TabsTrigger,
 } from "@/shared/components/ui/tabs";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
+import { toast } from "sonner";
 
 export function ScheduleCard({ barberId }: { barberId: string }) {
   const { data: bookings, isLoading } = useBookings(barberId);
 
   const { execute, isPending } = useAction(confirmBookingAction);
+
+  const completedBookings = bookings?.filter(
+    (booking) => booking.status === "COMPLETED",
+  );
+
+  const incompletedBookings = bookings?.filter(
+    (booking) => booking.status !== "COMPLETED",
+  );
 
   if (isLoading) {
     return (
@@ -31,14 +42,6 @@ export function ScheduleCard({ barberId }: { barberId: string }) {
     );
   }
 
-  const completedBookings = bookings?.filter(
-    booking => booking.status === "COMPLETED",
-  );
-
-  const incompletedBookings = bookings?.filter(
-    booking => booking.status !== "COMPLETED",
-  );
-
   return (
     <div className="flex flex-col gap-6">
       <Tabs defaultValue="incompleted">
@@ -49,10 +52,18 @@ export function ScheduleCard({ barberId }: { barberId: string }) {
         <TabsContent value="incompleted">
           {incompletedBookings && incompletedBookings.length > 0 ? (
             <div className="flex flex-col gap-4">
-              {incompletedBookings?.map(booking => (
+              {incompletedBookings?.map((booking) => (
                 <ConfirmAlertDialog
                   key={booking.id}
-                  handleConfirm={() => execute({ bookingId: booking.id })}
+                  handleConfirm={() => {
+                    if (booking.date > new Date()) {
+                      toast.error(
+                        "Não é possível confirmar um agendamento para uma data futura",
+                      );
+                      return;
+                    }
+                    execute({ bookingId: booking.id });
+                  }}
                   isLoading={isPending}
                   title="Confirmar Agendamento"
                   infos={
@@ -91,7 +102,7 @@ export function ScheduleCard({ barberId }: { barberId: string }) {
         <TabsContent value="completed">
           {completedBookings && completedBookings.length > 0 && (
             <div className="flex flex-col gap-4">
-              {completedBookings?.map(booking => (
+              {completedBookings?.map((booking) => (
                 <BookingItem
                   key={booking.id}
                   serviceName={booking.service.name}
