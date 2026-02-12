@@ -62,10 +62,10 @@ async function getSession(request: NextRequest): Promise<Session | null> {
 }
 
 // ========================================
-// MIDDLEWARE PRINCIPAL
+// PROXY PRINCIPAL
 // ========================================
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   // 1. Permitir arquivos estáticos e Next.js internals
