@@ -45,7 +45,7 @@ const ROUTES: Route[] = [
   { name: "Início", path: "/", icon: Home },
   { name: "Barbeiros", path: "/barbeiros", icon: Scissors },
   { name: "Agendamentos", path: "/bookings", icon: Calendar },
-  { name: "Assinatura", path: "/signature", icon: CreditCard },
+  // { name: "Assinatura", path: "/signature", icon: CreditCard },
 ];
 
 // Rotas exclusivas de barbeiro

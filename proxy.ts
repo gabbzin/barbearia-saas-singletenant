@@ -39,8 +39,6 @@ export async function proxy(request: NextRequest) {
 
   const isUserLoggedIn = !!sessionToken;
 
-  console.log(`Path: ${pathname} | LoggedIn: ${isUserLoggedIn}`);
-
   // 3. Redirecionar usuário logado longe das páginas de auth (Login/Register)
   if (AUTH_ROUTES.some((route) => pathname.startsWith(route))) {
     if (isUserLoggedIn) {

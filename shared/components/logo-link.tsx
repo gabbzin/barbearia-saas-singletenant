@@ -9,8 +9,15 @@ export function LogoLink() {
   };
 
   return (
-    <h1 onClick={handleLogoClick} className="cursor-pointer font-bold text-2xl">
-      Barbearia X
-    </h1>
+    <Image
+      src={"/logo.jpeg"}
+      alt="Logo da Barbearia 2W"
+      width={75}
+      height={75}
+      className="rounded-full self-center cursor-pointer object-center"
+    />
+    // <h1 onClick={handleLogoClick} className="cursor-pointer font-bold text-2xl">
+    //   Barbearia X
+    // </h1>
   );
 }

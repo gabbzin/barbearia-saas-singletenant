@@ -1,3 +1,4 @@
+import { features } from "@/consts/consts";
 import { getCurrentSubscription } from "@/features/user/repository/user.repository";
 import { prisma } from "@/lib/prisma";
 import Header from "@/shared/components/header";
@@ -8,6 +9,10 @@ import { PageContainer, PageSection } from "@/shared/components/ui/page";
 import { Separator } from "@/shared/components/ui/separator";
 
 export default async function SignaturePage() {
+  if (features.signatures === false) {
+    return;
+  }
+
   const plans = await prisma.plan.findMany({
     where: {
       NOT: {
@@ -30,7 +35,7 @@ export default async function SignaturePage() {
           <div className="p-2">
             <Carousel className="w-full">
               <CarouselContent>
-                {plans.map(plan => {
+                {plans.map((plan) => {
                   return (
                     <SignatureItem
                       key={plan.id}
