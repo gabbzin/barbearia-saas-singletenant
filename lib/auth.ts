@@ -10,7 +10,6 @@ export const auth = betterAuth({
   emailAndPassword: {
     enabled: true,
     minPasswordLength: 8,
-    autoSignIn: true,
     sendResetPassword: async ({ user, token }) => {
       sendRecoveryEmail({
         to: [user.email],

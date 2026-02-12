@@ -1,3 +1,4 @@
+import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
 async function seedDatabase() {
@@ -26,7 +27,7 @@ async function seedDatabase() {
       "https://utfs.io/f/0522fdaf-0357-4213-8f52-1d83c3dcb6cd-18e.png",
     ];
 
-    const barberNames = ["Ceara do Corte", "Tuco do Corte", "Davi Barber"];
+    const barberNames = ["Dominic", "Bryan", "Julius", "Leo Barber"];
 
     const services = [
       {
@@ -128,17 +129,17 @@ async function seedDatabase() {
     const barbershops = [];
     for (let i = 0; i < barberNames.length; i++) {
       const name = barberNames[i];
-      const imageUrl = images[i];
+      const imageUrl =
+        "https://tp9a32tu7d1qyqaz.public.blob.vercel-storage.com/templates-assets/barbeiro_default.png";
       const email = `${name.toLowerCase().replace(/ /g, ".")}@barber.com`;
 
-      const user = await prisma.user.create({
-        data: {
-          id: `barber-${i + 1}`,
-          name,
-          email,
-          emailVerified: true,
-          role: "BARBER",
+      const user = await auth.api.signUpEmail({
+        body: {
+          name: name,
+          email: email,
+          password: "Senha123#",
           image: imageUrl,
+          role: "BARBER",
         },
       });
 
@@ -146,7 +147,7 @@ async function seedDatabase() {
         data: {
           imageUrl,
           phone: ["(11) 99999-9999"],
-          userId: user.id,
+          userId: user.user.id,
         },
       });
 
@@ -169,14 +170,22 @@ async function seedDatabase() {
       barbershops.push(barber);
     }
 
-    // Criar usuário cliente para os agendamentos
-    const clientUser = await prisma.user.create({
-      data: {
-        id: "client-user-1",
+    // // Criar usuário cliente para os agendamentos
+    // const clientUser = await prisma.user.create({
+    //   data: {
+    //     id: "client-user-1",
+    //     name: "João Silva",
+    //     email: "joao.silva@example.com",
+    //     emailVerified: true,
+    //     role: "USER",
+    //   },
+    // });
+
+    const clientUser = await auth.api.signUpEmail({
+      body: {
         name: "João Silva",
-        email: "joao.silva@example.com",
-        emailVerified: true,
-        role: "USER",
+        email: "joaosilva@gmail.com",
+        password: "Senha123#",
       },
     });
 
@@ -204,7 +213,7 @@ async function seedDatabase() {
         data: {
           date: pastDates[i],
           status: "COMPLETED",
-          userId: clientUser.id,
+          userId: clientUser.user.id,
           barberId: firstBarber.id,
           serviceId: service.id,
           paidWithSubscription: false,
