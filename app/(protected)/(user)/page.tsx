@@ -15,7 +15,8 @@ import {
   PageSectionScroller,
   PageSectionTitle,
 } from "@/shared/components/ui/page";
-import { getCurrentSubscriptionAction } from "../../features/signature/actions/get-current-subscription";
+import { getCurrentSubscriptionAction } from "../../../features/signature/actions/get-current-subscription";
+import { ProfilePhoto } from "@/shared/components/profile-photo";
 
 export default async function Home() {
   const user = await verifySession();
@@ -30,12 +31,11 @@ export default async function Home() {
       <PageContainer>
         <PageSection>
           <div className="flex items-center gap-2">
-            <Avatar className="size-12">
-              <AvatarImage
-                src={user?.imageUrl ?? ""}
-                alt={user?.name ?? "User Avatar"}
-              />
-            </Avatar>
+            <ProfilePhoto
+              initial={user?.name?.charAt(0).toUpperCase() ?? ""}
+              imageUrl={user?.imageUrl}
+              size={12}
+            />
             <div>
               <p className="font-semibold text-base">Olá, {user?.name}!</p>
               <p className="text-muted-foreground text-xs">
@@ -77,7 +77,7 @@ export default async function Home() {
         <PageSection>
           <PageSectionTitle>Barbeiros</PageSectionTitle>
           <PageSectionScroller>
-            {barbers.map(barber => (
+            {barbers.map((barber) => (
               <BarberItem
                 key={barber.id}
                 barber={{

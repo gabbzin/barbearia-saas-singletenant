@@ -137,7 +137,7 @@ export function CancelBooking({
               <p className="text-right">{formattedTime}</p>
             </div>
             <div className="flex items-center justify-between text-muted-foreground text-sm">
-              <p>Barbearia</p>
+              <p>Barbeiro</p>
               <p className="text-right">{booking.barber.name}</p>
             </div>
           </Card>

@@ -4,6 +4,7 @@ import { prismaAdapter } from "better-auth/adapters/prisma";
 import { prisma } from "./prisma";
 import { sendRecoveryEmail } from "./resend/sendRecoveryEmail";
 import { stripeClient } from "./stripe-client";
+import { signUpEmail } from "better-auth/api";
 
 export const auth = betterAuth({
   database: prismaAdapter(prisma, { provider: "postgresql" }),

@@ -33,6 +33,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "./ui/sheet";
+import { ProfilePhoto } from "./profile-photo";
 
 interface Route {
   name: string;
@@ -99,12 +100,11 @@ export const SidebarMenu = ({
         <div>
           {session ? (
             <div className="flex items-center gap-3 px-5 pb-2">
-              <Avatar className="size-12">
-                <AvatarImage src={session.user.image || ""} />
-                <AvatarFallback>
-                  {session.user.name?.charAt(0).toUpperCase()}
-                </AvatarFallback>
-              </Avatar>
+              <ProfilePhoto
+                imageUrl={session.user.image}
+                initial={session.user.name?.charAt(0).toUpperCase() || "U"}
+                size={12}
+              />
               <div className="flex flex-col overflow-hidden overflow-ellipsis leading-tight">
                 <p className="font-semibold text-base">{session.user.name}</p>
                 <p className="text-muted-foreground text-xs">
@@ -132,7 +132,7 @@ export const SidebarMenu = ({
         {(role === "USER" || role === "ADMIN") && (
           <>
             <div className="flex w-full flex-col px-2">
-              {ROUTES.map(route =>
+              {ROUTES.map((route) =>
                 route.name !== "Barbeiros" ? (
                   <Button
                     key={route.name}
@@ -156,10 +156,10 @@ export const SidebarMenu = ({
                       </AccordionTrigger>
 
                       <AccordionContent className="flex flex-col">
-                        {barbers.map(barber => (
+                        {barbers.map((barber) => (
                           <Link
                             key={barber.id}
-                            href={`/barber/${barber.id}`}
+                            href={`/barbeiros/${barber.id}`}
                             className="px-10 py-2 text-sm hover:bg-accent hover:text-accent-foreground hover:underline dark:hover:bg-accent/50"
                           >
                             {barber.user?.name}
@@ -179,7 +179,7 @@ export const SidebarMenu = ({
         {(role === "BARBER" || role === "ADMIN") && (
           <>
             <div className="flex w-full flex-col px-2">
-              {BARBER_ROUTES.map(route => (
+              {BARBER_ROUTES.map((route) => (
                 <Button
                   key={route.name}
                   variant="ghost"
@@ -200,7 +200,7 @@ export const SidebarMenu = ({
         {role === "ADMIN" && (
           <>
             <div className="flex w-full flex-col px-2">
-              {ADMIN_ROUTES.map(route => (
+              {ADMIN_ROUTES.map((route) => (
                 <Button
                   key={route.name}
                   variant="ghost"
