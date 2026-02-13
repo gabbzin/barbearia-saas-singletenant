@@ -13,7 +13,6 @@ export function ProfilePhoto({ imageUrl, initial, size }: ProfilePhotoProps) {
         <AvatarImage src={imageUrl || ""} />
         <AvatarFallback>{initial}</AvatarFallback>
       </Avatar>
-      <span className="absolute -end-0.5 -bottom-0.5 size-3 rounded-full border-2 border-background bg-emerald-500" />
     </div>
   );
 }
