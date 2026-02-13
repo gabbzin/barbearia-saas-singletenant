@@ -69,7 +69,7 @@ export default function LoginForm() {
               type="password"
               placeholder="Digite sua senha"
             />
-            <ForgotPasswordButton />
+            {/* <ForgotPasswordButton /> */}
           </div>
         </GenericForm>
       </CardContent>

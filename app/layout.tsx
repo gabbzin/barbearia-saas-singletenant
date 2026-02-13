@@ -4,6 +4,7 @@ import "./globals.css";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Toaster } from "sonner";
 import QueryProvider from "../providers/query-provider";
+import { BARBERSHOPNAME } from "@/consts/consts";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -21,7 +22,7 @@ const geist = Geist({
 });
 
 export const metadata: Metadata = {
-  title: "Barbearia SaaS",
+  title: BARBERSHOPNAME,
   description: "Projeto de sistema para barbearias utilizando Next.js e IA",
 };
 

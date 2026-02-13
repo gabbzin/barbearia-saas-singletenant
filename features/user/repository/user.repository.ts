@@ -5,6 +5,11 @@ import { cache } from "react";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
+/**
+ * Verifica a sessão do usuário e retorna as informações do usuário e do barbeiro (se aplicável).
+ * @returns Um objeto contendo as informações do usuário e do barbeiro, ou null se não houver sessão válida.
+ * @throws {Error} Se ocorrer um erro ao verificar a sessão ou acessar o banco de dados.
+ */
 export const verifySession = cache(async () => {
   const session = await auth.api.getSession({
     headers: await headers(),

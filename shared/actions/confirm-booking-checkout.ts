@@ -23,7 +23,7 @@ export const confirmBookingAction = actionClient
       });
     }
 
-    confirmBooking(bookingId);
+    await confirmBooking(bookingId);
 
     revalidatePath("/barber/schedule");
     return { success: true };

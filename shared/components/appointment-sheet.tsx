@@ -112,29 +112,29 @@ const AppointmentSheet = ({
 
     date.setHours(Number(hours), Number(minutes), 0, 0);
 
-    if (payMethod === "cartao" && !plan?.hasPlan) {
-      result = await executeCheckoutAsync({
-        serviceId: service.id,
-        date,
-      });
-    } else {
-      result = await executeAsync({
-        serviceId: service.id,
-        date,
-      });
-    }
+    // if (payMethod === "cartao" && !plan?.hasPlan) {
+    //   result = await executeCheckoutAsync({
+    //     serviceId: service.id,
+    //     date,
+    //   });
+    // } else {
+    result = await executeAsync({
+      serviceId: service.id,
+      date,
+      // });
+    });
 
     if (result.serverError || result.validationErrors) {
       toast.error(result.validationErrors?._errors?.[0]);
       return;
     }
 
-    if (payMethod === "cartao" && result.data && "url" in result.data) {
-      if (result.data.url) {
-        window.location.href = result.data.url;
-        return;
-      }
-    }
+    // if (payMethod === "cartao" && result.data && "url" in result.data) {
+    //   if (result.data.url) {
+    //     window.location.href = result.data.url;
+    //     return;
+    //   }
+    // }
 
     router.push("/bookings"); // Redirect to bookings page after successful booking
 
@@ -191,7 +191,7 @@ const AppointmentSheet = ({
                 ) : (
                   <div className="flex flex-1 justify-center gap-3">
                     {availableTimeSlots && availableTimeSlots.length > 0 ? (
-                      availableTimeSlots.map(time => (
+                      availableTimeSlots.map((time) => (
                         <Button
                           key={time}
                           variant={

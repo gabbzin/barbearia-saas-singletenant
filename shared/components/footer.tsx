@@ -5,7 +5,7 @@ export default function Footer() {
 
   return (
     <footer className="bg-muted p-7">
-      <div className="p-4 text-center text-foreground">
+      <div className="p text-center text-foreground">
         &copy; {yearAtual} {BARBERSHOPNAME}.
       </div>
       <p className="text-center text-muted-foreground">
