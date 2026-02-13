@@ -13,6 +13,7 @@ import {
 } from "@/shared/components/ui/page";
 import { getCurrentSubscriptionAction } from "../../../features/signature/actions/get-current-subscription";
 import { ProfilePhoto } from "@/shared/components/profile-photo";
+import { Card, CardContent } from "@/shared/components/ui/card";
 
 export default async function Home() {
   const user = await verifySession();
@@ -26,19 +27,21 @@ export default async function Home() {
       <Header />
       <PageContainer>
         <PageSection>
-          <div className="flex items-center gap-2">
-            <ProfilePhoto
-              initial={user?.name?.charAt(0).toUpperCase() ?? ""}
-              imageUrl={user?.imageUrl}
-              size={12}
-            />
-            <div>
-              <p className="font-semibold text-base">Olá, {user?.name}!</p>
-              <p className="text-muted-foreground text-xs">
-                Bem-vindo de volta!
-              </p>
-            </div>
-          </div>
+          <Card className="w-full">
+            <CardContent className="flex items-center gap-4 px-4">
+              <ProfilePhoto
+                initial={user?.name?.charAt(0).toUpperCase() ?? ""}
+                imageUrl={user?.imageUrl}
+                size={12}
+              />
+              <div>
+                <p className="font-semibold text-base">Olá, {user?.name}!</p>
+                <p className="text-muted-foreground text-xs">
+                  Bem-vindo de volta!
+                </p>
+              </div>
+            </CardContent>
+          </Card>
 
           {/* <Alert variant={plan.hasPlan ? "success" : "info"} className="mt-4">
             <AlertTitle>
