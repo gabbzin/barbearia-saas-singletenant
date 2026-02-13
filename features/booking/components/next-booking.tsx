@@ -48,7 +48,7 @@ export function NextBooking({ nextBooking }: NextBookingProps) {
   if (!nextBooking) {
     return (
       <Card className="flex flex-col gap-5">
-        <CardContent className="text-center font-bold">
+        <CardContent className="text-center text-sm">
           Sem agendamentos, marque um selecionando uma das opções abaixo
         </CardContent>
       </Card>
@@ -61,7 +61,6 @@ export function NextBooking({ nextBooking }: NextBookingProps) {
   const month = format(bookingDate, "MMM", {
     locale: ptBR,
   }).toUpperCase();
-  const time = bookingDate;
   const timeEnd = addMinutes(bookingDate, 30);
 
   // Atualizar para usar dados reais do nextBooking

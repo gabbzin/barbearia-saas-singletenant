@@ -1,5 +1,3 @@
-import { format } from "date-fns";
-import { CheckCircleIcon, InfoIcon } from "lucide-react";
 import { getBarbers } from "@/features/barber/services/barbers.repository";
 import { NextBooking } from "@/features/booking/components/next-booking";
 import { getNextBooking } from "@/features/booking/functions/get-bookings";
@@ -7,8 +5,6 @@ import { verifySession } from "@/features/user/repository/user.repository";
 import BarberItem from "@/shared/components/barber-item";
 import Footer from "@/shared/components/footer";
 import Header from "@/shared/components/header";
-import { Alert, AlertTitle } from "@/shared/components/ui/alert";
-import { Avatar, AvatarImage } from "@/shared/components/ui/avatar";
 import {
   PageContainer,
   PageSection,
@@ -17,7 +13,6 @@ import {
 } from "@/shared/components/ui/page";
 import { getCurrentSubscriptionAction } from "../../../features/signature/actions/get-current-subscription";
 import { ProfilePhoto } from "@/shared/components/profile-photo";
-import { features } from "process";
 
 export default async function Home() {
   const user = await verifySession();

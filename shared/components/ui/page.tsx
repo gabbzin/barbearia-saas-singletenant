@@ -8,7 +8,7 @@ export const PageSectionTitle = ({
   children: React.ReactNode;
 }) => {
   return (
-    <h2 className="font-semibold text-foreground text-xs uppercase">
+    <h2 className="font-semibold text-foreground text-sm uppercase">
       {children}
     </h2>
   );
