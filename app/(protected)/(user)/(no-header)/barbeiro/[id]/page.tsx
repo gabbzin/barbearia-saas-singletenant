@@ -1,4 +1,10 @@
-import { ChevronLeft } from "lucide-react";
+import {
+  ChevronLeft,
+  InstagramIcon,
+  LinkedinIcon,
+  TwitterIcon,
+  XIcon,
+} from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -8,6 +14,15 @@ import { PhoneItem } from "@/shared/components/phone-item";
 import { ServiceItem } from "@/shared/components/service-item";
 import { Button } from "@/shared/components/ui/button";
 import { Separator } from "@/shared/components/ui/separator";
+import { ProfilePhoto } from "@/shared/components/profile-photo";
+import { PageSection, PageSectionTitle } from "@/shared/components/ui/page";
+import {
+  RiFacebookFill,
+  RiGithubFill,
+  RiGoogleFill,
+  RiInstagramFill,
+  RiTwitterXFill,
+} from "@remixicon/react";
 
 const BarberPage = async (props: PageProps<"/barbeiro/[id]">) => {
   const { id } = await props.params;
@@ -29,12 +44,12 @@ const BarberPage = async (props: PageProps<"/barbeiro/[id]">) => {
   return (
     <div className="flex min-h-screen flex-col">
       {/* Header com Banner */}
-      <div className="relative h-75 w-full">
+      <div className="relative h-70 w-full">
         <Image
           src={"/banner-barber.png"}
           alt={"Banner da barbearia"}
           fill
-          className="object-fill"
+          className="object-center"
           priority
         />
 
@@ -55,43 +70,39 @@ const BarberPage = async (props: PageProps<"/barbeiro/[id]">) => {
 
       {/* Container Principal */}
       <div className="relative -mt-6 flex flex-col gap-6 rounded-t-3xl bg-background">
-        {/* Informações da Barbearia */}
-        <div className="px-5 pt-6">
-          <div className="mb-1 flex items-center gap-2">
-            <div className="relative size-7.5 overflow-hidden rounded-full">
-              <Image
-                src={barber.imageUrl}
-                alt={barber.user?.name ?? ""}
-                fill
-                className="object-cover"
-              />
-            </div>
+        {/* Informações do barbeiro */}
+        <PageSection>
+          <div className="mb-1 flex items-center gap-4">
+            <ProfilePhoto
+              initial={barber.user?.name?.charAt(0).toUpperCase() ?? ""}
+              imageUrl={barber.imageUrl}
+              size={12}
+            />
             <h1 className="font-bold text-foreground text-xl">
               {barber.user?.name}
             </h1>
           </div>
           {/* <p className="text-muted-foreground text-sm">{barber.address}</p> */}
-        </div>
+        </PageSection>
 
         <Separator />
 
-        {/* Sobre Nós */}
-        {/* <div className="space-y-3 px-5">
-          <h2 className="text-foreground text-xs font-bold uppercase">
-            Sobre Nós
-          </h2>
-          <p className="text-foreground text-sm leading-relaxed">
-            {barber.description}
-          </p>
-        </div> */}
+        {/* Redes Sociais */}
+        {/* Componentizar depois */}
+        <PageSection>
+          <PageSectionTitle>Redes Sociais</PageSectionTitle>
+          <div className="flex gap-6 items-center flex-1 justify-center mt-2">
+            <RiFacebookFill />
+            <RiInstagramFill />
+            <RiTwitterXFill />
+          </div>
+        </PageSection>
 
         <Separator />
 
         {/* Serviços */}
-        <div className="space-y-3 px-5">
-          <h2 className="font-bold text-foreground text-xs uppercase">
-            Serviços
-          </h2>
+        <PageSection>
+          <PageSectionTitle>Serviços</PageSectionTitle>
           <div className="space-y-3">
             {barber.services.map((service) => (
               <ServiceItem
@@ -104,7 +115,7 @@ const BarberPage = async (props: PageProps<"/barbeiro/[id]">) => {
               />
             ))}
           </div>
-        </div>
+        </PageSection>
 
         <Separator />
 
@@ -128,9 +139,6 @@ const BarberPage = async (props: PageProps<"/barbeiro/[id]">) => {
             )}
           </div>
         </div>
-
-        {/* Footer */}
-        <Footer />
       </div>
     </div>
   );

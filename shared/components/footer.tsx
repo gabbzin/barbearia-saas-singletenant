@@ -4,8 +4,8 @@ export default function Footer() {
   const yearAtual = new Date().getFullYear();
 
   return (
-    <footer className="bg-muted flex flex-col flex-1 items-center justify-center">
-      <div className="p text-center text-foreground">
+    <footer className="bg-muted flex flex-col flex-1 py-7 items-center justify-center mt-7">
+      <div className="text-center text-foreground">
         &copy; {yearAtual} {BARBERSHOPNAME}.
       </div>
       <p className="text-center text-muted-foreground">
