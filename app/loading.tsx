@@ -1,4 +1,4 @@
-import { BARBERSHOPNAME } from "@/consts/consts";
+import { BARBERSHOPNAME } from "@/lib/consts";
 import { MorphingText } from "@/shared/components/ui/morphing-text";
 
 export default function Loading() {

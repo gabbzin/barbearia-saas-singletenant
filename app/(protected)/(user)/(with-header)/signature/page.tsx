@@ -1,4 +1,4 @@
-import { features } from "@/consts/consts";
+import { features } from "@/lib/consts";
 import { getCurrentSubscription } from "@/features/user/repository/user.repository";
 import { prisma } from "@/lib/prisma";
 import Header from "@/shared/components/header";

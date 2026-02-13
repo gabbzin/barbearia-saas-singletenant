@@ -1,4 +1,4 @@
-import { BARBERSHOPNAME } from "@/consts/consts";
+import { BARBERSHOPNAME } from "@/lib/consts";
 
 export default function Footer() {
   const yearAtual = new Date().getFullYear();

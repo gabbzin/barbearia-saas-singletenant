@@ -4,7 +4,7 @@ import "./globals.css";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Toaster } from "sonner";
 import QueryProvider from "../providers/query-provider";
-import { BARBERSHOPNAME } from "@/consts/consts";
+import { BARBERSHOPNAME } from "@/lib/consts";
 
 const inter = Inter({
   variable: "--font-inter",
