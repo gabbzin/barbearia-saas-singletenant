@@ -49,7 +49,7 @@ export function NextBooking({ nextBooking }: NextBookingProps) {
     return (
       <Card className="flex flex-col gap-5">
         <CardContent className="text-center font-bold">
-          Sem agendamentos
+          Sem agendamentos, marque um selecionando uma das opções abaixo
         </CardContent>
       </Card>
     );

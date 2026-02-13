@@ -45,7 +45,7 @@ export default async function Home() {
             </div>
           </div>
 
-          <Alert variant={plan.hasPlan ? "success" : "info"} className="mt-4">
+          {/* <Alert variant={plan.hasPlan ? "success" : "info"} className="mt-4">
             <AlertTitle>
               {plan.hasPlan ? (
                 <div className="flex items-center gap-3">
@@ -67,7 +67,7 @@ export default async function Home() {
                 </div>
               )}
             </AlertTitle>
-          </Alert>
+          </Alert> */}
         </PageSection>
 
         <PageSection>

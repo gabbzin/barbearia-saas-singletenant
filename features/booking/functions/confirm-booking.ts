@@ -2,6 +2,7 @@
 
 import { verifySession } from "@/features/user/repository/user.repository";
 import { prisma } from "@/lib/prisma";
+import { revalidatePath } from "next/cache";
 
 export async function confirmBooking(bookingId: string) {
   const barber = await verifySession();
@@ -26,7 +27,7 @@ export async function confirmBooking(bookingId: string) {
     throw new Error("Cannot confirm a booking that has not yet occurred");
   }
 
-  return await prisma.booking.update({
+  await prisma.booking.update({
     where: {
       id: bookingId,
     },
@@ -34,4 +35,6 @@ export async function confirmBooking(bookingId: string) {
       status: "COMPLETED",
     },
   });
+
+  return revalidatePath("/barber/schedule");
 }

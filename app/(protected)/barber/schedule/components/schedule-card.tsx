@@ -32,8 +32,12 @@ export function ScheduleCard({ barberId }: { barberId: string }) {
     (booking) => booking.status === "COMPLETED",
   );
 
-  const incompletedBookings = bookings?.filter(
-    (booking) => booking.status !== "COMPLETED",
+  const scheduledBookings = bookings?.filter(
+    (booking) => booking.status === "SCHEDULED",
+  );
+
+  const canceledBookings = bookings?.filter(
+    (booking) => booking.status === "CANCELLED",
   );
 
   if (isLoading) {
@@ -50,15 +54,16 @@ export function ScheduleCard({ barberId }: { barberId: string }) {
 
   return (
     <div className="flex flex-col gap-6">
-      <Tabs defaultValue="incompleted">
+      <Tabs defaultValue="scheduled">
         <TabsList className="mb-4">
-          <TabsTrigger value="incompleted">Pendentes</TabsTrigger>
+          <TabsTrigger value="scheduled">Pendentes</TabsTrigger>
           <TabsTrigger value="completed">Finalizados</TabsTrigger>
+          <TabsTrigger value="canceled">Cancelados</TabsTrigger>
         </TabsList>
-        <TabsContent value="incompleted">
-          {incompletedBookings && incompletedBookings.length > 0 ? (
+        <TabsContent value="scheduled">
+          {scheduledBookings && scheduledBookings.length > 0 ? (
             <div className="flex flex-col gap-4">
-              {incompletedBookings?.map((booking) => (
+              {scheduledBookings?.map((booking) => (
                 <ConfirmAlertDialog
                   key={booking.id}
                   handleConfirm={() => {
@@ -109,6 +114,23 @@ export function ScheduleCard({ barberId }: { barberId: string }) {
           {completedBookings && completedBookings.length > 0 && (
             <div className="flex flex-col gap-4">
               {completedBookings?.map((booking) => (
+                <BookingItem
+                  key={booking.id}
+                  serviceName={booking.service.name}
+                  date={booking.date}
+                  counterPart={{
+                    name: booking.user.name,
+                    imageUrl: booking.user.image ?? "",
+                  }}
+                />
+              ))}
+            </div>
+          )}
+        </TabsContent>
+        <TabsContent value="canceled">
+          {canceledBookings && canceledBookings.length > 0 && (
+            <div className="flex flex-col gap-4">
+              {canceledBookings?.map((booking) => (
                 <BookingItem
                   key={booking.id}
                   serviceName={booking.service.name}

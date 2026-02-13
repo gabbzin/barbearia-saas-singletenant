@@ -119,7 +119,7 @@ const BarberDashboardPage = async () => {
                 <div className="flex items-center gap-4 font-semibold">
                   <Avatar>
                     <AvatarImage
-                      src={"https://github.com/shadcn.png"}
+                      src={info.data?.nextBooking.user.image ?? undefined}
                       alt={info.data?.nextBooking.user.name ?? "User Avatar"}
                       className="object-cover"
                     />
