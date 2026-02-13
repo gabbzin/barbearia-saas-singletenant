@@ -15,7 +15,7 @@ import {
   PageSectionScroller,
   PageSectionTitle,
 } from "@/shared/components/ui/page";
-import { getCurrentSubscriptionAction } from "../../../../features/signature/actions/get-current-subscription";
+import { getCurrentSubscriptionAction } from "../../../features/signature/actions/get-current-subscription";
 import { ProfilePhoto } from "@/shared/components/profile-photo";
 import { features } from "process";
 
