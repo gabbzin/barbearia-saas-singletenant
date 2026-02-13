@@ -13,7 +13,7 @@ const Header = async () => {
   const session = await verifySession();
 
   return (
-    <header className="sticky top-0 z-50 flex items-center justify-between border-b-2 bg-background px-5 py-4">
+    <header className="sticky top-0 z-50 flex items-center justify-between border-b-2 bg-background px-5 py-2">
       <LogoLink />
       <div className="flex items-center gap-2">
         <AnimatedThemeToggler />

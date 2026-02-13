@@ -8,13 +8,17 @@ export function LogoLink() {
     redirect("/");
   };
 
+  const pixels = 70;
+
   return (
     <Image
-      src={"/logo.jpeg"}
+      src={"/logo.png"}
       alt="Logo da Barbearia 2W"
-      width={75}
-      height={75}
-      className="rounded-full self-center cursor-pointer object-center"
+      // fill
+      width={pixels}
+      height={pixels}
+      className="rounded-full fill cursor-pointer object-center"
+      onClick={handleLogoClick}
     />
     // <h1 onClick={handleLogoClick} className="cursor-pointer font-bold text-2xl">
     //   Barbearia X
