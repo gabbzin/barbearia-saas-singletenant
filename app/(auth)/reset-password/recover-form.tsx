@@ -14,7 +14,8 @@ import { Card, CardContent, CardHeader } from "@/shared/components/ui/card";
 import { PasswordStrength } from "./passwordStrength";
 
 export default function RecoverPassword() {
-  const token = new URLSearchParams(window.location.search).get("token") || "";
+  const searchParams = new URLSearchParams();
+  const token = searchParams.get("token") || "";
 
   if (!token) {
     return (
