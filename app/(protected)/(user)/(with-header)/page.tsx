@@ -2,7 +2,7 @@ import { getBarbers } from "@/features/barber/services/barbers.repository";
 import { NextBooking } from "@/features/booking/components/next-booking";
 import { getNextBooking } from "@/features/booking/functions/get-bookings";
 import { verifySession } from "@/features/user/repository/user.repository";
-import BarberItem from "@/shared/components/barber-item";
+import BarberItem from "@/features/barber/components/barber-item";
 import Footer from "@/shared/components/footer";
 import Header from "@/shared/components/header";
 import {
@@ -16,7 +16,7 @@ import { ProfilePhoto } from "@/shared/components/profile-photo";
 import { Card, CardContent, CardFooter } from "@/shared/components/ui/card";
 import { Suspense } from "react";
 import { Skeleton } from "@/shared/components/ui/skeleton";
-import { SignatureCard } from "@/shared/components/signature/signature-card";
+import { SignatureCard } from "@/features/signature/components/signature-card";
 
 export default async function Home() {
   const user = await verifySession();

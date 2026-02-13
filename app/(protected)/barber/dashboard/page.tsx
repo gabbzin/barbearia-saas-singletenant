@@ -10,7 +10,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { verifySession } from "@/features/user/repository/user.repository";
 import { prisma } from "@/lib/prisma";
-import CardInfo from "@/shared/components/barber/card-info";
+import CardInfo from "@/features/barber/components/card-info";
 import Header from "@/shared/components/header";
 import { Alert, AlertTitle } from "@/shared/components/ui/alert";
 import { Avatar, AvatarImage } from "@/shared/components/ui/avatar";

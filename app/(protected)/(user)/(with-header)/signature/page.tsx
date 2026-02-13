@@ -3,7 +3,7 @@ import { getCurrentSubscription } from "@/features/user/repository/user.reposito
 import { prisma } from "@/lib/prisma";
 import Header from "@/shared/components/header";
 import HeaderTitle from "@/shared/components/me/HeaderTitle";
-import SignatureItem from "@/shared/components/signature/signature-item";
+import SignatureItem from "@/features/signature/components/signature-item";
 import { Carousel, CarouselContent } from "@/shared/components/ui/carousel";
 import { PageContainer, PageSection } from "@/shared/components/ui/page";
 import { Separator } from "@/shared/components/ui/separator";

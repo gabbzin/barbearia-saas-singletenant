@@ -5,8 +5,8 @@ import { toast } from "sonner";
 import { createSignature } from "@/features/signature/actions/create-signature";
 import { convertBRL } from "@/utils/convertBRL";
 import { convertCapitalize } from "@/utils/convertCapitalize";
-import { AuroraText } from "../ui/aurora-text";
-import { Button } from "../ui/button";
+import { AuroraText } from "../../../shared/components/ui/aurora-text";
+import { Button } from "../../../shared/components/ui/button";
 import {
   Card,
   CardContent,
@@ -14,10 +14,10 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "../ui/card";
-import { CarouselItem } from "../ui/carousel";
-import { Separator } from "../ui/separator";
-import { ShimmerButton } from "../ui/shimmer-button";
+} from "../../../shared/components/ui/card";
+import { CarouselItem } from "../../../shared/components/ui/carousel";
+import { Separator } from "../../../shared/components/ui/separator";
+import { ShimmerButton } from "../../../shared/components/ui/shimmer-button";
 
 type SignatureItemProps = {
   plan: Plan;

@@ -11,7 +11,7 @@ import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import Footer from "@/shared/components/footer";
 import { PhoneItem } from "@/shared/components/phone-item";
-import { ServiceItem } from "@/shared/components/service-item";
+import { ServiceItem } from "@/features/service/components/service-item";
 import { Button } from "@/shared/components/ui/button";
 import { Separator } from "@/shared/components/ui/separator";
 import { ProfilePhoto } from "@/shared/components/profile-photo";

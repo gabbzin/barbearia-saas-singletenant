@@ -1,5 +1,5 @@
 import { CheckCircleIcon, InfoIcon } from "lucide-react";
-import { Alert, AlertTitle } from "../ui/alert";
+import { Alert, AlertTitle } from "../../../shared/components/ui/alert";
 import { format } from "date-fns";
 
 interface SignatureCardProps {

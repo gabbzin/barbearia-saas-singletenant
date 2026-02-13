@@ -13,7 +13,7 @@ import { createBookingCheckoutSession } from "@/features/booking/functions/creat
 import { getDateAvailableTimeSlots } from "@/features/booking/functions/get-date-available-time-slots";
 import type { SubscriptionInfo } from "@/features/user/repository/user.repository";
 import { isPastTimeSlot } from "@/utils/isPastTimeSlot";
-import PagamentForm, { type payMethods } from "./pagament-form";
+import PagamentForm, { type payMethods } from "./form/pagament-form";
 import { SpinLoader } from "./spinLoader";
 import { Button } from "./ui/button";
 import { Calendar } from "./ui/calendar";

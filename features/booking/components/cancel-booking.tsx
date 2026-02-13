@@ -8,7 +8,7 @@ import { toast } from "sonner";
 import type { BookingClient } from "@/features/booking/components/booking-client";
 import { cancelBooking } from "@/features/booking/functions/cancel-booking";
 import { cancelBookingCheckoutSession } from "@/features/booking/functions/cancel-booking-checkout-session";
-import CancelAlertDialog from "@/shared/components/cancel-alert-dialog";
+import CancelAlertDialog from "@/features/booking/components/cancel-booking-alert-dialog";
 import { PhoneItem } from "@/shared/components/phone-item";
 import { Avatar, AvatarImage } from "@/shared/components/ui/avatar";
 import { Button } from "@/shared/components/ui/button";

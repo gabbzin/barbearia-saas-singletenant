@@ -5,9 +5,9 @@ import Image from "next/image";
 import { useState } from "react";
 import { useGetSubscription } from "@/queries/get-subscription-user";
 import { convertBRL } from "@/utils/convertBRL";
-import AppointmentSheet from "./appointment-sheet";
-import { Button } from "./ui/button";
-import { Sheet, SheetTrigger } from "./ui/sheet";
+import AppointmentSheet from "../../../shared/components/appointment-sheet";
+import { Button } from "../../../shared/components/ui/button";
+import { Sheet, SheetTrigger } from "../../../shared/components/ui/sheet";
 
 interface ServiceItemProps {
   service: BarberService & {

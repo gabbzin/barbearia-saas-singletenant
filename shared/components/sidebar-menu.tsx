@@ -16,7 +16,7 @@ import {
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { authClient } from "@/lib/auth-client";
-import CancelAlertDialog from "./cancel-alert-dialog";
+import CancelAlertDialog from "../../features/booking/components/cancel-booking-alert-dialog";
 import {
   Accordion,
   AccordionContent,
