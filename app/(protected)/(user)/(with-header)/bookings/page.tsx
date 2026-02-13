@@ -14,15 +14,7 @@ const BookingsPage = async () => {
 
   const bookings = await getBookingsUser(session.id);
 
-  return (
-    <div className="flex min-h-screen flex-1 flex-col justify-between">
-      <div>
-        <Header />
-        <BookingsClient bookings={bookings} />
-      </div>
-      <Footer />
-    </div>
-  );
+  return <BookingsClient bookings={bookings} />;
 };
 
 export default BookingsPage;

@@ -47,27 +47,27 @@ export default function BookingsClient({ bookings }: BookingsClientProps) {
 
   if (!bookings || bookings.length === 0) {
     return (
-      <PageContainer>
+      <PageSection>
         <h1 className="font-bold text-xl">Agendamentos</h1>
-        <PageSection>
+        <div className="mt-4">
           <p className="text-muted-foreground text-sm">
             Você não tem agendamentos.
           </p>
-        </PageSection>
-      </PageContainer>
+        </div>
+      </PageSection>
     );
   }
 
   const confirmedBookings = bookings.filter(
-    booking => booking.date > now && booking.status === "SCHEDULED",
+    (booking) => booking.date > now && booking.status === "SCHEDULED",
   );
 
   const cancelledBookings = bookings.filter(
-    booking => booking.status === "CANCELLED",
+    (booking) => booking.status === "CANCELLED",
   );
 
   const finishedBookings = bookings.filter(
-    booking => booking.date <= now && booking.status !== "CANCELLED",
+    (booking) => booking.date <= now && booking.status !== "CANCELLED",
   );
 
   const handleClickBooking = (booking: BookingClient) => {
@@ -92,7 +92,7 @@ export default function BookingsClient({ bookings }: BookingsClientProps) {
                   Você não tem agendamentos confirmados.
                 </p>
               ) : (
-                confirmedBookings.map(booking => (
+                confirmedBookings.map((booking) => (
                   <BookingItem
                     key={booking.id}
                     serviceName={booking.service.name}
@@ -129,7 +129,7 @@ export default function BookingsClient({ bookings }: BookingsClientProps) {
                   Você não tem agendamentos cancelados.
                 </p>
               ) : (
-                cancelledBookings.map(booking => (
+                cancelledBookings.map((booking) => (
                   <BookingItem
                     key={booking.id}
                     serviceName={booking.service.name}
@@ -150,7 +150,7 @@ export default function BookingsClient({ bookings }: BookingsClientProps) {
                   Você não tem agendamentos finalizados.
                 </p>
               ) : (
-                finishedBookings.map(booking => (
+                finishedBookings.map((booking) => (
                   <BookingItem
                     key={booking.id}
                     serviceName={booking.service.name}

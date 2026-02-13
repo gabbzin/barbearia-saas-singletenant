@@ -11,12 +11,11 @@ import { notFound } from "next/navigation";
 import { verifySession } from "@/features/user/repository/user.repository";
 import { prisma } from "@/lib/prisma";
 import CardInfo from "@/features/barber/components/card-info";
-import Header from "@/shared/components/header";
 import { Alert, AlertTitle } from "@/shared/components/ui/alert";
 import { Avatar, AvatarImage } from "@/shared/components/ui/avatar";
 import { Button } from "@/shared/components/ui/button";
 import { Card, CardContent } from "@/shared/components/ui/card";
-import { PageContainer } from "@/shared/components/ui/page";
+import { PageSection, PageSectionTitle } from "@/shared/components/ui/page";
 import { Separator } from "@/shared/components/ui/separator";
 import { getBarberDashboardInfos } from "./actions/getInfos";
 import { SpeedDial } from "./components/SpeedDial";
@@ -62,8 +61,7 @@ const BarberDashboardPage = async () => {
     : undefined;
 
   return (
-    <div>
-      <Header />
+    <main>
       {!horariosData && (
         <Alert>
           <AlertTitle className="flex items-center gap-2">
@@ -77,11 +75,13 @@ const BarberDashboardPage = async () => {
           </AlertTitle>
         </Alert>
       )}
-      <PageContainer>
+
+      <PageSection>
         <h2 className="font-bold text-2xl lg:text-3xl">
           Olá {session.name ?? "Usuario"}
         </h2>
-        <h3 className="font-bold text-lg lg:text-2xl">Resumo de hoje</h3>
+
+        <PageSectionTitle>Resumo de hoje</PageSectionTitle>
         <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
           <CardInfo
             Icon={Scissors}
@@ -108,10 +108,12 @@ const BarberDashboardPage = async () => {
             variant="yellow"
           />
         </div>
-      </PageContainer>
+      </PageSection>
+
       <Separator />
-      <PageContainer>
-        <h3 className="font-bold text-lg lg:text-2xl">Próximo atendimento</h3>
+
+      <PageSection>
+        <PageSectionTitle>Próximo atendimento</PageSectionTitle>
         <Card className="border border-primary">
           <CardContent className="flex flex-col gap-3">
             {info.data?.nextBooking ? (
@@ -146,21 +148,24 @@ const BarberDashboardPage = async () => {
             </Button>
           </CardContent>
         </Card>
-      </PageContainer>
+      </PageSection>
+
       <Separator />
-      <PageContainer>
-        <h3 className="font-bold text-lg lg:text-2xl">
-          Seus serviços cadastrados
-        </h3>
+
+      <PageSection>
+        <PageSectionTitle>Seus serviços cadastrados</PageSectionTitle>
         <TableService barberId={barberId} />
-      </PageContainer>
-      <PageContainer>
-        <h3 className="font-bold text-lg lg:text-2xl">Seus horários padrão</h3>
+      </PageSection>
+
+      <PageSection>
+        <PageSectionTitle>Seus horários padrão</PageSectionTitle>
         <TableSettings barberId={barberId} />
-      </PageContainer>
+      </PageSection>
+
       <div className="h-20" />
+
       <SpeedDial barberId={barberId} defaultTimes={defaultTimesValues} />
-    </div>
+    </main>
   );
 };
 

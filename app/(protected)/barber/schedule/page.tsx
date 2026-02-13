@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import { verifySession } from "@/features/user/repository/user.repository";
 import Header from "@/shared/components/header";
-import { PageContainer } from "@/shared/components/ui/page";
+import { PageContainer, PageSection } from "@/shared/components/ui/page";
 import { ScheduleCard } from "./components/schedule-card";
 
 export default async function BarberSchedulePage() {
@@ -12,14 +12,11 @@ export default async function BarberSchedulePage() {
   }
 
   return (
-    <div>
-      <Header />
-      <main>
-        <PageContainer>
-          <h1 className="mb-4 font-bold text-xl">Agenda Completa</h1>
-          <ScheduleCard barberId={session.barberId} />
-        </PageContainer>
-      </main>
-    </div>
+    <main className="">
+      <PageSection>
+        <h1 className="mb-4 font-bold text-xl">Agenda Completa</h1>
+        <ScheduleCard barberId={session.barberId} />
+      </PageSection>
+    </main>
   );
 }

@@ -9,10 +9,10 @@ export default async function ProtectedUserLayout({
   children,
 }: ProtectedUserLayoutProps) {
   return (
-    <>
+    <div className="min-h-screen flex flex-col">
       <Header />
-      {children}
+      <div className="flex-1">{children}</div>
       <Footer />
-    </>
+    </div>
   );
 }
