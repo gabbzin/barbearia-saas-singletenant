@@ -18,7 +18,15 @@ import { toast } from "sonner";
 export function ScheduleCard({ barberId }: { barberId: string }) {
   const { data: bookings, isLoading } = useBookings(barberId);
 
-  const { execute, isPending } = useAction(confirmBookingAction);
+  const { execute, isPending } = useAction(confirmBookingAction, {
+    onError: ({ error }) => {
+      const message =
+        error.validationErrors?._errors?.[0] ||
+        error.serverError ||
+        "Erro ao confirmar o agendamento.";
+      toast.error(message);
+    },
+  });
 
   const completedBookings = bookings?.filter(
     (booking) => booking.status === "COMPLETED",

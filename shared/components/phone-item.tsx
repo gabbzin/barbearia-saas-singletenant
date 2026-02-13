@@ -14,6 +14,10 @@ export function PhoneItem({ phone }: PhoneItemProps) {
     toast.success("Telefone copiado!");
   };
 
+  if (!phone) {
+    return <p>Telefone não disponível</p>;
+  }
+
   return (
     <div className="flex w-full items-center justify-between">
       <div className="flex items-center gap-2.5">

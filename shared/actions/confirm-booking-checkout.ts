@@ -18,8 +18,14 @@ export const confirmBookingAction = actionClient
     const session = await verifySession();
 
     if (!session) {
-      returnValidationErrors(inputSchema, {
+      return returnValidationErrors(inputSchema, {
         _errors: ["Usuário não autenticado."],
+      });
+    }
+
+    if (!session.barberId) {
+      return returnValidationErrors(inputSchema, {
+        _errors: ["Usuário não autorizado."],
       });
     }
 

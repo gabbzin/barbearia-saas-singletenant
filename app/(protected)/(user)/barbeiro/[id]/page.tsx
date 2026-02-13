@@ -29,12 +29,12 @@ const BarberPage = async (props: PageProps<"/barbeiro/[id]">) => {
   return (
     <div className="flex min-h-screen flex-col">
       {/* Header com Banner */}
-      <div className="relative h-[297px] w-full">
+      <div className="relative h-75 w-full">
         <Image
-          src={barber.imageUrl}
-          alt={barber.user?.name ?? ""}
+          src={"/banner-barber.png"}
+          alt={"Banner da barbearia"}
           fill
-          className="object-cover"
+          className="object-fill"
           priority
         />
 
@@ -58,7 +58,7 @@ const BarberPage = async (props: PageProps<"/barbeiro/[id]">) => {
         {/* Informações da Barbearia */}
         <div className="px-5 pt-6">
           <div className="mb-1 flex items-center gap-2">
-            <div className="relative size-[30px] overflow-hidden rounded-full">
+            <div className="relative size-7.5 overflow-hidden rounded-full">
               <Image
                 src={barber.imageUrl}
                 alt={barber.user?.name ?? ""}
@@ -114,14 +114,18 @@ const BarberPage = async (props: PageProps<"/barbeiro/[id]">) => {
             Contato
           </h2>
           <div className="space-y-3">
-            {barber.phone.map((phone) => (
-              <div
-                key={phone}
-                className="flex w-full flex-col items-center justify-between"
-              >
-                <PhoneItem phone={phone} />
-              </div>
-            ))}
+            {barber.phone.length > 0 ? (
+              barber.phone.map((phone) => (
+                <div
+                  key={phone}
+                  className="flex w-full flex-col items-center justify-between"
+                >
+                  <PhoneItem phone={phone} />
+                </div>
+              ))
+            ) : (
+              <p>Telefone não disponível</p>
+            )}
           </div>
         </div>
 
