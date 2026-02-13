@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 // ========================================
 // CONFIGURAÇÃO
 // ========================================
-const PUBLIC_ROUTES = ["/", "/login", "/register", "/reset-password"];
+const PUBLIC_ROUTES = ["/login", "/register", "/reset-password"];
 const AUTH_ROUTES = [
   "/login",
   "/register",
@@ -15,52 +15,46 @@ const PUBLIC_API_ROUTES = ["/api/auth", "/api/stripe/webhook"];
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // 1. Ignorar arquivos estáticos e internos do Next
+  // 1. Filtros iniciais (estáticos e APIs públicas)
   if (
     pathname.startsWith("/_next") ||
-    pathname.startsWith("/static") ||
-    pathname.match(/\.(ico|png|jpg|jpeg|svg|css|js)$/)
+    pathname.match(/\.(ico|png|jpg|jpeg|svg|css|js)$/) ||
+    PUBLIC_API_ROUTES.some((route) => pathname.startsWith(route))
   ) {
     return NextResponse.next();
   }
 
-  // 2. Permitir APIs públicas sempre
-  if (PUBLIC_API_ROUTES.some((route) => pathname.startsWith(route))) {
-    return NextResponse.next();
+  // Valida o token de autenticação e obtém a sessão do usuário
+  const sessionResponse = await fetch(
+    `${request.nextUrl.origin}/api/auth/get-session`,
+    {
+      headers: {
+        cookie: request.headers.get("cookie") || "",
+      },
+    },
+  );
+
+  const session = await sessionResponse.json();
+
+  const isUserLoggedIn = !!session;
+  const isAuthRoute = AUTH_ROUTES.includes(pathname);
+
+  // REGRA: Se estou em página de login/register e estou logado -> vai para Home
+  if (isAuthRoute && isUserLoggedIn) {
+    return NextResponse.redirect(new URL("/", request.url));
   }
 
-  // ========================================
-  // CORREÇÃO CRÍTICA AQUI (COOKIES)
-  // ========================================
-  // Em produção (HTTPS), o cookie pode ter prefixo __Secure-
-  const sessionToken =
-    request.cookies.get("better-auth.session_token")?.value ||
-    request.cookies.get("__Secure-better-auth.session_token")?.value;
-
-  const isUserLoggedIn = !!sessionToken;
-
-  // 3. Redirecionar usuário logado longe das páginas de auth (Login/Register)
-  if (AUTH_ROUTES.some((route) => pathname.startsWith(route))) {
-    if (isUserLoggedIn) {
-      // Redireciona para onde o usuário "deveria" estar (Dashboard)
-      return NextResponse.redirect(new URL("/", request.url));
-    }
-    // Se não logado, deixa acessar login
-    return NextResponse.next();
-  }
-
-  // 4. Proteção de Rotas Privadas
-  // Lógica: Se a rota NÃO é pública E o usuário NÃO está logado -> Login
-  // Usamos 'includes' para rotas exatas, mas considere adicionar startsWith se tiver subpáginas públicas
+  // REGRA: Se NÃO estou logado e a rota NÃO é pública -> vai para Login
   const isPublicRoute = PUBLIC_ROUTES.includes(pathname);
-
   if (!isPublicRoute && !isUserLoggedIn) {
     const loginUrl = new URL("/login", request.url);
-    loginUrl.searchParams.set("callbackUrl", pathname);
+    // Evita loop se o callbackUrl for o próprio login
+    if (pathname !== "/login") {
+      loginUrl.searchParams.set("callbackUrl", pathname);
+    }
     return NextResponse.redirect(loginUrl);
   }
 
-  // Se passou por tudo, libera
   return NextResponse.next();
 }
 
