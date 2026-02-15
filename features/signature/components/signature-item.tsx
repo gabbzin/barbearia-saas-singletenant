@@ -1,10 +1,10 @@
 "use client";
-import type { Plan } from "@prisma/client";
-import { useAction } from "next-safe-action/hooks";
-import { toast } from "sonner";
 import { createSignature } from "@/features/signature/actions/create-signature";
 import { convertBRL } from "@/utils/convertBRL";
 import { convertCapitalize } from "@/utils/convertCapitalize";
+import type { Plan } from "@prisma/client";
+import { useAction } from "next-safe-action/hooks";
+import { toast } from "sonner";
 import { AuroraText } from "../../../shared/components/ui/aurora-text";
 import { Button } from "../../../shared/components/ui/button";
 import {
@@ -89,7 +89,7 @@ const SignatureItem = ({ plan, myPlanName }: SignatureItemProps) => {
             <ShimmerButton
               onClick={handleConfirm}
               disabled={isPending}
-              className="dark:bg-white dark:text-white"
+              className="dark:text-white"
             >
               Assine aqui
             </ShimmerButton>
