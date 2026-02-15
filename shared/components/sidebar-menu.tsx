@@ -2,14 +2,14 @@
 
 import type { Barber, User } from "@prisma/client";
 import {
-  Calendar,
-  CreditCard,
-  Home,
+  CalendarIcon,
+  CreditCardIcon,
+  HomeIcon,
   LogIn,
   LogOut,
   type LucideIcon,
   MenuIcon,
-  Scissors,
+  ScissorsIcon,
   UserStar,
   X,
 } from "lucide-react";
@@ -23,7 +23,6 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "./ui/accordion";
-import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { Button } from "./ui/button";
 import { Separator } from "./ui/separator";
 import {
@@ -42,16 +41,16 @@ interface Route {
 }
 
 const ROUTES: Route[] = [
-  { name: "Início", path: "/", icon: Home },
-  { name: "Barbeiros", path: "/barbeiros", icon: Scissors },
-  { name: "Agendamentos", path: "/bookings", icon: Calendar },
-  // { name: "Assinatura", path: "/signature", icon: CreditCard },
+  { name: "Início", path: "/", icon: HomeIcon },
+  { name: "Barbeiros", path: "/barbeiros", icon: ScissorsIcon },
+  { name: "Agendamentos", path: "/bookings", icon: CalendarIcon },
+  { name: "Assinaturas", path: "/signature", icon: CreditCardIcon },
 ];
 
 // Rotas exclusivas de barbeiro
 const BARBER_ROUTES: Route[] = [
-  { name: "Dashboard", path: "/barber/dashboard", icon: Home },
-  { name: "Agenda", path: "/barber/schedule", icon: Calendar },
+  { name: "Dashboard", path: "/barber/dashboard", icon: HomeIcon },
+  { name: "Agenda", path: "/barber/schedule", icon: CalendarIcon },
 ];
 
 const ADMIN_ROUTES: Route[] = [
@@ -132,7 +131,7 @@ export const SidebarMenu = ({
         {(role === "USER" || role === "ADMIN") && (
           <>
             <div className="flex w-full flex-col px-2">
-              {ROUTES.map((route) =>
+              {ROUTES.map(route =>
                 route.name !== "Barbeiros" ? (
                   <Button
                     key={route.name}
@@ -156,10 +155,10 @@ export const SidebarMenu = ({
                       </AccordionTrigger>
 
                       <AccordionContent className="flex flex-col">
-                        {barbers.map((barber) => (
+                        {barbers.map(barber => (
                           <Link
                             key={barber.id}
-                            href={`/barbeiros/${barber.id}`}
+                            href={`/barbeiro/${barber.id}`}
                             className="px-10 py-2 text-sm hover:bg-accent hover:text-accent-foreground hover:underline dark:hover:bg-accent/50"
                           >
                             {barber.user?.name}
@@ -179,7 +178,7 @@ export const SidebarMenu = ({
         {(role === "BARBER" || role === "ADMIN") && (
           <>
             <div className="flex w-full flex-col px-2">
-              {BARBER_ROUTES.map((route) => (
+              {BARBER_ROUTES.map(route => (
                 <Button
                   key={route.name}
                   variant="ghost"
@@ -200,7 +199,7 @@ export const SidebarMenu = ({
         {role === "ADMIN" && (
           <>
             <div className="flex w-full flex-col px-2">
-              {ADMIN_ROUTES.map((route) => (
+              {ADMIN_ROUTES.map(route => (
                 <Button
                   key={route.name}
                   variant="ghost"

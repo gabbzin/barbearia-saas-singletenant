@@ -13,7 +13,7 @@ const BarberItem = ({ barber }: BarberItemProps) => {
   return (
     <Link
       href={`/barbeiro/${barber.id}`}
-      className="relative min-h-[200px] min-w-[290px] rounded-xl"
+      className="relative min-h-50 min-w-72.5 rounded-xl"
     >
       <div className="absolute top-0 left-0 z-10 h-full w-full rounded-lg bg-linear-to-t from-black to-transparent"></div>
       <Image
@@ -23,7 +23,9 @@ const BarberItem = ({ barber }: BarberItemProps) => {
         className="rounded-xl object-cover"
       />
       <div className="absolute right-0 bottom-0 left-0 z-20 p-4">
-        <h3 className="font-bold text-background text-lg">{barber.name}</h3>
+        <h3 className="font-bold text-background text-lg dark:text-white">
+          {barber.name}
+        </h3>
       </div>
     </Link>
   );
