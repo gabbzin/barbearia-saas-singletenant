@@ -173,6 +173,7 @@ model Plan {
   id            String  @id
   name          String
   description   String
+  imageUrl      String?
   priceInCents  Int
   stripePriceId String? @unique
 

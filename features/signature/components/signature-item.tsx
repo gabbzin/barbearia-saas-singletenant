@@ -18,6 +18,8 @@ import {
 import { CarouselItem } from "../../../shared/components/ui/carousel";
 import { Separator } from "../../../shared/components/ui/separator";
 import { ShimmerButton } from "../../../shared/components/ui/shimmer-button";
+import { cn } from "@/lib/utils";
+import { Check } from "lucide-react";
 
 type SignatureItemProps = {
   plan: Plan;
@@ -27,7 +29,9 @@ type SignatureItemProps = {
 const SignatureItem = ({ plan, myPlanName }: SignatureItemProps) => {
   const { executeAsync, isPending } = useAction(createSignature);
 
-  const priceInReais = convertBRL(plan.priceInCents);
+  // const priceInReais = convertBRL(plan.priceInCents);
+
+  const isCurrentPlan = myPlanName === plan.name;
 
   const handleConfirm = async () => {
     const data = {
@@ -51,49 +55,85 @@ const SignatureItem = ({ plan, myPlanName }: SignatureItemProps) => {
   };
 
   return (
-    <CarouselItem className="relative md:basis-1/2 lg:basis-1/3">
-      {myPlanName?.toLowerCase() === plan.name.toLowerCase() ? (
-        <div className="absolute m-auto rounded-tl-2xl rounded-br-lg bg-foreground px-2 font-semibold text-background text-sm">
-          Plano atual
-        </div>
-      ) : (
-        ""
-      )}
-      <Card className="z-10 border-2 shadow-lg dark:border-white">
-        <CardHeader className="mt-5 text-center">
-          <CardTitle className="font-bold text-4xl">
-            <AuroraText className="font-geist">
-              {convertCapitalize(plan.name)}
-            </AuroraText>
+    <CarouselItem className="relative md:basis-1/2 lg:basis-1/3 p-4">
+      <Card
+        className={cn(
+          "relative flex flex-col h-full transition-all duration-300 hover:shadow-2xl",
+          isCurrentPlan
+            ? "border-primary shadow-primary/20 scale-105 z-20"
+            : "border-border shadow-md",
+        )}
+      >
+        {isCurrentPlan && (
+          <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-primary px-4 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest text-primary-foreground shadow-lg">
+            Plano Atual
+          </div>
+        )}
+
+        <CardHeader className="text-center space-y-2 pt-8">
+          <CardTitle className="text-2xl font-bold tracking-tight uppercase">
+            {isCurrentPlan ? (
+              convertCapitalize(plan.name)
+            ) : (
+              <AuroraText>{convertCapitalize(plan.name)}</AuroraText>
+            )}
           </CardTitle>
-          <CardDescription>
-            <p className="whitespace-pre font-bold text-3xl text-card-foreground text-md leading-[1.4]">
-              {priceInReais.split(",")[0]}/mês
-            </p>
+
+          <div className="flex items-baseline justify-center gap-1">
+            <span className="text-2xl font-bold">R$</span>
+            <span className="text-5xl font-extrabold tracking-tighter">
+              {plan.priceInCents / 100}
+            </span>
+            <span className="text-muted-foreground font-medium">/mês</span>
+          </div>
+          <CardDescription className="text-xs">
+            Ideal para quem está{" "}
+            {plan.name === "PRO" ? "escalando" : "começando"}
           </CardDescription>
         </CardHeader>
 
-        <CardContent className="mt-2">
-          <Separator className="my-6 py-px" />
-          <ul className="mt-2 list-inside list-disc space-y-1 text-sm">
-            <li>{plan.description}</li>
-            <li>2º Beneficio</li>
-            <li>3º Beneficio</li>
-            <li>4º Beneficio</li>
-            <li>5º Beneficio</li>
-          </ul>
+        <CardContent className="flex-1 py-6">
+          <div className="space-y-4">
+            <p className="text-sm font-semibold text-foreground/70">
+              O que está incluso:
+            </p>
+            <ul className="space-y-3">
+              {/* Aqui você pode mapear uma array de benefícios vinda do banco ou mockada */}
+              {[
+                plan.description,
+                "Suporte prioritário",
+                "Relatórios mensais",
+              ].map((benefit, i) => (
+                <li key={i} className="flex items-start gap-3 text-sm">
+                  <div className="mt-1 bg-emerald-500/10 rounded-full p-0.5">
+                    <Check className="h-4 w-4 text-emerald-500" />
+                  </div>
+                  <span className="text-muted-foreground">{benefit}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
         </CardContent>
 
-        <CardFooter className="mt-6 flex items-end justify-between">
-          <Button className="w-full" asChild>
+        <CardFooter className="pb-8">
+          {isCurrentPlan ? (
+            <Button
+              className="w-full bg-muted text-muted-foreground cursor-default hover:bg-muted"
+              variant="outline"
+            >
+              Plano Ativo
+            </Button>
+          ) : (
             <ShimmerButton
               onClick={handleConfirm}
               disabled={isPending}
-              className="dark:text-white"
+              className="w-full shadow-2xl transition-transform active:scale-95"
             >
-              Assine aqui
+              <span className="whitespace-pre-wrap text-center text-sm font-medium leading-none tracking-tight text-white dark:from-white dark:to-slate-900/10 lg:text-lg">
+                Fazer Upgrade
+              </span>
             </ShimmerButton>
-          </Button>
+          )}
         </CardFooter>
       </Card>
     </CarouselItem>
