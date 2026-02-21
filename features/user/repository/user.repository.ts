@@ -51,6 +51,11 @@ const PLAN: SubscriptionInfo = {
   validUntil: null,
 };
 
+/**
+ * Obtém as informações da assinatura atual do usuário.
+ * @returns Um objeto contendo as informações da assinatura do usuário, ou um objeto padrão indicando que o usuário não tem um plano.
+ * @throws {Error} Se ocorrer um erro ao verificar a sessão ou acessar o banco de dados.
+ */
 export const getCurrentSubscription = cache(async () => {
   const session = await verifySession();
 

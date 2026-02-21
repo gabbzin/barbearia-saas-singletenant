@@ -1,8 +1,10 @@
-import React, { useEffect } from "react";
+/** biome-ignore-all lint/suspicious/noExplicitAny: <any pode ser usado aqui> */
+import type React from "react";
+import { useEffect } from "react";
 
 export const useOutsideClick = (
   ref: React.RefObject<HTMLDivElement | null>,
-  callback: Function, 
+  callback: (event: any) => void,
 ) => {
   useEffect(() => {
     const listener = (event: any) => {

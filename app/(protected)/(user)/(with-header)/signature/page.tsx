@@ -1,8 +1,6 @@
-import ExpandableCardDemo from "@/shared/components/expandable-card";
-import SignatureItem from "@/features/signature/components/signature-item";
 import { getCurrentSubscription } from "@/features/user/repository/user.repository";
 import { prisma } from "@/lib/prisma";
-import { Carousel, CarouselContent } from "@/shared/components/ui/carousel";
+import ExpandableCardDemo from "@/shared/components/expandable-card";
 import { PageSection, PageSectionTitle } from "@/shared/components/ui/page";
 
 export default async function SignaturePage() {
@@ -18,22 +16,9 @@ export default async function SignaturePage() {
 
   return (
     <PageSection>
-      <PageSectionTitle>Assinaturas</PageSectionTitle>
+      <PageSectionTitle>Planos de Assinaturas</PageSectionTitle>
       <div className="p-2">
-        {/* <Carousel className="w-full">
-          <CarouselContent>
-            {plans.map(plan => {
-              return (
-                <SignatureItem
-                  key={plan.id}
-                  plan={plan}
-                  myPlanName={myPlan.name}
-                />
-              );
-            })}
-          </CarouselContent>
-        </Carousel> */}
-        <ExpandableCardDemo plans={plans} />
+        <ExpandableCardDemo plans={plans} myPlan={myPlan} />
       </div>
     </PageSection>
   );

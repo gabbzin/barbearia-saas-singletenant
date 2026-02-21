@@ -96,6 +96,11 @@ async function seedDatabase() {
         description: "Cortes de cabelo ilimitados por mês",
         priceInCents: 8000,
         stripePriceId: "price_1Sf3aPLZmTtv3cllAd2ewhDQ", // R$ 80
+        benefits: [
+          "Cortes ilimitados",
+          "Agendamento prioritário",
+          "Descontos exclusivos",
+        ],
       },
       {
         id: "plano-2",
@@ -103,6 +108,11 @@ async function seedDatabase() {
         description: "Serviços de barba ilimitados por mês",
         priceInCents: 7000,
         stripePriceId: "price_1SfJCWLZmTtv3cllEvJ1kLV8", // R$ 70
+        benefits: [
+          "Barba ilimitada",
+          "Agendamento prioritário",
+          "Descontos exclusivos",
+        ],
       },
       {
         id: "plano-3",
@@ -110,6 +120,11 @@ async function seedDatabase() {
         description: "Cortes e barba ilimitados por mês",
         priceInCents: 15000,
         stripePriceId: "price_1SfJCmLZmTtv3cllXAzpWq1a", // R$ 150
+        benefits: [
+          "Cortes e barba ilimitados",
+          "Agendamento prioritário",
+          "Acesso a promoções",
+        ],
       },
       {
         id: "plano-4",
@@ -117,6 +132,7 @@ async function seedDatabase() {
         description: "Plano gratuito com serviços limitados",
         priceInCents: 0,
         stripePriceId: null, // Plano gratuito sem cobrança
+        benefits: ["Acesso limitado aos serviços", "Suporte padrão"],
       },
     ];
 

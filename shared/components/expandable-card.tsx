@@ -1,24 +1,31 @@
 "use client";
 
+import { CheckIcon } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import Image from "next/image";
 import { useEffect, useId, useRef, useState } from "react";
+import type { SubscriptionInfo } from "@/features/user/repository/user.repository";
 import { useOutsideClick } from "@/hooks/use-outside-click";
+import { AuroraText } from "./ui/aurora-text";
+import { Separator } from "./ui/separator";
 
 interface ExpandableCardProps {
   plans: {
     name: string;
-    imageUrl: string;
+    imageUrl: string | null;
     id: string;
+    benefits: string[];
     createdAt: Date;
     updatedAt: Date;
     priceInCents: number;
     description: string;
     stripePriceId: string | null;
   }[];
+
+  myPlan: SubscriptionInfo;
 }
 
-export default function ExpandableCard({ plans }: ExpandableCardProps) {
+export default function ExpandableCard({ plans, myPlan }: ExpandableCardProps) {
   const [active, setActive] = useState<(typeof plans)[number] | boolean | null>(
     null,
   );
@@ -43,6 +50,8 @@ export default function ExpandableCard({ plans }: ExpandableCardProps) {
   }, [active]);
 
   useOutsideClick(ref, () => setActive(null));
+
+  const imageFallback = "/banner-barber.png";
 
   return (
     <>
@@ -86,24 +95,26 @@ export default function ExpandableCard({ plans }: ExpandableCardProps) {
               ref={ref}
               className="flex h-full w-full max-w-125 flex-col overflow-hidden bg-white sm:rounded-3xl md:h-fit md:max-h-[90%] dark:bg-neutral-900"
             >
+              {/* Imagem do card */}
               <motion.div layoutId={`image-${active.name}-${id}`}>
                 <Image
                   width={200}
                   height={200}
-                  src={active.imageUrl}
+                  src={active.imageUrl ?? imageFallback}
                   alt={active.name}
-                  className="h-80 w-full object-cover object-center sm:rounded-tl-lg sm:rounded-tr-lg lg:h-80"
+                  className="h-80 w-full object-cover object-top sm:rounded-tl-lg sm:rounded-tr-lg lg:h-80"
                 />
               </motion.div>
 
+              {/* Header do card */}
               <div>
                 <div className="flex items-start justify-between p-4">
                   <div className="">
                     <motion.h3
                       layoutId={`title-${active.name}-${id}`}
-                      className="font-bold text-neutral-700 dark:text-neutral-200"
+                      className="font-bold text-neutral-700 text-xl dark:text-neutral-200"
                     >
-                      {active.name}
+                      Plano {active.name}
                     </motion.h3>
                     <motion.p
                       layoutId={`description-${active.description}-${id}`}
@@ -112,16 +123,11 @@ export default function ExpandableCard({ plans }: ExpandableCardProps) {
                       {active.description}
                     </motion.p>
                   </div>
-
-                  {/* <motion.a
-                    layoutId={`button-${active.name}-${id}`}
-                    href={active.ctaLink}
-                    target="_blank"
-                    className="px-4 py-3 text-sm rounded-full font-bold bg-green-500 text-white"
-                  >
-                    {active.ctaText}
-                  </motion.a> */}
                 </div>
+
+                <Separator />
+
+                {/* Body do card */}
                 <div className="relative px-4 pt-4">
                   <motion.div
                     layout
@@ -130,40 +136,55 @@ export default function ExpandableCard({ plans }: ExpandableCardProps) {
                     exit={{ opacity: 0 }}
                     className="flex h-40 flex-col items-start gap-4 overflow-auto pb-10 text-neutral-600 text-xs [-ms-overflow-style:none] [-webkit-overflow-scrolling:touch] [mask:linear-gradient(to_bottom,white,white,transparent)] [scrollbar-width:none] md:h-fit md:text-sm lg:text-base dark:text-neutral-400"
                   >
-                    {typeof active.description === "string"
-                      ? active.description
-                      : "Descrição não disponível"}
+                    {active.benefits ? (
+                      active.benefits.map((benefit, index) => (
+                        // biome-ignore lint/suspicious/noArrayIndexKey: <Aqui pode usar index como key porque a lista de benefícios é estática e não sofre alterações dinâmicas>
+                        <div key={index} className="flex items-start gap-2">
+                          <CheckIcon className="h-4 w-4 text-green-500" />
+                          <span className="text-xs">{benefit}</span>
+                        </div>
+                      ))
+                    ) : (
+                      <p className="text-xs">Benefícios não informados</p>
+                    )}
                   </motion.div>
                 </div>
+                <motion.button
+                  className="absolute right-4 bottom-4 rounded-full bg-gray-100 px-4 py-2 font-bold text-black text-sm hover:bg-foreground hover:text-white"
+                  onClick={() => {}}
+                >
+                  Assinar agora
+                </motion.button>
               </div>
             </motion.div>
           </div>
         ) : null}
       </AnimatePresence>
-      <ul className="mx-auto w-[90%] max-w-2xl gap-4">
+      {/* Lista de assinaturas (Card não expandido) */}
+      <ul className="mx-auto grid w-full max-w-[90%] gap-4 lg:grid-cols-2">
         {plans.map((card, _index) => (
           <motion.div
             layoutId={`card-${card.name}-${id}`}
             key={`card-${card.name}-${id}`}
             onClick={() => setActive(card)}
-            className="flex cursor-pointer flex-col items-center justify-between rounded-xl p-4 hover:bg-neutral-50 md:flex-row dark:hover:bg-neutral-800"
+            className="flex cursor-pointer flex-col items-center justify-between rounded-xl border-2 p-4 hover:bg-neutral-50 md:flex-row dark:hover:bg-neutral-800"
           >
             <div className="flex flex-col gap-4 md:flex-row">
               <motion.div layoutId={`image-${card.name}-${id}`}>
                 <Image
                   width={100}
                   height={100}
-                  src={card.imageUrl}
+                  src={card.imageUrl ?? imageFallback}
                   alt={card.name}
-                  className="h-40 w-40 rounded-lg object-cover object-top md:h-14 md:w-14"
+                  className="h-40 w-full rounded-lg object-cover object-center md:h-20 md:w-20"
                 />
               </motion.div>
               <div className="">
                 <motion.h3
                   layoutId={`title-${card.name}-${id}`}
-                  className="text-center font-medium text-neutral-800 md:text-left dark:text-neutral-200"
+                  className="text-center font-semibold text-neutral-800 md:text-left dark:text-neutral-200"
                 >
-                  {card.name}
+                  <AuroraText className="text-xl">Plano {card.name}</AuroraText>
                 </motion.h3>
                 <motion.p
                   layoutId={`description-${card.description}-${id}`}
@@ -175,9 +196,10 @@ export default function ExpandableCard({ plans }: ExpandableCardProps) {
             </div>
             <motion.button
               layoutId={`button-${card.name}-${id}`}
-              className="mt-4 rounded-full bg-gray-100 px-4 py-2 font-bold text-black text-sm hover:bg-green-500 hover:text-white md:mt-0"
+              className="mt-4 rounded-full bg-gray-100 px-4 py-2 font-bold text-black text-sm hover:bg-foregorund hover:text-white md:mt-0"
+              disabled={myPlan.name === card.name}
             >
-              Ver detalhes
+              {myPlan.name === card.name ? "Plano Atual" : "Ver detalhes"}
             </motion.button>
           </motion.div>
         ))}
