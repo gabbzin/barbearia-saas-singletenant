@@ -1,4 +1,4 @@
-import ExpandableCardDemo from "@/components/expandable-card-demo-standard";
+import ExpandableCardDemo from "@/shared/components/expandable-card";
 import SignatureItem from "@/features/signature/components/signature-item";
 import { getCurrentSubscription } from "@/features/user/repository/user.repository";
 import { prisma } from "@/lib/prisma";

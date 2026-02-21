@@ -1,5 +1,6 @@
 "use client";
 
+import { authClient } from "@/lib/auth-client";
 import type { Barber, User } from "@prisma/client";
 import {
   CalendarIcon,
@@ -15,8 +16,8 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { authClient } from "@/lib/auth-client";
 import CancelAlertDialog from "../../features/booking/components/cancel-booking-alert-dialog";
+import { ProfilePhoto } from "./profile-photo";
 import {
   Accordion,
   AccordionContent,
@@ -32,7 +33,6 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "./ui/sheet";
-import { ProfilePhoto } from "./profile-photo";
 
 interface Route {
   name: string;
@@ -90,7 +90,7 @@ export const SidebarMenu = ({
       </SheetTrigger>
 
       <SheetContent side="right" className="w-[85vw] max-w-92.5 gap-6 p-0">
-        <SheetHeader className="px-5 py-2 text-left">
+        <SheetHeader className="px-5 py-4 text-left">
           <SheetTitle className="font-bold text-lg">Menu</SheetTitle>
         </SheetHeader>
 

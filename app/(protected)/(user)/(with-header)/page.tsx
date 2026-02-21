@@ -1,22 +1,17 @@
+import BarberItem from "@/features/barber/components/barber-item";
 import { getBarbers } from "@/features/barber/services/barbers.repository";
 import { NextBooking } from "@/features/booking/components/next-booking";
 import { getNextBooking } from "@/features/booking/functions/get-bookings";
+import { SignatureCard } from "@/features/signature/components/signature-card";
 import { verifySession } from "@/features/user/repository/user.repository";
-import BarberItem from "@/features/barber/components/barber-item";
-import Footer from "@/shared/components/footer";
-import Header from "@/shared/components/header";
+import { ProfilePhoto } from "@/shared/components/profile-photo";
+import { Card, CardContent } from "@/shared/components/ui/card";
 import {
-  PageContainer,
   PageSection,
   PageSectionScroller,
   PageSectionTitle,
 } from "@/shared/components/ui/page";
 import { getCurrentSubscriptionAction } from "../../../../features/signature/actions/get-current-subscription";
-import { ProfilePhoto } from "@/shared/components/profile-photo";
-import { Card, CardContent, CardFooter } from "@/shared/components/ui/card";
-import { Suspense } from "react";
-import { Skeleton } from "@/shared/components/ui/skeleton";
-import { SignatureCard } from "@/features/signature/components/signature-card";
 
 export default async function Home() {
   const user = await verifySession();
@@ -30,7 +25,7 @@ export default async function Home() {
       <PageSection>
         <Card className="w-full">
           <CardContent className="px-4">
-            <div className="flex items-center gap-4 mb-4">
+            <div className="mb-4 flex items-center gap-4">
               <ProfilePhoto
                 initial={user?.name?.charAt(0).toUpperCase() ?? ""}
                 imageUrl={user?.imageUrl}
@@ -61,7 +56,7 @@ export default async function Home() {
       <PageSection>
         <PageSectionTitle>Barbeiros</PageSectionTitle>
         <PageSectionScroller>
-          {barbers.map((barber) => (
+          {barbers.map(barber => (
             <BarberItem
               key={barber.id}
               barber={{
