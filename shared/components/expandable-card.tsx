@@ -160,36 +160,58 @@ export default function ExpandableCard({ plans, myPlan }: ExpandableCardProps) {
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
-                    className="flex h-50 flex-col items-start gap-4 overflow-auto pb-10 text-neutral-600 text-sm [-ms-overflow-style:none] [-webkit-overflow-scrolling:touch] [mask:linear-gradient(to_bottom,white,white,transparent)] [scrollbar-width:none] md:h-fit md:text-sm lg:text-base dark:text-neutral-400"
+                    className="flex h-50 flex-col gap-3 overflow-auto text-neutral-600 text-sm [-ms-overflow-style:none] [-webkit-overflow-scrolling:touch] [scrollbar-width:none] md:h-fit md:text-sm lg:text-base dark:text-neutral-400"
                   >
                     <p className="font-bold">Beneficios:</p>
-                    {active.benefits ? (
-                      active.benefits.map((benefit, index) => (
-                        // biome-ignore lint/suspicious/noArrayIndexKey: <Aqui pode usar index como key porque a lista de benefícios é estática e não sofre alterações dinâmicas>
-                        <div key={index} className="flex items-start gap-2">
-                          <CheckIcon className="h-4 w-4 text-green-500" />
-                          <span className="text-sm">{benefit}</span>
+                    <div className="grid gap-1.5">
+                      {active.benefits ? (
+                        <div
+                          className={
+                            active.benefits.length > 3 ? "grid grid-cols-2" : ""
+                          }
+                        >
+                          {active.benefits.map((benefit, index) => (
+                            <div
+                              // biome-ignore lint/suspicious/noArrayIndexKey: <Relaxa paizão>
+                              key={index}
+                              className="flex items-center gap-2"
+                            >
+                              <CheckIcon className="h-4 w-4 text-green-500" />
+                              <p>{benefit}</p>
+                            </div>
+                          ))}
                         </div>
-                      ))
-                    ) : (
-                      <p className="text-xs">Benefícios não informados</p>
-                    )}
+                      ) : (
+                        <p className="text-xs">Benefícios não informados</p>
+                      )}
+                    </div>
                   </motion.div>
-                  <MotionButton
-                    animate={{ opacity: 1 }}
+                  <motion.div
+                    layout
                     initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
-                    variant={"default"}
-                    className="absolute right-4 bottom-4 rounded-full"
-                    onClick={() => handleConfirm(active.id)}
-                    disabled={myPlan.name === active.name || isPending}
+                    className="flex items-end justify-between py-5"
                   >
-                    {myPlan.name === active.name
-                      ? "Plano Atual"
-                      : isPending
-                        ? "Processando..."
-                        : "Assinar Plano"}
-                  </MotionButton>
+                    <p className="font-bold font-geist">
+                      R$ {(active.priceInCents / 100).toFixed(2)}
+                    </p>
+                    <MotionButton
+                      animate={{ opacity: 1 }}
+                      initial={{ opacity: 0 }}
+                      exit={{ opacity: 0 }}
+                      variant={"default"}
+                      className="rounded-full"
+                      onClick={() => handleConfirm(active.id)}
+                      disabled={myPlan.name === active.name || isPending}
+                    >
+                      {myPlan.name === active.name
+                        ? "Plano Atual"
+                        : isPending
+                          ? "Processando..."
+                          : "Assinar Plano"}
+                    </MotionButton>
+                  </motion.div>
                 </div>
               </div>
             </motion.div>
