@@ -3,8 +3,8 @@ import { Geist, Inter, Manrope } from "next/font/google";
 import "./globals.css";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Toaster } from "sonner";
+import { getInfosBarbershop } from "@/shared/actions/get-infos-barbershop";
 import QueryProvider from "../providers/query-provider";
-import { BARBERSHOPNAME } from "@/lib/consts";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -21,10 +21,16 @@ const geist = Geist({
   subsets: ["latin"],
 });
 
-export const metadata: Metadata = {
-  title: BARBERSHOPNAME,
-  description: "Projeto de sistema para barbearias utilizando Next.js e IA",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const info = await getInfosBarbershop();
+  return {
+    title: info?.name ?? "Barbearia",
+    description: "Agende seu horário na melhor barbearia da cidade!",
+    icons: {
+      icon: info?.imageUrl,
+    },
+  };
+}
 
 export default function RootLayout({
   children,

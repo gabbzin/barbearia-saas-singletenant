@@ -111,15 +111,15 @@ model Verification {
 
 // ========================================================
 // BARBERSHOP MODELS
-// ========================================================
+// ========================================================}
 
-// Instância única representando a barbearia, contendo informações gerais como nome, endereço e imagem.
 model Barbershop {
   id       String   @id @default("default")
   name     String
-  imageUrl String   @default("https://3tlh7aktl6.ufs.sh/f/tcFRjMXVSkQ0Asb1IxZDwZ30bIph8P2qjXfOcVJmTvFtnMxi")
+  imageUrl  String   @default("https://3tlh7aktl6.ufs.sh/f/tcFRjMXVSkQ0Asb1IxZDwZ30bIph8P2qjXfOcVJmTvFtnMxi")
   address  String
-  
+  storageUrl String
+
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
 }

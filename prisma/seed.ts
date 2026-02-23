@@ -6,8 +6,12 @@ async function seedDatabase() {
     // Criando barbearia
     await prisma.barbershop.create({
       data: {
-        address: "Rua dos Barbeiros, 123",
+        id: crypto.randomUUID(),
         name: "Barbearia do Zé",
+        address: "Rua dos Barbeiros, 123",
+        imageUrl:
+          "https://tp9a32tu7d1qyqaz.public.blob.vercel-storage.com/templates-assets/logo.png",
+        storageUrl: "https://tp9a32tu7d1qyqaz.public.blob.vercel-storage.com",
       },
     });
 

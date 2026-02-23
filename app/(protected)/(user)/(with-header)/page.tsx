@@ -52,7 +52,6 @@ export default async function Home() {
         <PageSectionTitle>Próximo agendamento</PageSectionTitle>
         <NextBooking nextBooking={nextBooking} />
       </PageSection>
-
       <PageSection>
         <PageSectionTitle>Barbeiros</PageSectionTitle>
         <PageSectionScroller>

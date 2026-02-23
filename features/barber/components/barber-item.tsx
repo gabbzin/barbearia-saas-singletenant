@@ -13,7 +13,7 @@ const BarberItem = ({ barber }: BarberItemProps) => {
   return (
     <Link
       href={`/barbeiro/${barber.id}`}
-      className="relative min-h-50 min-w-72.5 rounded-xl"
+      className="relative min-h-50 min-w-72.5 rounded-xl shadow-md transition-transform hover:scale-105"
     >
       <div className="absolute top-0 left-0 z-10 h-full w-full rounded-lg bg-linear-to-t from-black to-transparent"></div>
       <Image
