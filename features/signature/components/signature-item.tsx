@@ -1,10 +1,11 @@
 "use client";
-import { createSignature } from "@/features/signature/actions/create-signature";
-import { convertBRL } from "@/utils/convertBRL";
-import { convertCapitalize } from "@/utils/convertCapitalize";
 import type { Plan } from "@prisma/client";
+import { Check } from "lucide-react";
 import { useAction } from "next-safe-action/hooks";
 import { toast } from "sonner";
+import { createSignature } from "@/features/signature/actions/create-signature";
+import { cn } from "@/lib/utils";
+import { convertCapitalize } from "@/utils/convertCapitalize";
 import { AuroraText } from "../../../shared/components/ui/aurora-text";
 import { Button } from "../../../shared/components/ui/button";
 import {
@@ -16,10 +17,7 @@ import {
   CardTitle,
 } from "../../../shared/components/ui/card";
 import { CarouselItem } from "../../../shared/components/ui/carousel";
-import { Separator } from "../../../shared/components/ui/separator";
 import { ShimmerButton } from "../../../shared/components/ui/shimmer-button";
-import { cn } from "@/lib/utils";
-import { Check } from "lucide-react";
 
 type SignatureItemProps = {
   plan: Plan;
@@ -55,23 +53,23 @@ const SignatureItem = ({ plan, myPlanName }: SignatureItemProps) => {
   };
 
   return (
-    <CarouselItem className="relative md:basis-1/2 lg:basis-1/3 p-4">
+    <CarouselItem className="relative p-4 md:basis-1/2 lg:basis-1/3">
       <Card
         className={cn(
-          "relative flex flex-col h-full transition-all duration-300 hover:shadow-2xl",
+          "relative flex h-full flex-col transition-all duration-300 hover:shadow-2xl",
           isCurrentPlan
-            ? "border-primary shadow-primary/20 scale-105 z-20"
+            ? "z-20 scale-105 border-primary shadow-primary/20"
             : "border-border shadow-md",
         )}
       >
         {isCurrentPlan && (
-          <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-primary px-4 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest text-primary-foreground shadow-lg">
+          <div className="absolute -top-4 left-1/2 -translate-x-1/2 rounded-full bg-primary px-4 py-1 font-bold text-[10px] text-primary-foreground uppercase tracking-widest shadow-lg">
             Plano Atual
           </div>
         )}
 
-        <CardHeader className="text-center space-y-2 pt-8">
-          <CardTitle className="text-2xl font-bold tracking-tight uppercase">
+        <CardHeader className="space-y-2 pt-8 text-center">
+          <CardTitle className="font-bold text-2xl uppercase tracking-tight">
             {isCurrentPlan ? (
               convertCapitalize(plan.name)
             ) : (
@@ -80,11 +78,11 @@ const SignatureItem = ({ plan, myPlanName }: SignatureItemProps) => {
           </CardTitle>
 
           <div className="flex items-baseline justify-center gap-1">
-            <span className="text-2xl font-bold">R$</span>
-            <span className="text-5xl font-extrabold tracking-tighter">
+            <span className="font-bold text-2xl">R$</span>
+            <span className="font-extrabold text-5xl tracking-tighter">
               {plan.priceInCents / 100}
             </span>
-            <span className="text-muted-foreground font-medium">/mês</span>
+            <span className="font-medium text-muted-foreground">/mês</span>
           </div>
           <CardDescription className="text-xs">
             Ideal para quem está{" "}
@@ -94,7 +92,7 @@ const SignatureItem = ({ plan, myPlanName }: SignatureItemProps) => {
 
         <CardContent className="flex-1 py-6">
           <div className="space-y-4">
-            <p className="text-sm font-semibold text-foreground/70">
+            <p className="font-semibold text-foreground/70 text-sm">
               O que está incluso:
             </p>
             <ul className="space-y-3">
@@ -105,7 +103,7 @@ const SignatureItem = ({ plan, myPlanName }: SignatureItemProps) => {
                 "Relatórios mensais",
               ].map((benefit, i) => (
                 <li key={i} className="flex items-start gap-3 text-sm">
-                  <div className="mt-1 bg-emerald-500/10 rounded-full p-0.5">
+                  <div className="mt-1 rounded-full bg-emerald-500/10 p-0.5">
                     <Check className="h-4 w-4 text-emerald-500" />
                   </div>
                   <span className="text-muted-foreground">{benefit}</span>
@@ -118,7 +116,7 @@ const SignatureItem = ({ plan, myPlanName }: SignatureItemProps) => {
         <CardFooter className="pb-8">
           {isCurrentPlan ? (
             <Button
-              className="w-full bg-muted text-muted-foreground cursor-default hover:bg-muted"
+              className="w-full cursor-default bg-muted text-muted-foreground hover:bg-muted"
               variant="outline"
             >
               Plano Ativo
@@ -129,7 +127,7 @@ const SignatureItem = ({ plan, myPlanName }: SignatureItemProps) => {
               disabled={isPending}
               className="w-full shadow-2xl transition-transform active:scale-95"
             >
-              <span className="whitespace-pre-wrap text-center text-sm font-medium leading-none tracking-tight text-white dark:from-white dark:to-slate-900/10 lg:text-lg">
+              <span className="whitespace-pre-wrap text-center font-medium text-sm text-white leading-none tracking-tight lg:text-lg dark:from-white dark:to-slate-900/10">
                 Fazer Upgrade
               </span>
             </ShimmerButton>

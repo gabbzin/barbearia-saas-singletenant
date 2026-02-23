@@ -3,10 +3,13 @@
 import { CheckIcon } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import Image from "next/image";
+import { useAction } from "next-safe-action/hooks";
 import { useEffect, useId, useRef, useState } from "react";
+import { toast } from "sonner";
+import { createSignature } from "@/features/signature/actions/create-signature";
 import type { SubscriptionInfo } from "@/features/user/repository/user.repository";
 import { useOutsideClick } from "@/hooks/use-outside-click";
-import { AuroraText } from "./ui/aurora-text";
+import { Button } from "./ui/button";
 import { Separator } from "./ui/separator";
 
 interface ExpandableCardProps {
@@ -26,6 +29,10 @@ interface ExpandableCardProps {
 }
 
 export default function ExpandableCard({ plans, myPlan }: ExpandableCardProps) {
+  const { executeAsync, isPending } = useAction(createSignature);
+
+  const MotionButton = motion(Button);
+
   const [active, setActive] = useState<(typeof plans)[number] | boolean | null>(
     null,
   );
@@ -53,6 +60,25 @@ export default function ExpandableCard({ plans, myPlan }: ExpandableCardProps) {
 
   const imageFallback = "/banner-barber.png";
 
+  const handleConfirm = async (planId: string) => {
+    const result = await executeAsync({ planId });
+
+    if (result.serverError || result.validationErrors) {
+      toast.error(
+        result.validationErrors?._errors?.[0] || "Erro ao processar assinatura",
+      );
+      return;
+    }
+
+    if (result.data && "url" in result.data) {
+      if (result.data.url) {
+        window.location.href = result.data.url;
+        return;
+      }
+    }
+    toast.success("Assinatura realizada com sucesso!");
+  };
+
   return (
     <>
       <AnimatePresence>
@@ -69,7 +95,7 @@ export default function ExpandableCard({ plans, myPlan }: ExpandableCardProps) {
         {active && typeof active === "object" ? (
           <div className="fixed inset-0 z-100 grid place-items-center">
             {/* Botão de fechar o card */}
-            <motion.button
+            <MotionButton
               key={`button-${active.name}-${id}`}
               layout
               initial={{
@@ -88,7 +114,7 @@ export default function ExpandableCard({ plans, myPlan }: ExpandableCardProps) {
               onClick={() => setActive(null)}
             >
               <CloseIcon />
-            </motion.button>
+            </MotionButton>
             {/* Conteúdo do card expandido */}
             <motion.div
               layoutId={`card-${active.name}-${id}`}
@@ -102,7 +128,7 @@ export default function ExpandableCard({ plans, myPlan }: ExpandableCardProps) {
                   height={200}
                   src={active.imageUrl ?? imageFallback}
                   alt={active.name}
-                  className="h-80 w-full object-cover object-top sm:rounded-tl-lg sm:rounded-tr-lg lg:h-80"
+                  className="h-60 w-full object-cover object-top sm:rounded-tl-lg sm:rounded-tr-lg lg:h-60"
                 />
               </motion.div>
 
@@ -125,7 +151,7 @@ export default function ExpandableCard({ plans, myPlan }: ExpandableCardProps) {
                   </div>
                 </div>
 
-                <Separator />
+                <Separator className="p-0.5" />
 
                 {/* Body do card */}
                 <div className="relative px-4 pt-4">
@@ -134,42 +160,52 @@ export default function ExpandableCard({ plans, myPlan }: ExpandableCardProps) {
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
-                    className="flex h-40 flex-col items-start gap-4 overflow-auto pb-10 text-neutral-600 text-xs [-ms-overflow-style:none] [-webkit-overflow-scrolling:touch] [mask:linear-gradient(to_bottom,white,white,transparent)] [scrollbar-width:none] md:h-fit md:text-sm lg:text-base dark:text-neutral-400"
+                    className="flex h-50 flex-col items-start gap-4 overflow-auto pb-10 text-neutral-600 text-sm [-ms-overflow-style:none] [-webkit-overflow-scrolling:touch] [mask:linear-gradient(to_bottom,white,white,transparent)] [scrollbar-width:none] md:h-fit md:text-sm lg:text-base dark:text-neutral-400"
                   >
+                    <p className="font-bold">Beneficios:</p>
                     {active.benefits ? (
                       active.benefits.map((benefit, index) => (
                         // biome-ignore lint/suspicious/noArrayIndexKey: <Aqui pode usar index como key porque a lista de benefícios é estática e não sofre alterações dinâmicas>
                         <div key={index} className="flex items-start gap-2">
                           <CheckIcon className="h-4 w-4 text-green-500" />
-                          <span className="text-xs">{benefit}</span>
+                          <span className="text-sm">{benefit}</span>
                         </div>
                       ))
                     ) : (
                       <p className="text-xs">Benefícios não informados</p>
                     )}
                   </motion.div>
+                  <MotionButton
+                    animate={{ opacity: 1 }}
+                    initial={{ opacity: 0 }}
+                    exit={{ opacity: 0 }}
+                    variant={"default"}
+                    className="absolute right-4 bottom-4 rounded-full"
+                    onClick={() => handleConfirm(active.id)}
+                    disabled={myPlan.name === active.name || isPending}
+                  >
+                    {myPlan.name === active.name
+                      ? "Plano Atual"
+                      : isPending
+                        ? "Processando..."
+                        : "Assinar Plano"}
+                  </MotionButton>
                 </div>
-                <motion.button
-                  className="absolute right-4 bottom-4 rounded-full bg-gray-100 px-4 py-2 font-bold text-black text-sm hover:bg-foreground hover:text-white"
-                  onClick={() => {}}
-                >
-                  Assinar agora
-                </motion.button>
               </div>
             </motion.div>
           </div>
         ) : null}
       </AnimatePresence>
       {/* Lista de assinaturas (Card não expandido) */}
-      <ul className="mx-auto grid w-full max-w-[90%] gap-4 lg:grid-cols-2">
+      <ul className="mx-auto grid w-full max-w-2xl gap-4">
         {plans.map((card, _index) => (
           <motion.div
             layoutId={`card-${card.name}-${id}`}
             key={`card-${card.name}-${id}`}
             onClick={() => setActive(card)}
-            className="flex cursor-pointer flex-col items-center justify-between rounded-xl border-2 p-4 hover:bg-neutral-50 md:flex-row dark:hover:bg-neutral-800"
+            className="flex cursor-pointer flex-col items-center justify-between rounded-xl border-2 p-4 shadow-lg hover:bg-neutral-50 md:flex-row dark:hover:bg-neutral-800"
           >
-            <div className="flex flex-col gap-4 md:flex-row">
+            <div className="flex w-full flex-col items-center gap-4 md:flex-row">
               <motion.div layoutId={`image-${card.name}-${id}`}>
                 <Image
                   width={100}
@@ -182,25 +218,32 @@ export default function ExpandableCard({ plans, myPlan }: ExpandableCardProps) {
               <div className="">
                 <motion.h3
                   layoutId={`title-${card.name}-${id}`}
-                  className="text-center font-semibold text-neutral-800 md:text-left dark:text-neutral-200"
+                  className="text-center font-semibold text-lg text-neutral-800 md:text-left dark:text-neutral-200"
                 >
-                  <AuroraText className="text-xl">Plano {card.name}</AuroraText>
+                  Plano {card.name}
                 </motion.h3>
                 <motion.p
                   layoutId={`description-${card.description}-${id}`}
                   className="text-center text-neutral-600 md:text-left dark:text-neutral-400"
                 >
-                  {card.description}
+                  {card.description} e outros benefícios incríveis!
+                </motion.p>
+                <motion.p
+                  layoutId={`price-${card.priceInCents}-${id}`}
+                  className="text-center font-bold text-black md:text-left dark:text-neutral-400"
+                >
+                  R$ {card.priceInCents / 100}/mês
                 </motion.p>
               </div>
             </div>
-            <motion.button
+            <MotionButton
               layoutId={`button-${card.name}-${id}`}
-              className="mt-4 rounded-full bg-gray-100 px-4 py-2 font-bold text-black text-sm hover:bg-foregorund hover:text-white md:mt-0"
+              className="mt-4 rounded-full md:mt-0"
+              variant={"default"}
               disabled={myPlan.name === card.name}
             >
               {myPlan.name === card.name ? "Plano Atual" : "Ver detalhes"}
-            </motion.button>
+            </MotionButton>
           </motion.div>
         ))}
       </ul>
