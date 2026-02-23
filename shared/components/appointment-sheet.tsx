@@ -84,10 +84,6 @@ const AppointmentSheet = ({
   const today = new Date();
   today.setHours(0, 0, 0, 0);
 
-  // Limitação de agendamento para 25/02/2026, para limitar o teste
-  const maxBookingDate = new Date(2026, 1, 25);
-  maxBookingDate.setHours(23, 59, 59, 999);
-
   const priceInReaisInteger = Math.floor(service.priceInCents / 100);
 
   const formattedDate = selectedDate
@@ -174,7 +170,7 @@ const AppointmentSheet = ({
             mode="single"
             selected={selectedDate}
             onSelect={handleDateSelect}
-            disabled={{ before: today, after: maxBookingDate }}
+            disabled={{ before: today }}
             className="w-full p-0"
             locale={ptBR}
           />
