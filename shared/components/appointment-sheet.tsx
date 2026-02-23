@@ -13,7 +13,7 @@ import { createBookingCheckoutSession } from "@/features/booking/functions/creat
 import { getDateAvailableTimeSlots } from "@/features/booking/functions/get-date-available-time-slots";
 import type { SubscriptionInfo } from "@/features/user/repository/user.repository";
 import { isPastTimeSlot } from "@/utils/isPastTimeSlot";
-import PagamentForm, { type payMethods } from "./pagament-form";
+import PagamentForm, { type payMethods } from "./form/pagament-form";
 import { SpinLoader } from "./spinLoader";
 import { Button } from "./ui/button";
 import { Calendar } from "./ui/calendar";
@@ -58,17 +58,14 @@ const AppointmentSheet = ({
         selectedDateKey,
       ],
       queryFn: async () => {
-        console.log("Fetching available time slots for date:", selectedDate);
         const result = await getDateAvailableTimeSlots({
           barberId: service.barberId,
           // biome-ignore lint/style/noNonNullAssertion: <Sempre vai ter valor aqui>
           date: selectedDate!,
         });
-        console.log("result", result);
         if (result.validationErrors || result.serverError) {
-          console.error(
-            "Erro ao buscar horários disponíveis:",
-            result.validationErrors?._errors?.[0] || result.serverError,
+          toast.error(
+            `Erro ao buscar horários disponíveis: ${result.validationErrors?._errors?.[0] || result.serverError}`,
           );
           return [];
         }
@@ -87,9 +84,6 @@ const AppointmentSheet = ({
   const today = new Date();
   today.setHours(0, 0, 0, 0);
 
-  const maxBookingDate = new Date(2026, 1, 21);
-  maxBookingDate.setHours(23, 59, 59, 999);
-
   const priceInReaisInteger = Math.floor(service.priceInCents / 100);
 
   const formattedDate = selectedDate
@@ -104,8 +98,8 @@ const AppointmentSheet = ({
   const handleConfirm = async () => {
     if (!selectedDate || !selectedTime) return;
 
-    // biome-ignore lint/suspicious/noImplicitAnyLet: <Não precisa, por enquanto>
-    let result;
+    // biome-ignore lint/suspicious/noExplicitAny: <Não precisa tipar aqui>
+    let result: any;
 
     const timeSplitted = selectedTime.split(":");
     const hours = timeSplitted[0];
@@ -115,31 +109,32 @@ const AppointmentSheet = ({
 
     date.setHours(Number(hours), Number(minutes), 0, 0);
 
-    // if (payMethod === "cartao" && !plan?.hasPlan) {
-    //   result = await executeCheckoutAsync({
-    //     serviceId: service.id,
-    //     date,
-    //   });
-    // } else {
-    result = await executeAsync({
-      serviceId: service.id,
-      date,
-      // });
-    });
+    if (payMethod === "cartao" && !plan?.hasPlan) {
+      result = await executeCheckoutAsync({
+        serviceId: service.id,
+        date,
+      });
+    } else {
+      result = await executeAsync({
+        serviceId: service.id,
+        date,
+      });
+    }
 
     if (result.serverError || result.validationErrors) {
       toast.error(result.validationErrors?._errors?.[0]);
       return;
     }
 
-    // if (payMethod === "cartao" && result.data && "url" in result.data) {
-    //   if (result.data.url) {
-    //     window.location.href = result.data.url;
-    //     return;
-    //   }
-    // }
+    if (payMethod === "cartao" && result.data && "url" in result.data) {
+      if (result.data.url) {
+        window.location.href = result.data.url;
+        return;
+      }
+    }
 
-    router.push("/bookings"); // Redirect to bookings page after successful booking
+    // Redirect to bookings page after successful booking
+    router.push("/bookings");
 
     toast.success("Agendamento criado com sucesso!");
     setSelectedDate(undefined);
@@ -175,7 +170,7 @@ const AppointmentSheet = ({
             mode="single"
             selected={selectedDate}
             onSelect={handleDateSelect}
-            disabled={{ before: today, after: maxBookingDate }}
+            disabled={{ before: today }}
             className="w-full p-0"
             locale={ptBR}
           />
@@ -194,7 +189,7 @@ const AppointmentSheet = ({
                 ) : (
                   <div className="flex flex-1 justify-center gap-3">
                     {availableTimeSlots && availableTimeSlots.length > 0 ? (
-                      availableTimeSlots.map((time) => (
+                      availableTimeSlots.map(time => (
                         <Button
                           key={time}
                           variant={

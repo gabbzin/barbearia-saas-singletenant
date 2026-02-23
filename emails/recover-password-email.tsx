@@ -4,13 +4,13 @@ import { TemplateEmailBody } from "./components/body-email";
 import { button, heading, paragraph } from "./styles/style";
 
 interface TemplateEmailPageProps {
-  barbershopName: string;
+  barbershopName?: string;
   userName?: string;
   token: string;
 }
 
 export default function TemplateEmailRecoverPass({
-  barbershopName = "Apartus",
+  barbershopName = "",
   userName,
   token,
 }: TemplateEmailPageProps) {

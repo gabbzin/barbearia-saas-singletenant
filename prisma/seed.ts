@@ -3,6 +3,18 @@ import { prisma } from "@/lib/prisma";
 
 async function seedDatabase() {
   try {
+    // Criando barbearia
+    await prisma.barbershop.create({
+      data: {
+        id: crypto.randomUUID(),
+        name: "Barbearia do Zé",
+        address: "Rua dos Barbeiros, 123",
+        imageUrl:
+          "https://tp9a32tu7d1qyqaz.public.blob.vercel-storage.com/templates-assets/logo.png",
+        storageUrl: "https://tp9a32tu7d1qyqaz.public.blob.vercel-storage.com",
+      },
+    });
+
     const images = [
       "https://utfs.io/f/c97a2dc9-cf62-468b-a851-bfd2bdde775f-16p.png",
       "https://utfs.io/f/45331760-899c-4b4b-910e-e00babb6ed81-16q.png",
@@ -96,6 +108,11 @@ async function seedDatabase() {
         description: "Cortes de cabelo ilimitados por mês",
         priceInCents: 8000,
         stripePriceId: "price_1Sf3aPLZmTtv3cllAd2ewhDQ", // R$ 80
+        benefits: [
+          "Cortes ilimitados",
+          "Agendamento prioritário",
+          "Descontos exclusivos",
+        ],
       },
       {
         id: "plano-2",
@@ -103,6 +120,11 @@ async function seedDatabase() {
         description: "Serviços de barba ilimitados por mês",
         priceInCents: 7000,
         stripePriceId: "price_1SfJCWLZmTtv3cllEvJ1kLV8", // R$ 70
+        benefits: [
+          "Barba ilimitada",
+          "Agendamento prioritário",
+          "Descontos exclusivos",
+        ],
       },
       {
         id: "plano-3",
@@ -110,6 +132,11 @@ async function seedDatabase() {
         description: "Cortes e barba ilimitados por mês",
         priceInCents: 15000,
         stripePriceId: "price_1SfJCmLZmTtv3cllXAzpWq1a", // R$ 150
+        benefits: [
+          "Cortes e barba ilimitados",
+          "Agendamento prioritário",
+          "Acesso a promoções",
+        ],
       },
       {
         id: "plano-4",
@@ -117,6 +144,7 @@ async function seedDatabase() {
         description: "Plano gratuito com serviços limitados",
         priceInCents: 0,
         stripePriceId: null, // Plano gratuito sem cobrança
+        benefits: ["Acesso limitado aos serviços", "Suporte padrão"],
       },
     ];
 

@@ -8,9 +8,11 @@ interface ProfilePhotoProps {
 
 export function ProfilePhoto({ imageUrl, initial, size }: ProfilePhotoProps) {
   return (
-    <Avatar className={size ? `size-${size}` : "size-12"}>
-      <AvatarImage src={imageUrl || ""} />
-      <AvatarFallback>{initial}</AvatarFallback>
-    </Avatar>
+    <div className="relative">
+      <Avatar className={size ? `size-${size}` : "size-12"}>
+        <AvatarImage src={imageUrl || ""} />
+        <AvatarFallback>{initial}</AvatarFallback>
+      </Avatar>
+    </div>
   );
 }

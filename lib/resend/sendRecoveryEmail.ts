@@ -1,8 +1,9 @@
 "use server";
 
 import { NextResponse } from "next/server";
-import { resendClient } from "../resend-client";
 import TemplateEmailRecoverPass from "@/emails/recover-password-email";
+import { getInfosBarbershop } from "@/shared/actions/get-infos-barbershop";
+import { resendClient } from "../resend-client";
 
 interface SendVerificationEmailParams {
   to: string[];
@@ -23,15 +24,18 @@ export async function sendRecoveryEmail({
       );
     }
 
+    const info = await getInfosBarbershop();
+    const shopName = info?.name ?? "";
+
     const { data, error } = await resendClient.emails.send({
-      from: "Barbearia <onboarding@resend.dev>",
+      from: `${shopName || "Barbearia"} <onboarding@resend.dev>`,
       to,
-      subject: "Recuperação de senha - Barbearia SaaS",
+      subject: `Recuperação de senha${shopName ? ` - ${shopName}` : ""}`,
       react: TemplateEmailRecoverPass({
-        barbershopName: "Barbearia SaaS",
+        barbershopName: shopName,
         userName,
         token,
-      })
+      }),
     });
 
     if (error) {

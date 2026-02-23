@@ -2,7 +2,7 @@ import { Img, Section, Text } from "@react-email/components";
 import { baseUrlBlob } from "@/lib/consts";
 import { footer, footerBox, footerText, image } from "../styles/style";
 
-export function FooterEmail({ barbershopName = "Apartus" }) {
+export function FooterEmail({ barbershopName = "" }) {
   const year = new Date().getFullYear();
 
   return (

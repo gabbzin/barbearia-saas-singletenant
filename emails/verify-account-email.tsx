@@ -6,13 +6,13 @@ import { button, heading, paragraph } from "./styles/style";
 interface VerifyAccountEmailProps {
   userName?: string;
   token: string;
-  barbershopName: string;
+  barbershopName?: string;
 }
 
 export default function VerifyAccountEmail({
   userName,
   token,
-  barbershopName = "Aparatus",
+  barbershopName = "",
 }: VerifyAccountEmailProps) {
   return (
     <TemplateEmailBody barbershopName={barbershopName}>

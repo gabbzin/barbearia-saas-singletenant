@@ -2,6 +2,7 @@
 
 import { NextResponse } from "next/server";
 import VerifyAccountEmail from "@/emails/verify-account-email";
+import { getInfosBarbershop } from "@/shared/actions/get-infos-barbershop";
 import { authClient } from "../auth-client";
 import { resendClient } from "../resend-client";
 
@@ -24,15 +25,14 @@ export async function sendVerificationEmail({
       );
     }
 
+    const info = await getInfosBarbershop();
+    const shopName = info?.name ?? "";
+
     const { data, error } = await resendClient.emails.send({
-      from: "Barbearia <onboarding@resend.dev>",
+      from: `${shopName || "Barbearia"} <onboarding@resend.dev>`,
       to,
-      subject: "Verificação de conta - Barbearia SaaS",
-      react: VerifyAccountEmail({
-        token,
-        barbershopName: "Barbearia SaaS",
-        userName,
-      }),
+      subject: `Verificação de conta${shopName ? ` - ${shopName}` : ""}`,
+      react: VerifyAccountEmail({ token, barbershopName: shopName, userName }),
     });
 
     if (error) {

@@ -111,7 +111,18 @@ model Verification {
 
 // ========================================================
 // BARBERSHOP MODELS
-// ========================================================
+// ========================================================}
+
+model Barbershop {
+  id       String   @id @default("default")
+  name     String
+  imageUrl  String   @default("https://3tlh7aktl6.ufs.sh/f/tcFRjMXVSkQ0Asb1IxZDwZ30bIph8P2qjXfOcVJmTvFtnMxi")
+  address  String
+  storageUrl String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+}
 
 model Barber {
   id       String   @id @default(uuid())
@@ -173,6 +184,8 @@ model Plan {
   id            String  @id
   name          String
   description   String
+  benefits      String[]
+  imageUrl      String?
   priceInCents  Int
   stripePriceId String? @unique
 

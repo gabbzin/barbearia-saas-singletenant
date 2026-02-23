@@ -21,6 +21,14 @@ export const AnimatedThemeToggler = ({
   const buttonRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
+    // Busca o tema salvo no localStorage
+    const savedTheme = localStorage.getItem("theme");
+    if (savedTheme) {
+      const isDarkMode = savedTheme === "dark";
+      setIsDark(isDarkMode);
+      document.documentElement.classList.toggle("dark", isDarkMode);
+    }
+
     const updateTheme = () => {
       setIsDark(document.documentElement.classList.contains("dark"));
     };

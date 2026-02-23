@@ -6,7 +6,7 @@ import BookingItem from "@/features/booking/components/booking-item";
 import { BookingSkeleton } from "@/features/booking/components/booking-skeleton";
 import ConfirmAlertDialog from "@/features/booking/components/confirm-booking-dialog";
 import { useBookings } from "@/features/booking/hooks/useBookings";
-import { confirmBookingAction } from "@/shared/actions/confirm-booking-checkout";
+import { confirmBookingAction } from "@/features/booking/actions/confirm-booking-checkout";
 import {
   Tabs,
   TabsContent,
