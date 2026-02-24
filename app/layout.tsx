@@ -4,6 +4,7 @@ import "./globals.css";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Toaster } from "sonner";
 import { getInfosBarbershop } from "@/shared/actions/get-infos-barbershop";
+import { BarbershopHydrator } from "@/stores/hydrator/barbershop.hydrator";
 import QueryProvider from "../providers/query-provider";
 
 const inter = Inter({
@@ -32,16 +33,19 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const barbershop = await getInfosBarbershop();
+
   return (
     <html lang="pt-BR">
       <body
         className={`${inter.variable} ${manrope.variable} ${geist.variable} antialiased`}
       >
+        <BarbershopHydrator data={barbershop} />
         <QueryProvider>
           {children}
           <Toaster />

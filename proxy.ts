@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
+import { type NextRequest, NextResponse } from "next/server";
 
 // ========================================
 // CONFIGURAÇÃO
@@ -19,7 +19,7 @@ export async function proxy(request: NextRequest) {
   if (
     pathname.startsWith("/_next") ||
     pathname.match(/\.(ico|png|jpg|jpeg|svg|css|js)$/) ||
-    PUBLIC_API_ROUTES.some((route) => pathname.startsWith(route))
+    PUBLIC_API_ROUTES.some(route => pathname.startsWith(route))
   ) {
     return NextResponse.next();
   }
@@ -41,7 +41,7 @@ export async function proxy(request: NextRequest) {
 
   // REGRA: Se estou em página de login/register e estou logado -> vai para Home
   if (isAuthRoute && isUserLoggedIn) {
-    return NextResponse.redirect(new URL("/", request.url));
+    return NextResponse.redirect(new URL("/client", request.url));
   }
 
   // REGRA: Se NÃO estou logado e a rota NÃO é pública -> vai para Login

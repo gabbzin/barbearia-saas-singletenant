@@ -1,10 +1,9 @@
 import { stripe } from "@better-auth/stripe";
-import { betterAuth, User } from "better-auth";
+import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
 import { prisma } from "./prisma";
 import { sendRecoveryEmail } from "./resend/sendRecoveryEmail";
 import { stripeClient } from "./stripe-client";
-import { signUpEmail } from "better-auth/api";
 
 export const auth = betterAuth({
   database: prismaAdapter(prisma, { provider: "postgresql" }),
@@ -30,7 +29,7 @@ export const auth = betterAuth({
   databaseHooks: {
     user: {
       create: {
-        after: async (user) => {
+        after: async user => {
           try {
             const plan = await prisma.plan.findFirstOrThrow({
               where: {
