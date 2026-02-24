@@ -1,3 +1,4 @@
+import type { BarberService } from "@prisma/client";
 import {
   CalendarClock,
   CheckCircle2,
@@ -8,14 +9,13 @@ import {
   UserCheck,
 } from "lucide-react";
 import Image from "next/image";
-import { prisma } from "@/lib/prisma";
 import { Button } from "@/shared/components/ui/button";
 
-export async function Hero() {
-  const services = await prisma.barberService.findMany({
-    distinct: ["name"],
-  });
+interface HeroProps {
+  services: BarberService[];
+}
 
+export async function Hero({ services }: HeroProps) {
   return (
     <section className="relative overflow-hidden pt-32 pb-20 lg:pt-48 lg:pb-32">
       {/* Background Glows */}
