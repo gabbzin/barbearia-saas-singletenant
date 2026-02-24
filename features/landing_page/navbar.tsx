@@ -46,8 +46,12 @@ export function Navbar() {
             ))}
           </div>
           <div className="flex items-center gap-4">
-            <Button>Fazer Login</Button>
-            <Button>Agendar Agora</Button>
+            <Button variant={"gold"} className="font-bold">
+              <Link href="/login">Fazer Login</Link>
+            </Button>
+            <Button variant={"default"} className="font-bold">
+              <Link href="/login">Agendar Agora</Link>
+            </Button>
           </div>
           {/* <button className="font-medium text-sm text-white transition-colors hover:text-amber-500">
               Login
