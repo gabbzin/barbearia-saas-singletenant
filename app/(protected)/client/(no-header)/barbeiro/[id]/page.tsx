@@ -1,30 +1,21 @@
 import {
-  ChevronLeft,
-  InstagramIcon,
-  LinkedinIcon,
-  TwitterIcon,
-  XIcon,
-} from "lucide-react";
-import Image from "next/image";
-import Link from "next/link";
-import { notFound } from "next/navigation";
-import { prisma } from "@/lib/prisma";
-import Footer from "@/shared/components/footer";
-import { PhoneItem } from "@/shared/components/phone-item";
-import { ServiceItem } from "@/features/service/components/service-item";
-import { Button } from "@/shared/components/ui/button";
-import { Separator } from "@/shared/components/ui/separator";
-import { ProfilePhoto } from "@/shared/components/profile-photo";
-import { PageSection, PageSectionTitle } from "@/shared/components/ui/page";
-import {
   RiFacebookFill,
-  RiGithubFill,
-  RiGoogleFill,
   RiInstagramFill,
   RiTwitterXFill,
 } from "@remixicon/react";
+import { ChevronLeft } from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
+import { notFound } from "next/navigation";
+import { ServiceItem } from "@/features/service/components/service-item";
+import { prisma } from "@/lib/prisma";
+import { PhoneItem } from "@/shared/components/phone-item";
+import { ProfilePhoto } from "@/shared/components/profile-photo";
+import { Button } from "@/shared/components/ui/button";
+import { PageSection, PageSectionTitle } from "@/shared/components/ui/page";
+import { Separator } from "@/shared/components/ui/separator";
 
-const BarberPage = async (props: PageProps<"/barbeiro/[id]">) => {
+const BarberPage = async (props: PageProps<"/client/barbeiro/[id]">) => {
   const { id } = await props.params;
 
   const barber = await prisma.barber.findUnique({
@@ -91,7 +82,7 @@ const BarberPage = async (props: PageProps<"/barbeiro/[id]">) => {
         {/* Componentizar depois */}
         <PageSection>
           <PageSectionTitle>Redes Sociais</PageSectionTitle>
-          <div className="flex gap-6 items-center flex-1 justify-center mt-2">
+          <div className="mt-2 flex flex-1 items-center justify-center gap-6">
             <RiFacebookFill />
             <RiInstagramFill />
             <RiTwitterXFill />
@@ -104,7 +95,7 @@ const BarberPage = async (props: PageProps<"/barbeiro/[id]">) => {
         <PageSection>
           <PageSectionTitle>Serviços</PageSectionTitle>
           <div className="space-y-3">
-            {barber.services.map((service) => (
+            {barber.services.map(service => (
               <ServiceItem
                 key={service.id}
                 service={{
@@ -126,7 +117,7 @@ const BarberPage = async (props: PageProps<"/barbeiro/[id]">) => {
           </h2>
           <div className="space-y-3">
             {barber.phone.length > 0 ? (
-              barber.phone.map((phone) => (
+              barber.phone.map(phone => (
                 <div
                   key={phone}
                   className="flex w-full flex-col items-center justify-between"

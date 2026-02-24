@@ -6,10 +6,12 @@ import { ptBR } from "date-fns/locale";
 import { type CalendarOptions, GoogleCalendar } from "datebook";
 import {
   CalendarFoldIcon,
-  ClockIcon,
+  CalendarIcon,
   EllipsisIcon,
-  ScissorsIcon,
+  MapPinIcon,
 } from "lucide-react";
+import { useEffect, useState } from "react";
+import { Badge } from "@/shared/components/ui/badge";
 import { Button } from "@/shared/components/ui/button";
 import {
   Card,
@@ -18,9 +20,9 @@ import {
   CardHeader,
   CardTitle,
 } from "@/shared/components/ui/card";
-import { Separator } from "@/shared/components/ui/separator";
+import { PhotoAndName } from "@/shared/new_components/photo-and-name";
+import { useBarbershopStore } from "@/stores/barbershop.store";
 import AddEventCalendar from "../functions/download-ics";
-import { useEffect, useState } from "react";
 
 interface NextBookingProps {
   nextBooking: Prisma.BookingGetPayload<{
@@ -40,6 +42,7 @@ interface NextBookingProps {
 
 export function NextBooking({ nextBooking }: NextBookingProps) {
   const [isMounted, setIsMounted] = useState(false);
+  const barbershop = useBarbershopStore(s => s.barbershop);
 
   useEffect(() => {
     setIsMounted(true);
@@ -88,50 +91,63 @@ export function NextBooking({ nextBooking }: NextBookingProps) {
   };
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>{nextBooking?.service.name}</CardTitle>
+    <Card className="grid gap-4 border-6 transition-colors duration-300 hover:border-gold/30">
+      <CardHeader className="grid gap-4">
+        <Badge variant={"gold"}>
+          <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-gold-strong"></span>
+          Próximo Agendamento
+        </Badge>
+        <CardTitle className="text-2xl">{nextBooking?.service.name}</CardTitle>
       </CardHeader>
 
       <CardContent>
-        <Separator className="my-2" />
-        <main className="flex items-center gap-3 py-2 font-geist">
-          {/* Data e Hora */}
-          <div className="flex h-full flex-col items-start border-r pr-4">
-            <p className="text-center font-semibold text-xl capitalize leading-none">
-              <span className="font-bold">{day}</span>
-              <br />
-              <span>{month}</span>
-            </p>
-          </div>
-
-          {/* Detalhes do Agendamento */}
-          <div>
-            <div className="flex items-center gap-2">
-              <ScissorsIcon size={12} />
-              <p>{nextBooking?.service?.barber?.user?.name}</p>
-            </div>
-            <div className="flex items-center gap-2">
-              <ClockIcon size={12} />
-              <p>{isMounted ? format(bookingDate, "HH:mm") : "--:--"}</p>
-            </div>
-          </div>
-
-          {/* Tempo para conclusão */}
-          <div></div>
+        <main className="flex items-center gap-3 py-2 font-poppins">
+          <Card className="flex flex-1 items-center justify-between gap-2">
+            <CardContent className="mx-2 flex w-full items-center justify-between gap-6">
+              <div className="flex items-center gap-4">
+                <div className="rounded-md bg-gold p-2 text-primary-foreground">
+                  <CalendarIcon size={20} strokeWidth={2.5} />
+                </div>
+                <div>
+                  <p className="text-primary/50 text-xs uppercase">
+                    Data e Hora
+                  </p>
+                  <p className="font-semibold text-sm">
+                    {day} de {month} às{" "}
+                    {isMounted ? format(bookingDate, "HH:mm") : "--:--"}
+                  </p>
+                </div>
+              </div>
+              <div className="flex items-center gap-4">
+                <div className="rounded-md bg-gold p-2 text-primary-foreground">
+                  <MapPinIcon size={20} strokeWidth={2.5} />
+                </div>
+                <div>
+                  <p className="text-primary/50 text-xs uppercase">Local</p>
+                  <p className="font-semibold text-sm">{barbershop?.name}</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
         </main>
-        <Separator className="my-2" />
       </CardContent>
 
       <CardFooter className="flex justify-between gap-2 *:text-xs">
-        <Button className="" variant={"secondary"} onClick={handleButtonClick}>
-          <CalendarFoldIcon />
-          Adicionar
-        </Button>
-        <Button className="">
-          <EllipsisIcon />
-          Ver detalhes
-        </Button>
+        <PhotoAndName
+          name={nextBooking?.service?.barber?.user?.name ?? "Barbeiro"}
+          imageUrl={nextBooking?.service.barber.user?.image}
+          mutedPhrase="Barbeiro"
+        />
+        <div className="flex gap-3">
+          <Button variant={"secondary"}>
+            <EllipsisIcon />
+            Ver detalhes
+          </Button>
+          <Button variant={"default"} onClick={handleButtonClick}>
+            <CalendarFoldIcon />
+            Adicionar
+          </Button>
+        </div>
       </CardFooter>
     </Card>
   );
