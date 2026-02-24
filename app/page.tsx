@@ -1,5 +1,6 @@
 "use server";
 import { Benefits } from "@/features/landing_page/benefits";
+import { Footer } from "@/features/landing_page/footer";
 import { Hero } from "@/features/landing_page/hero";
 import { HowItWork } from "@/features/landing_page/how-it-work";
 import { Navbar } from "@/features/landing_page/navbar";
@@ -21,6 +22,7 @@ export default async function Page() {
         <ServicesAndPrices services={services} />
         <Benefits />
         <Testimonials />
+        <Footer />
       </main>
     </div>
   );
