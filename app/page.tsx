@@ -14,7 +14,7 @@ export default async function Page() {
   });
 
   return (
-    <div className="min-h-screen bg-foreground">
+    <div className="theme-gold min-h-screen bg-foreground">
       <Navbar />
       <main>
         <Hero services={services} />

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Inter, Manrope } from "next/font/google";
+import { Geist, Inter, Manrope, Poppins, Roboto } from "next/font/google";
 import "./globals.css";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Toaster } from "sonner";
@@ -20,6 +20,17 @@ const manrope = Manrope({
 
 const geist = Geist({
   variable: "--font-geist",
+  subsets: ["latin"],
+});
+
+const roboto = Roboto({
+  variable: "--font-roboto",
+  subsets: ["latin"],
+});
+
+const poppins = Poppins({
+  weight: ["400", "500", "600", "700", "800"],
+  variable: "--font-poppins",
   subsets: ["latin"],
 });
 
@@ -45,7 +56,7 @@ export default async function RootLayout({
   return (
     <html lang="pt-BR">
       <body
-        className={`${inter.variable} ${manrope.variable} ${geist.variable} antialiased`}
+        className={`${inter.variable} ${manrope.variable} ${geist.variable} ${roboto.variable} ${poppins.variable} antialiased`}
       >
         <AppHydrator barbershopData={barbershop} userData={user} />
         <QueryProvider>
