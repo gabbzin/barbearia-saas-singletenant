@@ -71,7 +71,7 @@ export const auth = betterAuth({
     additionalFields: {
       role: {
         type: "string",
-        required: false,
+        required: true,
       },
       stripeCustomerId: {
         type: "string",

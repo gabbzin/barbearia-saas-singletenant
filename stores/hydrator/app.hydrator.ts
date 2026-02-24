@@ -6,15 +6,12 @@ import type { BarbershopInfo } from "@/shared/actions/get-infos-barbershop";
 import { useBarbershopStore } from "../barbershop.store";
 import { useUserStore } from "../user.store";
 
-interface BarbershopHydratorProps {
-  barbershopData: BarbershopInfo;
-  userData: UserSession;
+interface AppHydratorProps {
+  barbershopData: BarbershopInfo | null;
+  userData: UserSession | null;
 }
 
-export function BarbershopHydrator({
-  barbershopData,
-  userData,
-}: BarbershopHydratorProps) {
+export function AppHydrator({ barbershopData, userData }: AppHydratorProps) {
   const setBarbershop = useBarbershopStore(s => s.setBarbershop);
   const setUser = useUserStore(s => s.setUser);
 

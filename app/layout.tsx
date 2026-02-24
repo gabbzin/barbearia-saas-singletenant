@@ -3,8 +3,9 @@ import { Geist, Inter, Manrope } from "next/font/google";
 import "./globals.css";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Toaster } from "sonner";
+import { verifySession } from "@/features/user/repository/user.repository";
 import { getInfosBarbershop } from "@/shared/actions/get-infos-barbershop";
-import { BarbershopHydrator } from "@/stores/hydrator/app.hydrator";
+import { AppHydrator } from "@/stores/hydrator/app.hydrator";
 import QueryProvider from "../providers/query-provider";
 
 const inter = Inter({
@@ -39,13 +40,14 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const barbershop = await getInfosBarbershop();
+  const user = await verifySession();
 
   return (
     <html lang="pt-BR">
       <body
         className={`${inter.variable} ${manrope.variable} ${geist.variable} antialiased`}
       >
-        <BarbershopHydrator data={barbershop} />
+        <AppHydrator barbershopData={barbershop} userData={user} />
         <QueryProvider>
           {children}
           <Toaster />

@@ -10,7 +10,7 @@ export interface UserSession {
   name: string;
   email: string;
   imageUrl?: string | null;
-  role: string;
+  role?: string | null;
   stripeCustomerId?: string | null;
   barberId?: string | null;
 }
