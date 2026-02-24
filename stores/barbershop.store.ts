@@ -1,10 +1,10 @@
-import type { Barbershop } from "@prisma/client";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
+import type { BarbershopInfo } from "@/shared/actions/get-infos-barbershop";
 
 interface BarbershopStore {
-  barbershop: Barbershop | null;
-  setBarbershop: (barbershop: Barbershop) => void;
+  barbershop: BarbershopInfo | null;
+  setBarbershop: (barbershop: BarbershopInfo) => void;
 }
 
 export const useBarbershopStore = create<BarbershopStore>()(

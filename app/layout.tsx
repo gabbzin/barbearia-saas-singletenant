@@ -4,7 +4,7 @@ import "./globals.css";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Toaster } from "sonner";
 import { getInfosBarbershop } from "@/shared/actions/get-infos-barbershop";
-import { BarbershopHydrator } from "@/stores/hydrator/barbershop.hydrator";
+import { BarbershopHydrator } from "@/stores/hydrator/app.hydrator";
 import QueryProvider from "../providers/query-provider";
 
 const inter = Inter({

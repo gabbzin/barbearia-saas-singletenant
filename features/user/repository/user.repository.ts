@@ -5,6 +5,15 @@ import { cache } from "react";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
+export interface UserSession {
+  id: string;
+  name: string;
+  email: string;
+  imageUrl?: string | null;
+  role: string;
+  stripeCustomerId?: string | null;
+  barberId?: string | null;
+}
 /**
  * Verifica a sessão do usuário e retorna as informações do usuário e do barbeiro (se aplicável).
  * @returns Um objeto contendo as informações do usuário e do barbeiro, ou null se não houver sessão válida.

@@ -1,3 +1,4 @@
+"use client";
 import {
   Award,
   Bell,
@@ -419,7 +420,7 @@ const RecentHistory = () => (
 
 // --- COMPONENTE PRINCIPAL ---
 
-export default function App() {
+export function Dashboard() {
   // Estado criado para você poder testar o visual de "Sem Agendamentos"
   // Mude para "false" para ver a tela de Empty State
   const [hasAppointment, setHasAppointment] = useState(true);

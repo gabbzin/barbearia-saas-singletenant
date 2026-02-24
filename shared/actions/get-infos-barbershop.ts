@@ -3,6 +3,13 @@
 import { cache } from "react";
 import { prisma } from "@/lib/prisma";
 
+export interface BarbershopInfo {
+  name: string;
+  address: string;
+  storageUrl: string;
+  imageUrl: string;
+}
+
 export const getInfosBarbershop = cache(async () => {
   try {
     const barbershop = await prisma.barbershop.findFirst({
