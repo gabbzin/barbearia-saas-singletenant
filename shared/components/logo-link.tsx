@@ -17,7 +17,7 @@ export function LogoLink() {
       // fill
       width={pixels}
       height={pixels}
-      className="rounded-full fill cursor-pointer object-center"
+      className="fill cursor-pointer rounded-full object-center"
       onClick={handleLogoClick}
     />
     // <h1 onClick={handleLogoClick} className="cursor-pointer font-bold text-2xl">
