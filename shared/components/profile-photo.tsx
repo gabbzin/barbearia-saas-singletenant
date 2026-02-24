@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 
 interface ProfilePhotoProps {
@@ -15,12 +16,17 @@ export function ProfilePhoto({
 }: ProfilePhotoProps) {
   return (
     <div>
-      <Avatar className={size ? `size-${size}` : "size-12"}>
+      <Avatar
+        className={cn(
+          size ? `size-${size}` : "size-12",
+          enabledGoldEffect && "shadow-gold/20 shadow-lg",
+        )}
+      >
         <AvatarImage
           src={imageUrl || ""}
           className={
             enabledGoldEffect
-              ? "rounded-full border-2 border-foreground object-cover shadow-gold/20 shadow-lg dark:border-gold"
+              ? "rounded-full border-2 border-foreground object-cover dark:border-gold"
               : "rounded-full object-cover"
           }
         />
