@@ -4,6 +4,7 @@ import { Hero } from "@/features/landing_page/hero";
 import { HowItWork } from "@/features/landing_page/how-it-work";
 import { Navbar } from "@/features/landing_page/navbar";
 import { ServicesAndPrices } from "@/features/landing_page/services-and-prices";
+import { Testimonials } from "@/features/landing_page/testimonials";
 import { prisma } from "@/lib/prisma";
 
 export default async function Page() {
@@ -19,6 +20,7 @@ export default async function Page() {
         <HowItWork />
         <ServicesAndPrices services={services} />
         <Benefits />
+        <Testimonials />
       </main>
     </div>
   );
