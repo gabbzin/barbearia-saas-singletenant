@@ -4,10 +4,8 @@ import { AccountInfoCard } from "@/features/user/components/account-info-card";
 import { UserProfileCard } from "@/features/user/components/user-profile-card";
 import { verifySession } from "@/features/user/repository/user.repository";
 import { prisma } from "@/lib/prisma";
-import {
-  PageSection,
-  PageSectionTitle,
-} from "@/shared/components/ui/page";
+import { AnimatedThemeToggler } from "@/shared/components/ui/animated-theme-toggler";
+import { PageSection, PageSectionTitle } from "@/shared/components/ui/page";
 
 export default async function ProfilePage() {
   const user = await verifySession();
@@ -27,7 +25,10 @@ export default async function ProfilePage() {
   return (
     <main className="flex flex-col gap-2">
       <PageSection>
-        <PageSectionTitle>Perfil</PageSectionTitle>
+        <div className="flex w-full items-center justify-between">
+          <PageSectionTitle>Seu Perfil</PageSectionTitle>
+          <AnimatedThemeToggler />
+        </div>
         <UserProfileCard
           name={user.name ?? ""}
           email={user.email ?? ""}
