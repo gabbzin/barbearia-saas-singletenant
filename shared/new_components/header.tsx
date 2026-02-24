@@ -16,6 +16,7 @@ export function Header() {
         name={user?.name ?? "Usuário"}
         imageUrl={user?.imageUrl}
         mutedPhrase="Bem vindo de volta!"
+        enabledGoldEffect={true}
       />
       <div className="flex items-center gap-2">
         <AnimatedThemeToggler />

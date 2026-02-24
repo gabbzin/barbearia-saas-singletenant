@@ -4,11 +4,7 @@ import { NextBooking } from "@/features/booking/components/next-booking";
 import { getNextBooking } from "@/features/booking/functions/get-bookings";
 import { SignatureCard } from "@/features/signature/components/signature-card";
 import { verifySession } from "@/features/user/repository/user.repository";
-import {
-  PageSection,
-  PageSectionScroller,
-  PageSectionTitle,
-} from "@/shared/components/ui/page";
+import { PageSection, PageSectionTitle } from "@/shared/components/ui/page";
 import { getCurrentSubscriptionAction } from "../../../../features/signature/actions/get-current-subscription";
 
 export default async function Home() {
@@ -32,9 +28,10 @@ export default async function Home() {
       <PageSection>
         <NextBooking nextBooking={nextBooking} />
       </PageSection>
+
       <PageSection>
-        <PageSectionTitle>Barbeiros</PageSectionTitle>
-        <PageSectionScroller>
+        <PageSectionTitle>Nossos Profissionais</PageSectionTitle>
+        <div className="grid grid-cols-2 gap-4">
           {barbers.map(barber => (
             <BarberItem
               key={barber.id}
@@ -45,7 +42,7 @@ export default async function Home() {
               }}
             />
           ))}
-        </PageSectionScroller>
+        </div>
       </PageSection>
     </main>
   );

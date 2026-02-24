@@ -14,7 +14,7 @@ export function ProfilePhoto({
   enabledGoldEffect,
 }: ProfilePhotoProps) {
   return (
-    <div className="relative">
+    <div>
       <Avatar className={size ? `size-${size}` : "size-12"}>
         <AvatarImage
           src={imageUrl || ""}
