@@ -49,16 +49,10 @@ export function Navbar() {
             <Button variant={"gold"} className="font-bold">
               <Link href="/login">Fazer Login</Link>
             </Button>
-            <Button variant={"default"} className="font-bold">
+            <Button variant={"default"} className="hidden font-bold md:block">
               <Link href="/login">Agendar Agora</Link>
             </Button>
           </div>
-          {/* <button className="font-medium text-sm text-white transition-colors hover:text-amber-500">
-              Login
-            </button>
-            <button className="rounded-full bg-amber-500 px-6 py-2.5 font-semibold text-zinc-950 shadow-[0_0_20px_rgba(245,158,11,0.3)] transition-all hover:scale-105 hover:bg-amber-400 active:scale-95">
-              Agendar Agora
-            </button> */}
         </div>
       </div>
     </nav>
