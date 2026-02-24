@@ -11,6 +11,7 @@ import {
   type LucideIcon,
   MenuIcon,
   ScissorsIcon,
+  UserIcon,
   UserStar,
   X,
 } from "lucide-react";
@@ -45,6 +46,7 @@ const ROUTES: Route[] = [
   { name: "Barbeiros", path: "/barbeiros", icon: ScissorsIcon },
   { name: "Agendamentos", path: "/bookings", icon: CalendarIcon },
   { name: "Assinaturas", path: "/signature", icon: CreditCardIcon },
+  { name: "Perfil", path: "/profile", icon: UserIcon },
 ];
 
 // Rotas exclusivas de barbeiro
