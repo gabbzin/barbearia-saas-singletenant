@@ -7,8 +7,10 @@ import { type CalendarOptions, GoogleCalendar } from "datebook";
 import {
   CalendarFoldIcon,
   CalendarIcon,
+  CalendarX2Icon,
   EllipsisIcon,
   MapPinIcon,
+  PlusIcon,
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Badge } from "@/shared/components/ui/badge";
@@ -50,9 +52,22 @@ export function NextBooking({ nextBooking }: NextBookingProps) {
 
   if (!nextBooking) {
     return (
-      <Card className="flex flex-col gap-5">
-        <CardContent className="text-center text-sm">
-          Sem agendamentos, marque um selecionando uma das opções abaixo
+      <Card>
+        <CardContent className="mx-auto flex w-3/5 flex-col items-center gap-4 py-6 text-center">
+          <div className="rounded-full bg-muted-foreground/20 p-3">
+            <CalendarX2Icon size={24} />
+          </div>
+          <div>
+            <p className="mt-2 font-bold">Você ainda não tem horário marcado</p>
+            <p className="text-muted-foreground text-sm">
+              Seu último corte foi há x dias. Que tal dar um trato no visual
+              essa semana?
+            </p>
+          </div>
+          <Button variant={"gold"}>
+            <PlusIcon />
+            Agendar Agora
+          </Button>
         </CardContent>
       </Card>
     );
