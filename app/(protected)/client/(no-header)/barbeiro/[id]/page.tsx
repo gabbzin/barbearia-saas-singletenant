@@ -11,6 +11,7 @@ import { ServiceItem } from "@/features/service/components/service-item";
 import { prisma } from "@/lib/prisma";
 import { PhoneItem } from "@/shared/components/phone-item";
 import { ProfilePhoto } from "@/shared/components/profile-photo";
+import { AnimatedThemeToggler } from "@/shared/components/ui/animated-theme-toggler";
 import { Button } from "@/shared/components/ui/button";
 import { PageSection, PageSectionTitle } from "@/shared/components/ui/page";
 import { Separator } from "@/shared/components/ui/separator";
@@ -56,6 +57,11 @@ const BarberPage = async (props: PageProps<"/client/barbeiro/[id]">) => {
               <ChevronLeft className="size-5" />
             </Link>
           </Button>
+        </div>
+
+        {/* Theme Toggler */}
+        <div className="absolute top-6 right-5">
+          <AnimatedThemeToggler />
         </div>
       </div>
 
