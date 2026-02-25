@@ -1,6 +1,7 @@
 "use client";
 
 import { UserIcon } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useUserStore } from "@/stores/user.store";
 import { AnimatedThemeToggler } from "../components/ui/animated-theme-toggler";
@@ -9,6 +10,7 @@ import { PhotoAndName } from "./photo-and-name";
 
 export function Header() {
   const user = useUserStore(s => s.user);
+  const { replace } = useRouter();
   const [width, setWidth] = useState(0);
 
   useEffect(() => {
@@ -29,7 +31,11 @@ export function Header() {
       />
       <div className="flex items-center gap-2">
         <AnimatedThemeToggler />
-        <Button variant={"outline"} className="flex items-center gap-2">
+        <Button
+          variant={"outline"}
+          className="flex items-center gap-2"
+          onClick={() => replace("/client/profile")}
+        >
           <UserIcon />
           {width > 640 && "Meu Perfil"}
         </Button>

@@ -3,7 +3,7 @@ import { type NextRequest, NextResponse } from "next/server";
 // ========================================
 // CONFIGURAÇÃO
 // ========================================
-const PUBLIC_ROUTES = ["/login", "/register", "/reset-password"];
+const PUBLIC_ROUTES = ["/login", "/register", "/reset-password", "/"];
 const AUTH_ROUTES = [
   "/login",
   "/register",
@@ -14,6 +14,8 @@ const PUBLIC_API_ROUTES = ["/api/auth", "/api/stripe/webhook"];
 
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
+
+  console.log(pathname);
 
   // 1. Filtros iniciais (estáticos e APIs públicas)
   if (
@@ -39,8 +41,11 @@ export async function proxy(request: NextRequest) {
   const isUserLoggedIn = !!session;
   const isAuthRoute = AUTH_ROUTES.includes(pathname);
 
-  // REGRA: Se estou em página de login/register e estou logado -> vai para Home
-  if (isAuthRoute && isUserLoggedIn) {
+  console.log(isUserLoggedIn, isAuthRoute);
+
+  // REGRA: Se estou logado -> Vai pra /client (página principal do app)
+  // REGRA SECUNDÁRIA: Se estou logado e estou em / -> Vai pra /client (evita que usuário logado veja a landing page)
+  if (isUserLoggedIn && (pathname === "/" || isAuthRoute)) {
     return NextResponse.redirect(new URL("/client", request.url));
   }
 

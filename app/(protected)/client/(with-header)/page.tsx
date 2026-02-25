@@ -59,7 +59,7 @@ export default async function Home() {
               barber={{
                 id: barber.id,
                 name: barber.user?.name ?? "Barbeiro",
-                imageUrl: barber.imageUrl,
+                imageUrl: barber.user?.image ?? "/default-avatar.png",
               }}
             />
           ))}

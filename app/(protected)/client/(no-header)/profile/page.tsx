@@ -1,3 +1,5 @@
+import { ArrowLeft } from "lucide-react";
+import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getCurrentSubscriptionAction } from "@/features/signature/actions/get-current-subscription";
 import { AccountInfoCard } from "@/features/user/components/account-info-card";
@@ -5,6 +7,7 @@ import { UserProfileCard } from "@/features/user/components/user-profile-card";
 import { verifySession } from "@/features/user/repository/user.repository";
 import { prisma } from "@/lib/prisma";
 import { AnimatedThemeToggler } from "@/shared/components/ui/animated-theme-toggler";
+import { Button } from "@/shared/components/ui/button";
 import { PageSection, PageSectionTitle } from "@/shared/components/ui/page";
 
 export default async function ProfilePage() {
@@ -26,6 +29,11 @@ export default async function ProfilePage() {
     <main className="flex flex-col gap-2">
       <PageSection>
         <div className="flex w-full items-center justify-between">
+          <Button variant={"outline"} className="flex items-center gap-2">
+            <Link href="/client">
+              <ArrowLeft />
+            </Link>
+          </Button>
           <PageSectionTitle>Seu Perfil</PageSectionTitle>
           <AnimatedThemeToggler />
         </div>
