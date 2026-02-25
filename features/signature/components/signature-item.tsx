@@ -103,9 +103,12 @@ const SignatureItem = ({ plan, myPlanName }: SignatureItemProps) => {
                 "Relatórios mensais",
               ].map((benefit, i) => (
                 <li key={i} className="flex items-start gap-3 text-sm">
-                  <div className="mt-1 rounded-full bg-emerald-500/10 p-0.5">
-                    <Check className="h-4 w-4 text-emerald-500" />
-                  </div>
+                  <IconBadge
+                    icon={<Check className="h-4 w-4" />}
+                    variant="success"
+                    size="sm"
+                    className="mt-0.5"
+                  />
                   <span className="text-muted-foreground">{benefit}</span>
                 </li>
               ))}

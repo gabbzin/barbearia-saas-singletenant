@@ -12,6 +12,7 @@ import { prisma } from "@/lib/prisma";
 import { cn } from "@/lib/utils";
 import { Card, CardContent } from "@/shared/components/ui/card";
 import { PageSection, PageSectionTitle } from "@/shared/components/ui/page";
+import { Button } from "@/shared/components/ui/button";
 
 export default async function Home() {
   const user = await verifySession();
@@ -63,6 +64,14 @@ export default async function Home() {
               }}
             />
           ))}
+        </div>
+      </PageSection>
+
+      <PageSection>
+        <div>
+          <Button variant="outline" className="w-full">
+              
+          </Button>
         </div>
       </PageSection>
 

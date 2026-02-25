@@ -17,6 +17,7 @@ import {
   CardFooter,
   CardHeader,
 } from "@/shared/components/ui/card";
+import { clientRoutes } from "@/shared/constants/routes";
 
 export default function LoginForm() {
   const router = useRouter();
@@ -33,7 +34,7 @@ export default function LoginForm() {
       }
 
       router.refresh();
-      router.push("/client");
+      router.push(clientRoutes.dashboard);
     } catch (error) {
       toast.error(
         error instanceof Error

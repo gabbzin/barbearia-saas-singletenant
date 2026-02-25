@@ -9,6 +9,7 @@ import {
   UserCheck,
 } from "lucide-react";
 import Image from "next/image";
+import { IconBadge } from "@/shared/components/icon-badge";
 import { Button } from "@/shared/components/ui/button";
 
 interface HeroProps {
@@ -93,9 +94,7 @@ export async function Hero({ services }: HeroProps) {
               style={{ animationDuration: "3s" }}
             >
               <div className="flex items-center gap-3">
-                <div className="rounded-full bg-amber-500/20 p-2">
-                  <CheckCircle2 className="text-amber-500" size={20} />
-                </div>
+                <IconBadge icon={<CheckCircle2 size={20} />} variant="gold" />
                 <div>
                   <p className="font-bold text-sm text-white">
                     Corte Confirmado
@@ -177,9 +176,11 @@ export async function Hero({ services }: HeroProps) {
                             R$ {srv.priceInCents / 100}
                           </p>
                         </div>
-                        <div className="flex h-8 w-8 items-center justify-center rounded-full bg-zinc-700 text-zinc-300">
-                          <ChevronRight size={16} />
-                        </div>
+                        <IconBadge
+                          icon={<ChevronRight size={16} />}
+                          variant="muted"
+                          size="sm"
+                        />
                       </div>
                     ))}
                   </div>

@@ -13,6 +13,7 @@ import {
   PlusIcon,
 } from "lucide-react";
 import { useEffect, useState } from "react";
+import { IconBadge } from "@/shared/components/icon-badge";
 import { Badge } from "@/shared/components/ui/badge";
 import { Button } from "@/shared/components/ui/button";
 import {
@@ -54,9 +55,11 @@ export function NextBooking({ nextBooking }: NextBookingProps) {
     return (
       <Card>
         <CardContent className="mx-auto flex w-3/5 flex-col items-center gap-4 py-6 text-center">
-          <div className="rounded-full bg-muted-foreground/20 p-3">
-            <CalendarX2Icon size={24} />
-          </div>
+          <IconBadge
+            icon={<CalendarX2Icon size={24} />}
+            variant="mutedSoft"
+            size="lg"
+          />
           <div>
             <p className="mt-2 font-bold">Você ainda não tem horário marcado</p>
             <p className="text-muted-foreground text-sm">

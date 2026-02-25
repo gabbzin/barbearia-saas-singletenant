@@ -1,5 +1,6 @@
 import { format } from "date-fns";
 import { CalendarIcon, CrownIcon } from "lucide-react";
+import { IconBadge } from "@/shared/components/icon-badge";
 import { Card, CardContent } from "@/shared/components/ui/card";
 
 interface AccountInfoCardProps {
@@ -20,9 +21,11 @@ export function AccountInfoCard({
       <CardContent className="px-4">
         <div className="flex flex-col gap-3">
           <div className="flex items-center gap-3">
-            <div className="flex size-9 items-center justify-center rounded-full bg-muted">
-              <CalendarIcon className="size-4 text-muted-foreground" />
-            </div>
+            <IconBadge
+              icon={<CalendarIcon className="size-4" />}
+              variant="muted"
+              size="lg"
+            />
             <div>
               <p className="text-muted-foreground text-xs">Membro desde</p>
               <p className="font-medium text-sm">{formattedDate}</p>
@@ -30,9 +33,11 @@ export function AccountInfoCard({
           </div>
 
           <div className="flex items-center gap-3">
-            <div className="flex size-9 items-center justify-center rounded-full bg-muted">
-              <CrownIcon className="size-4 text-muted-foreground" />
-            </div>
+            <IconBadge
+              icon={<CrownIcon className="size-4" />}
+              variant="muted"
+              size="lg"
+            />
             <div>
               <p className="text-muted-foreground text-xs">Plano atual</p>
               <p className="font-medium text-sm">
