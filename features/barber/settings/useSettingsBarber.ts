@@ -1,5 +1,6 @@
 "use client";
 
+import { useQueryClient } from "@tanstack/react-query";
 import { useAction } from "next-safe-action/hooks";
 import { toast } from "sonner";
 import {
@@ -18,12 +19,14 @@ type SettingsData = {
 
 export function useSettingsBarber(barberId: string) {
   const queryKey = ["settings", barberId];
+  const queryClient = useQueryClient();
 
-  const { executeAsync: fetchSettings } = useAction(getSettingsByBarberIdAction);
-  const { data, isLoading, isError } = useSafeQuery<{ settings: SettingsData | null }>(
-    queryKey,
-    () => fetchSettings({ barberId }),
+  const { executeAsync: fetchSettings } = useAction(
+    getSettingsByBarberIdAction,
   );
+  const { data, isLoading, isError } = useSafeQuery<{
+    settings: SettingsData | null;
+  }>(queryKey, () => fetchSettings({ barberId }));
 
   const { executeAsync: saveDisponibility, isPending: isSaving } = useAction(
     createDisponibilityAction,
@@ -36,6 +39,12 @@ export function useSettingsBarber(barberId: string) {
       return;
     }
     toast.success("Horários salvos com sucesso!");
+
+    if (result?.data?.settings) {
+      queryClient.setQueryData(queryKey, result.data);
+    } else {
+      queryClient.invalidateQueries({ queryKey });
+    }
   };
 
   return {

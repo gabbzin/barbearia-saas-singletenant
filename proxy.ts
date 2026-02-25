@@ -41,8 +41,6 @@ export async function proxy(request: NextRequest) {
   const isUserLoggedIn = !!session;
   const isAuthRoute = AUTH_ROUTES.includes(pathname);
 
-  console.log(isUserLoggedIn, isAuthRoute);
-
   // REGRA: Se estou logado -> Vai pra /client (página principal do app)
   // REGRA SECUNDÁRIA: Se estou logado e estou em / -> Vai pra /client (evita que usuário logado veja a landing page)
   if (isUserLoggedIn && (pathname === "/" || isAuthRoute)) {

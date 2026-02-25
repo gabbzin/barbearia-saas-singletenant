@@ -10,9 +10,9 @@ import { SignatureCard } from "@/features/signature/components/signature-card";
 import { verifySession } from "@/features/user/repository/user.repository";
 import { prisma } from "@/lib/prisma";
 import { cn } from "@/lib/utils";
+import { Button } from "@/shared/components/ui/button";
 import { Card, CardContent } from "@/shared/components/ui/card";
 import { PageSection, PageSectionTitle } from "@/shared/components/ui/page";
-import { Button } from "@/shared/components/ui/button";
 
 export default async function Home() {
   const user = await verifySession();
@@ -69,9 +69,7 @@ export default async function Home() {
 
       <PageSection>
         <div>
-          <Button variant="outline" className="w-full">
-              
-          </Button>
+          <Button variant="outline" className="w-full"></Button>
         </div>
       </PageSection>
 

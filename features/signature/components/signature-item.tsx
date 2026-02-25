@@ -5,6 +5,7 @@ import { useAction } from "next-safe-action/hooks";
 import { toast } from "sonner";
 import { createSignature } from "@/features/signature/actions/create-signature";
 import { cn } from "@/lib/utils";
+import { IconBadge } from "@/shared/components/icon-badge";
 import { convertCapitalize } from "@/utils/convertCapitalize";
 import { AuroraText } from "../../../shared/components/ui/aurora-text";
 import { Button } from "../../../shared/components/ui/button";
@@ -102,6 +103,7 @@ const SignatureItem = ({ plan, myPlanName }: SignatureItemProps) => {
                 "Suporte prioritário",
                 "Relatórios mensais",
               ].map((benefit, i) => (
+                // biome-ignore lint/suspicious/noArrayIndexKey: <Não precisa>
                 <li key={i} className="flex items-start gap-3 text-sm">
                   <IconBadge
                     icon={<Check className="h-4 w-4" />}
