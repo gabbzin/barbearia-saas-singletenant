@@ -56,6 +56,7 @@ model User {
   barberProfile Barber?   @relation("BarberAccount")
 
   subscription Subscription?
+  ratings      Rating[]
 
   @@map("user")
 }
@@ -114,10 +115,10 @@ model Verification {
 // ========================================================}
 
 model Barbershop {
-  id       String   @id @default("default")
-  name     String
-  imageUrl  String   @default("https://3tlh7aktl6.ufs.sh/f/tcFRjMXVSkQ0Asb1IxZDwZ30bIph8P2qjXfOcVJmTvFtnMxi")
-  address  String
+  id         String @id @default("default")
+  name       String
+  imageUrl   String @default("https://3tlh7aktl6.ufs.sh/f/tcFRjMXVSkQ0Asb1IxZDwZ30bIph8P2qjXfOcVJmTvFtnMxi")
+  address    String
   storageUrl String
 
   createdAt DateTime @default(now())
@@ -125,27 +126,27 @@ model Barbershop {
 }
 
 model Barber {
-  id       String   @id @default(uuid())
-  imageUrl String   @default("https://3tlh7aktl6.ufs.sh/f/tcFRjMXVSkQ0Asb1IxZDwZ30bIph8P2qjXfOcVJmTvFtnMxi")
-  phone    String[]
+  id    String   @id @default(uuid())
+  phone String[]
 
   userId String? @unique
   user   User?   @relation("BarberAccount", fields: [userId], references: [id])
 
-  services BarberService[]
-  bookings Booking[]
+  services       BarberService[]
+  bookings       Booking[]
+  disponibility  Disponibility[]
+  exceptionDates ExceptionDate[]
+  ratings        Rating[]
 
   @@index([userId])
-  disponibility Disponibility[]
-  exceptionDates ExceptionDate[]
 }
 
 model BarberService {
-  id           String @id @default(uuid())
-  name         String
-  description  String
-  imageUrl     String
-  priceInCents Int
+  id                String @id @default(uuid())
+  name              String
+  description       String
+  imageUrl          String
+  priceInCents      Int
   durationInMinutes Int    @default(30)
 
   barberId String
@@ -181,13 +182,13 @@ model Subscription {
 }
 
 model Plan {
-  id            String  @id
+  id            String   @id
   name          String
   description   String
   benefits      String[]
   imageUrl      String?
   priceInCents  Int
-  stripePriceId String? @unique
+  stripePriceId String?  @unique
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -221,6 +222,8 @@ model Booking {
   barberId String
   barber   Barber @relation(fields: [barberId], references: [id])
 
+  rating Rating?
+
   // Subscription (optional)
   userSubscriptionId   String?
   paidWithSubscription Boolean @default(false)
@@ -249,27 +252,52 @@ enum DiaSemana {
   SATURDAY
 }
 
+// ========================================================
+// BARBER AVAILABILITY MODELS
+// ========================================================
+
 model Disponibility {
-  id      String  @id @default(uuid())
-  barberId String 
+  id       String @id @default(uuid())
+  barberId String
   barber   Barber @relation(fields: [barberId], references: [id], onDelete: Cascade)
 
-  dayOfWeek  Int // 0 = Sunday, 1 = Monday, ..., 6 = Saturday
-  startTime  String
-  endTime    String
+  dayOfWeek Int // 0 = Sunday, 1 = Monday, ..., 6 = Saturday
+  startTime String
+  endTime   String
 
   @@unique([barberId, dayOfWeek])
 }
 
 model ExceptionDate {
-  id       String   @id @default(uuid())
+  id       String @id @default(uuid())
   barberId String
-  barber   Barber   @relation(fields: [barberId], references: [id], onDelete: Cascade)
+  barber   Barber @relation(fields: [barberId], references: [id], onDelete: Cascade)
 
   date      String?
-  isClosed  Boolean  @default(true)
+  isClosed  Boolean @default(true)
   startTime String?
   endTime   String?
 
   @@index([barberId])
+}
+
+// ========================================================
+// RATING MODEL
+// ========================================================
+
+model Rating {
+  id          String  @id @default(uuid())
+  ratingValue Int     @default(0) // Rating from 0 to 5
+  comment     String?
+
+  bookingId String  @unique
+  booking   Booking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+
+  // Mantendo isso apenas para busca rápida
+  barberId String
+  barber   Barber @relation(fields: [barberId], references: [id])
+  userId   String
+  user     User   @relation(fields: [userId], references: [id])
+
+  createdAt DateTime @default(now())
 }
