@@ -1,76 +1,68 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import type { BarberService } from "@prisma/client";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useAction } from "next-safe-action/hooks";
+import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import {
-  createService,
-  deleteService,
-  getServicesByBarberId,
-  patchService,
+  createServiceAction,
+  deleteServiceAction,
+  getServicesByBarberIdAction,
+  patchServiceAction,
 } from "@/features/service/actions/service-actions";
+import type { serviceSchemaType } from "@/features/service/schema/serviceSchema";
+import { useSafeQuery } from "@/hooks/use-safe-query";
 
 export function useServicesCRUD(barberId: string) {
   const queryClient = useQueryClient();
+  const queryKey = ["services", barberId];
 
-  function updateCache(updateFn: (old: any) => any) {
-    queryClient.setQueryData(["services", barberId], updateFn);
+  function updateCache(updateFn: (old: BarberService[] | undefined) => BarberService[]) {
+    queryClient.setQueryData(queryKey, updateFn);
   }
 
-  const servicesQuery = useQuery({
-    queryKey: ["services", barberId],
-    queryFn: () => getServicesByBarberId({ barberId }),
-  });
+  const { executeAsync: fetchServices } = useAction(getServicesByBarberIdAction);
+  const { data, isLoading, isError } = useSafeQuery<{ services: BarberService[] }>(
+    queryKey,
+    () => fetchServices({ barberId }),
+  );
 
-  const createMutation = useMutation({
-    mutationFn: ({ data, barberId }: { data: FormData; barberId: string }) =>
-      createService(data, barberId),
-    onSuccess: newService => {
-      toast.success("Serviço criado com sucesso!");
-      updateCache((oldData: BarberService[] | undefined) => {
-        return oldData ? [...oldData, newService] : [newService];
-      });
-    },
-  });
+  const { executeAsync: execCreate, isPending: isCreating } = useAction(createServiceAction);
+  const { executeAsync: execUpdate, isPending: isUpdating } = useAction(patchServiceAction);
+  const { executeAsync: execDelete } = useAction(deleteServiceAction);
 
-  const updateMutation = useMutation({
-    mutationFn: ({ data, serviceId }: { data: FormData; serviceId: string }) =>
-      patchService({ data, serviceId }),
+  const createService = async (input: { barberId: string } & serviceSchemaType) => {
+    const result = await execCreate(input);
+    if (!result?.data?.service) return;
+    toast.success("Serviço criado com sucesso!");
+    updateCache(old => [...(old ?? []), result.data!.service]);
+  };
 
-    onSuccess: (updatedService: BarberService) => {
-      toast.success("Serviço atualizado com sucesso!");
-      updateCache((oldData: BarberService[] | undefined) => {
-        return oldData
-          ? oldData.map(service =>
-              service.id === updatedService.id ? updatedService : service,
-            )
-          : [updatedService];
-      });
-    },
-  });
+  const updateService = async (input: { serviceId: string } & serviceSchemaType) => {
+    const result = await execUpdate(input);
+    if (!result?.data?.service) return;
+    toast.success("Serviço atualizado com sucesso!");
+    const updated = result.data.service;
+    updateCache(old =>
+      old ? old.map(s => (s.id === updated.id ? updated : s)) : [updated],
+    );
+  };
 
-  const deleteMutation = useMutation({
-    mutationFn: (serviceId: string) => deleteService({ serviceId }),
-    onSuccess: (_, serviceId) => {
-      toast.success("Serviço deletado com sucesso!");
-      updateCache((oldData: BarberService[] | undefined) => {
-        return oldData
-          ? oldData.filter(service => service.id !== serviceId)
-          : [];
-      });
-    },
-  });
+  const deleteService = async (serviceId: string) => {
+    const result = await execDelete({ serviceId });
+    if (!result?.data?.serviceId) return;
+    toast.success("Serviço deletado com sucesso!");
+    updateCache(old => (old ? old.filter(s => s.id !== serviceId) : []));
+  };
 
   return {
-    services: servicesQuery.data,
-    isLoading: servicesQuery.isLoading,
-    isError: servicesQuery.isError,
-    createService: createMutation.mutate,
-    updateService: updateMutation.mutate,
-    deleteService: deleteMutation.mutate,
-    createMutation,
-    updateMutation,
-    deleteMutation,
+    services: data?.services,
+    isLoading,
+    isError,
+    createService,
+    updateService,
+    deleteService,
+    isCreating,
+    isUpdating,
   };
 }

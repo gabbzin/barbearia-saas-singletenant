@@ -24,7 +24,7 @@ interface FormServiceProps {
 
 export function FormService({ barberId, service }: FormServiceProps) {
   const [isOpen, setIsOpen] = useState(false);
-  const { createMutation, updateMutation } = useServicesCRUD(barberId);
+  const { createService, updateService, isCreating, isUpdating } = useServicesCRUD(barberId);
 
   const isEditing = !!service;
 
@@ -36,29 +36,16 @@ export function FormService({ barberId, service }: FormServiceProps) {
       }
     : undefined;
 
-  const handleSubmit = (data: serviceSchemaType) => {
-    const formData = new FormData();
-    formData.append("name", data.name);
-    formData.append("price", String(data.price));
-    formData.append("description", data.description);
-    formData.append("imageUrl", data.imageUrl ?? "");
-
+  const handleSubmit = async (data: serviceSchemaType) => {
     if (isEditing && service) {
-      updateMutation.mutate(
-        { serviceId: service.id, data: formData },
-        { onSuccess: () => setIsOpen(false) },
-      );
+      await updateService({ serviceId: service.id, ...data });
     } else {
-      createMutation.mutate(
-        { barberId, data: formData },
-        { onSuccess: () => setIsOpen(false) },
-      );
+      await createService({ barberId, ...data });
     }
+    setIsOpen(false);
   };
 
-  const isLoading = isEditing
-    ? updateMutation.isPending
-    : createMutation.isPending;
+  const isLoading = isEditing ? isUpdating : isCreating;
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
