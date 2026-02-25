@@ -1,56 +1,69 @@
 "use server";
 
+import { z } from "zod";
+import { verifySession } from "@/features/user/repository/user.repository";
+import { actionClient } from "@/lib/actionClient";
 import { prisma } from "@/lib/prisma";
+import { serviceSchema } from "../schema/serviceSchema";
 
-// Aqui vão as ações dos serviços do barbeiro
+const barberIdSchema = z.object({ barberId: z.string() });
+const serviceIdSchema = z.object({ serviceId: z.string() });
 
-export async function getServicesByBarberId(data: { barberId: string }) {
-  return await prisma.barberService.findMany({
-    where: {
-      barberId: data.barberId,
-    },
-  });
-}
-
-export async function createService(data: FormData, barberId: string) {
-  return await prisma.barberService.create({
-    data: {
-      name: data.get("name") as string,
-      description: data.get("description") as string,
-      priceInCents: Number(data.get("price")) * 100, // Vem em reais, converter para centavos
-      imageUrl:
-        "https://utfs.io/f/0ddfbd26-a424-43a0-aaf3-c3f1dc6be6d1-1kgxo7.png",
-      barberId: barberId,
-    },
-  });
-}
-
-export async function patchService({
-  data,
-  serviceId,
-}: {
-  data: FormData;
-  serviceId: string;
-}) {
-  return await prisma.barberService.update({
-    where: {
-      id: serviceId,
-    },
-    data: {
-      name: data.get("name") as string,
-      description: data.get("description") as string,
-      priceInCents: Number(data.get("price")) * 100, // Vem em reais, converter para centavos
-      // imageUrl: Adicionar depois que conectar o uploader
-    },
-  });
-}
-
-export async function deleteService({ serviceId }: { serviceId: string }) {
-  await prisma.barberService.delete({
-    where: {
-      id: serviceId,
-    },
+export const getServicesByBarberIdAction = actionClient
+  .inputSchema(barberIdSchema)
+  .action(async ({ parsedInput: { barberId } }) => {
+    const services = await prisma.barberService.findMany({
+      where: { barberId },
+    });
+    return { services };
   });
 
-  return { serviceId };
-}
+export const createServiceAction = actionClient
+  .inputSchema(serviceSchema.extend({ barberId: z.string() }))
+  .action(async ({ parsedInput }) => {
+    const session = await verifySession();
+    if (!session) throw new Error("Não autorizado.");
+
+    const service = await prisma.barberService.create({
+      data: {
+        name: parsedInput.name,
+        description: parsedInput.description,
+        priceInCents: Math.round(parsedInput.price * 100),
+        imageUrl:
+          parsedInput.imageUrl ||
+          "https://utfs.io/f/0ddfbd26-a424-43a0-aaf3-c3f1dc6be6d1-1kgxo7.png",
+        barberId: parsedInput.barberId,
+      },
+    });
+
+    return { service };
+  });
+
+export const patchServiceAction = actionClient
+  .inputSchema(serviceSchema.extend({ serviceId: z.string() }))
+  .action(async ({ parsedInput }) => {
+    const session = await verifySession();
+    if (!session) throw new Error("Não autorizado.");
+
+    const service = await prisma.barberService.update({
+      where: { id: parsedInput.serviceId },
+      data: {
+        name: parsedInput.name,
+        description: parsedInput.description,
+        priceInCents: Math.round(parsedInput.price * 100),
+      },
+    });
+
+    return { service };
+  });
+
+export const deleteServiceAction = actionClient
+  .inputSchema(serviceIdSchema)
+  .action(async ({ parsedInput: { serviceId } }) => {
+    const session = await verifySession();
+    if (!session) throw new Error("Não autorizado.");
+
+    await prisma.barberService.delete({ where: { id: serviceId } });
+    return { serviceId };
+  });
+
