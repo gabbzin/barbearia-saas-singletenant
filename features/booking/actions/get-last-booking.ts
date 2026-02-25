@@ -12,13 +12,19 @@ const inputSchema = object({
 
 export const getLastBooking = actionClient
   .inputSchema(inputSchema)
-  .action(async ({ parsedInput }: { parsedInput: { userId: string } }) => {
-    const userId = parsedInput.userId;
+  .action(async ({ parsedInput }) => {
+    const { userId } = parsedInput;
     const session = await verifySession();
 
     if (!session) {
-      returnValidationErrors(inputSchema, {
+      return returnValidationErrors(inputSchema, {
         _errors: ["Usuário não autenticado."],
+      });
+    }
+
+    if (session.id !== userId) {
+      return returnValidationErrors(inputSchema, {
+        _errors: ["Usuário não autorizado."],
       });
     }
 
@@ -32,7 +38,7 @@ export const getLastBooking = actionClient
     });
 
     if (!lastBooking) {
-      returnValidationErrors(inputSchema, {
+      return returnValidationErrors(inputSchema, {
         _errors: ["Nenhuma reserva encontrada para este usuário."],
       });
     }
