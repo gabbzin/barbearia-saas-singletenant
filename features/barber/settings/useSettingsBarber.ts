@@ -1,43 +1,48 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useAction } from "next-safe-action/hooks";
 import { toast } from "sonner";
 import {
-  createDisponibility,
-  getSettingsByBarberId,
+  createDisponibilityAction,
+  getSettingsByBarberIdAction,
 } from "@/features/barber/actions/barber-actions";
 import type { TimesSchemaData } from "@/features/booking/schema/timesSchema";
+import { useSafeQuery } from "@/hooks/use-safe-query";
+
+type SettingsData = {
+  barberId: string;
+  daysOfWeek: number[];
+  startTime: string;
+  endTime: string;
+};
 
 export function useSettingsBarber(barberId: string) {
-  const queryClient = useQueryClient();
-  const key = ["settings", barberId];
+  const queryKey = ["settings", barberId];
 
-  // Hook de Busca
-  const settingsQuery = useQuery({
-    queryKey: key,
-    queryFn: () => getSettingsByBarberId({ barberId }),
-  });
+  const { executeAsync: fetchSettings } = useAction(getSettingsByBarberIdAction);
+  const { data, isLoading, isError } = useSafeQuery<{ settings: SettingsData | null }>(
+    queryKey,
+    () => fetchSettings({ barberId }),
+  );
 
-  // Mutation Única para Salvar (Já que é Upsert, Criar e Editar são a mesma ação)
-  const saveSettingsMutation = useMutation({
-    mutationFn: (data: TimesSchemaData) => createDisponibility(data, barberId),
+  const { executeAsync: saveDisponibility, isPending: isSaving } = useAction(
+    createDisponibilityAction,
+  );
 
-    onSuccess: newSettings => {
-      toast.success("Horários salvos com sucesso!");
-
-      queryClient.setQueryData(key, newSettings);
-    },
-    onError: () => {
+  const saveSettings = async (formData: TimesSchemaData) => {
+    const result = await saveDisponibility({ ...formData, barberId });
+    if (result?.serverError || result?.validationErrors) {
       toast.error("Erro ao salvar configurações.");
-    },
-  });
+      return;
+    }
+    toast.success("Horários salvos com sucesso!");
+  };
 
   return {
-    settings: settingsQuery.data,
-    isLoading: settingsQuery.isLoading,
-    isError: settingsQuery.isError,
-    saveSettings: saveSettingsMutation.mutateAsync,
-    isSaving: saveSettingsMutation.isPending,
+    settings: data?.settings ?? null,
+    isLoading,
+    isError,
+    saveSettings,
+    isSaving,
   };
 }
