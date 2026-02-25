@@ -14,10 +14,12 @@ import {
 import { getCurrentSubscriptionAction } from "../../../../features/signature/actions/get-current-subscription";
 
 export default async function Home() {
-  const user = await verifySession();
+  const [barbers, plan] = await Promise.all([
+    getBarbers(),
+    getCurrentSubscriptionAction(),
+  ]);
 
-  const barbers = await getBarbers();
-  const plan = await getCurrentSubscriptionAction();
+  const user = await verifySession();
   const nextBooking = await getNextBooking(user?.id ?? "");
 
   return (

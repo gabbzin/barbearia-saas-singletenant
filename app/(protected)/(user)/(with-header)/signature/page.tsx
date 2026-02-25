@@ -1,18 +1,29 @@
+import dynamic from "next/dynamic";
 import { getCurrentSubscription } from "@/features/user/repository/user.repository";
 import { prisma } from "@/lib/prisma";
-import ExpandableCardDemo from "@/shared/components/expandable-card";
 import { PageSection, PageSectionTitle } from "@/shared/components/ui/page";
 
-export default async function SignaturePage() {
-  const plans = await prisma.plan.findMany({
-    where: {
-      NOT: {
-        name: "FREE",
-      },
-    },
-  });
+const ExpandableCardDemo = dynamic(
+  () => import("@/shared/components/expandable-card"),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="h-96 w-full animate-pulse rounded-xl bg-muted" />
+    ),
+  },
+);
 
-  const myPlan = await getCurrentSubscription();
+export default async function SignaturePage() {
+  const [plans, myPlan] = await Promise.all([
+    prisma.plan.findMany({
+      where: {
+        NOT: {
+          name: "FREE",
+        },
+      },
+    }),
+    getCurrentSubscription(),
+  ]);
 
   return (
     <PageSection>

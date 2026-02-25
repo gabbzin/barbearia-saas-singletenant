@@ -8,9 +8,11 @@ import {
 import { actionClient } from "@/lib/actionClient";
 
 export const getHeaderData = actionClient.action(async () => {
-  const barbers = await getBarbers();
-  const isSubscriber = await getCurrentSubscription();
-  const session = await verifySession();
+  const [barbers, isSubscriber, session] = await Promise.all([
+    getBarbers(),
+    getCurrentSubscription(),
+    verifySession(),
+  ]);
 
   return {
     barbers,
