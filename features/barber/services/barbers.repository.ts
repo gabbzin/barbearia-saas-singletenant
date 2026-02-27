@@ -20,6 +20,7 @@ export const getBarberById = cache(async (barberId: string) => {
       id: barberId,
     },
     include: {
+      services: true,
       user: true,
     },
   });

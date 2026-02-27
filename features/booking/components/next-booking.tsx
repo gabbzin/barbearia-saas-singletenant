@@ -1,6 +1,5 @@
 "use client";
 
-import type { Prisma } from "@prisma/client";
 import { addMinutes, format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { type CalendarOptions, GoogleCalendar } from "datebook";
@@ -26,24 +25,14 @@ import {
 import { PhotoAndName } from "@/shared/new_components/photo-and-name";
 import { useBarbershopStore } from "@/stores/barbershop.store";
 import AddEventCalendar from "../functions/download-ics";
+import type { getNextBooking } from "../functions/get-bookings";
 
 interface NextBookingProps {
-  nextBooking: Prisma.BookingGetPayload<{
-    include: {
-      service: {
-        include: {
-          barber: {
-            include: {
-              user: true;
-            };
-          };
-        };
-      };
-    };
-  }> | null;
+  nextBooking: Awaited<ReturnType<typeof getNextBooking>> | null;
+  lastBookingday: Date | null;
 }
 
-export function NextBooking({ nextBooking }: NextBookingProps) {
+export function NextBooking({ nextBooking, lastBookingday }: NextBookingProps) {
   const [isMounted, setIsMounted] = useState(false);
   const barbershop = useBarbershopStore(s => s.barbershop);
 
@@ -63,8 +52,14 @@ export function NextBooking({ nextBooking }: NextBookingProps) {
           <div>
             <p className="mt-2 font-bold">Você ainda não tem horário marcado</p>
             <p className="text-muted-foreground text-sm">
-              Seu último corte foi há x dias. Que tal dar um trato no visual
-              essa semana?
+              Seu último corte foi há{" "}
+              {lastBookingday
+                ? Math.floor(
+                    (Date.now() - lastBookingday.getTime()) /
+                      (1000 * 60 * 60 * 24),
+                  )
+                : 0}{" "}
+              dias. Que tal dar um trato no visual essa semana?
             </p>
           </div>
           <Button variant={"gold"}>
