@@ -15,8 +15,6 @@ const PUBLIC_API_ROUTES = ["/api/auth", "/api/stripe/webhook"];
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  console.log(pathname);
-
   // 1. Filtros iniciais (estáticos e APIs públicas)
   if (
     pathname.startsWith("/_next") ||
