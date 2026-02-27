@@ -140,7 +140,7 @@ export default async function AdminPainelPage() {
               <Card key={barber.id} className="p-2">
                 <CardContent className="flex items-center justify-start">
                   <Avatar className="my-2 mr-4 size-12">
-                    <AvatarImage src={barber.imageUrl} />
+                    <AvatarImage src={barber.user?.image ?? undefined} />
                   </Avatar>
                   <p className="font-bold text-lg">{barber.user?.name}</p>
                 </CardContent>
