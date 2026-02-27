@@ -2,18 +2,18 @@
 "use client";
 
 import { useAction } from "next-safe-action/hooks";
+import { toast } from "sonner";
+import { confirmBookingAction } from "@/features/booking/actions/confirm-booking-checkout";
 import BookingItem from "@/features/booking/components/booking-item";
 import { BookingSkeleton } from "@/features/booking/components/booking-skeleton";
 import ConfirmAlertDialog from "@/features/booking/components/confirm-booking-dialog";
 import { useBookings } from "@/features/booking/hooks/useBookings";
-import { confirmBookingAction } from "@/features/booking/actions/confirm-booking-checkout";
 import {
   Tabs,
   TabsContent,
   TabsList,
   TabsTrigger,
 } from "@/shared/components/ui/tabs";
-import { toast } from "sonner";
 
 export function ScheduleCard({ barberId }: { barberId: string }) {
   const { data: bookings, isLoading } = useBookings(barberId);
@@ -29,15 +29,15 @@ export function ScheduleCard({ barberId }: { barberId: string }) {
   });
 
   const completedBookings = bookings?.filter(
-    (booking) => booking.status === "COMPLETED",
+    booking => booking.status === "COMPLETED",
   );
 
   const scheduledBookings = bookings?.filter(
-    (booking) => booking.status === "SCHEDULED",
+    booking => booking.status === "SCHEDULED",
   );
 
   const canceledBookings = bookings?.filter(
-    (booking) => booking.status === "CANCELLED",
+    booking => booking.status === "CANCELLED",
   );
 
   if (isLoading) {
@@ -63,7 +63,7 @@ export function ScheduleCard({ barberId }: { barberId: string }) {
         <TabsContent value="scheduled">
           {scheduledBookings && scheduledBookings.length > 0 ? (
             <div className="flex flex-col gap-4">
-              {scheduledBookings?.map((booking) => (
+              {scheduledBookings?.map(booking => (
                 <ConfirmAlertDialog
                   key={booking.id}
                   handleConfirm={() => {
@@ -113,7 +113,7 @@ export function ScheduleCard({ barberId }: { barberId: string }) {
         <TabsContent value="completed">
           {completedBookings && completedBookings.length > 0 && (
             <div className="flex flex-col gap-4">
-              {completedBookings?.map((booking) => (
+              {completedBookings?.map(booking => (
                 <BookingItem
                   key={booking.id}
                   serviceName={booking.service.name}
@@ -130,7 +130,7 @@ export function ScheduleCard({ barberId }: { barberId: string }) {
         <TabsContent value="canceled">
           {canceledBookings && canceledBookings.length > 0 && (
             <div className="flex flex-col gap-4">
-              {canceledBookings?.map((booking) => (
+              {canceledBookings?.map(booking => (
                 <BookingItem
                   key={booking.id}
                   serviceName={booking.service.name}

@@ -15,7 +15,7 @@ async function seedDatabase() {
       },
     });
 
-    const images = [
+    const _images = [
       "https://utfs.io/f/c97a2dc9-cf62-468b-a851-bfd2bdde775f-16p.png",
       "https://utfs.io/f/45331760-899c-4b4b-910e-e00babb6ed81-16q.png",
       "https://utfs.io/f/5832df58-cfd7-4b3f-b102-42b7e150ced2-16r.png",
@@ -173,7 +173,6 @@ async function seedDatabase() {
 
       const barber = await prisma.barber.create({
         data: {
-          imageUrl,
           phone: ["(11) 99999-9999"],
           userId: user.user.id,
         },
@@ -214,6 +213,7 @@ async function seedDatabase() {
         name: "João Silva",
         email: "joaosilva@gmail.com",
         password: "Senha123#",
+        role: "CLIENT",
       },
     });
 

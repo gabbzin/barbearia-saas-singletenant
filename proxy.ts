@@ -1,9 +1,9 @@
-import { NextRequest, NextResponse } from "next/server";
+import { type NextRequest, NextResponse } from "next/server";
 
 // ========================================
 // CONFIGURAÇÃO
 // ========================================
-const PUBLIC_ROUTES = ["/login", "/register", "/reset-password"];
+const PUBLIC_ROUTES = ["/login", "/register", "/reset-password", "/"];
 const AUTH_ROUTES = [
   "/login",
   "/register",
@@ -19,7 +19,7 @@ export async function proxy(request: NextRequest) {
   if (
     pathname.startsWith("/_next") ||
     pathname.match(/\.(ico|png|jpg|jpeg|svg|css|js)$/) ||
-    PUBLIC_API_ROUTES.some((route) => pathname.startsWith(route))
+    PUBLIC_API_ROUTES.some(route => pathname.startsWith(route))
   ) {
     return NextResponse.next();
   }
@@ -39,9 +39,10 @@ export async function proxy(request: NextRequest) {
   const isUserLoggedIn = !!session;
   const isAuthRoute = AUTH_ROUTES.includes(pathname);
 
-  // REGRA: Se estou em página de login/register e estou logado -> vai para Home
-  if (isAuthRoute && isUserLoggedIn) {
-    return NextResponse.redirect(new URL("/", request.url));
+  // REGRA: Se estou logado -> Vai pra /client (página principal do app)
+  // REGRA SECUNDÁRIA: Se estou logado e estou em / -> Vai pra /client (evita que usuário logado veja a landing page)
+  if (isUserLoggedIn && (pathname === "/" || isAuthRoute)) {
+    return NextResponse.redirect(new URL("/client", request.url));
   }
 
   // REGRA: Se NÃO estou logado e a rota NÃO é pública -> vai para Login

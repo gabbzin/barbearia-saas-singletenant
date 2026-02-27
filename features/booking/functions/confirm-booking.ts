@@ -1,8 +1,9 @@
 "use server";
 
+import { revalidatePath } from "next/cache";
 import { verifySession } from "@/features/user/repository/user.repository";
 import { prisma } from "@/lib/prisma";
-import { revalidatePath } from "next/cache";
+import { barberRoutes } from "@/shared/constants/routes";
 
 export async function confirmBooking(bookingId: string) {
   const barber = await verifySession();
@@ -36,5 +37,5 @@ export async function confirmBooking(bookingId: string) {
     },
   });
 
-  return revalidatePath("/barber/schedule");
+  return revalidatePath(barberRoutes.schedule);
 }

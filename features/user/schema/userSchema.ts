@@ -49,3 +49,30 @@ export const recoverPasswordSchema = z
   });
 
 export type recoverPasswordSchemaType = z.infer<typeof recoverPasswordSchema>;
+
+export const editProfileSchema = z.object({
+  name: z
+    .string("Nome inválido")
+    .regex(onlyLettersRegex, onlyLettersRegexPhrase)
+    .min(2, "O nome deve ter no mínimo 2 caracteres"),
+});
+
+export type editProfileSchemaType = z.infer<typeof editProfileSchema>;
+
+export const changePasswordSchema = z
+  .object({
+    currentPassword: z
+      .string("Senha atual inválida")
+      .min(8, "A senha deve ter no mínimo 8 caracteres"),
+    newPassword: z
+      .string("Nova senha inválida")
+      .min(8, "A senha deve ter no mínimo 8 caracteres")
+      .regex(passwordRegex, passwordRegexPhrase),
+    confirmNewPassword: z.string("Confirmação de senha inválida"),
+  })
+  .refine(data => data.newPassword === data.confirmNewPassword, {
+    message: "As senhas não coincidem",
+    path: ["confirmNewPassword"],
+  });
+
+export type changePasswordSchemaType = z.infer<typeof changePasswordSchema>;

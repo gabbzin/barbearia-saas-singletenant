@@ -1,7 +1,8 @@
 import { format } from "date-fns";
 import { CheckCircleIcon, InfoIcon } from "lucide-react";
 import Link from "next/link";
-import { Alert, AlertTitle } from "../../../shared/components/ui/alert";
+import { Alert, AlertTitle } from "@/shared/components/ui/alert";
+import { clientRoutes } from "@/shared/constants/routes";
 
 interface SignatureCardProps {
   hasPlan: boolean;
@@ -33,9 +34,11 @@ export function SignatureCard(plan: SignatureCardProps) {
           <div className="flex items-center gap-2">
             <InfoIcon />
             <p>
-              Você não possui um plano ativo.{" "}
-              <br />
-              <Link href="/signature" className="font-semibold underline">
+              Você não possui um plano ativo. <br />
+              <Link
+                href={clientRoutes.signature}
+                className="font-semibold underline"
+              >
                 Deseja assinar?
               </Link>
             </p>

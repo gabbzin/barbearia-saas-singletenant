@@ -17,7 +17,7 @@ import {
   CardFooter,
   CardHeader,
 } from "@/shared/components/ui/card";
-import { ForgotPasswordButton } from "./forgot-password-button";
+import { clientRoutes } from "@/shared/constants/routes";
 
 export default function LoginForm() {
   const router = useRouter();
@@ -34,7 +34,7 @@ export default function LoginForm() {
       }
 
       router.refresh();
-      router.push("/");
+      router.push(clientRoutes.dashboard);
     } catch (error) {
       toast.error(
         error instanceof Error

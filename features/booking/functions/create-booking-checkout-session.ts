@@ -7,6 +7,7 @@ import { verifySession } from "@/features/user/repository/user.repository";
 import { actionClient } from "@/lib/actionClient";
 import { prisma } from "@/lib/prisma";
 import { stripeClient } from "@/lib/stripe-client";
+import { clientRoutes } from "@/shared/constants/routes";
 
 const inputSchema = z.object({
   serviceId: z.uuid(),
@@ -52,7 +53,7 @@ export const createBookingCheckoutSession = actionClient
       customer_email: session.email,
       payment_method_types: ["card"],
       mode: "payment",
-      success_url: `${process.env.NEXT_PUBLIC_BASE_URL}/bookings`,
+      success_url: `${process.env.NEXT_PUBLIC_BASE_URL}${clientRoutes.bookings}`,
       cancel_url: `${process.env.NEXT_PUBLIC_BASE_URL}`,
       metadata: {
         serviceId: serviceId,

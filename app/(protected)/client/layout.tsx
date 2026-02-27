@@ -1,7 +1,5 @@
-import { notFound, redirect } from "next/navigation";
+import { redirect } from "next/navigation";
 import { verifySession } from "@/features/user/repository/user.repository";
-import Header from "@/shared/components/header";
-import Footer from "@/shared/components/footer";
 
 interface ProtectedUserLayoutProps {
   children: React.ReactNode;
@@ -16,5 +14,5 @@ export default async function ProtectedUserLayout({
     return redirect("/barber/dashboard");
   }
 
-  return children;
+  return <div className="pb-20">{children}</div>;
 }

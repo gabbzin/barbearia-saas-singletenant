@@ -11,6 +11,7 @@ const badgeVariants = cva(
       variant: {
         success:
           "border-transparent bg-emerald-600 text-white [a&]:hover:bg-emerald-700 dark:bg-emerald-700 dark:[a&]:hover:bg-emerald-800 focus-visible:ring-emerald-600/20 dark:focus-visible:ring-emerald-600/40",
+        gold: "border border-gold/30 bg-gold/10 text-gold font-bold [a&]:hover:bg-gold/90 focus-visible:ring-gold/20 dark:focus-visible:ring-gold/40 px-3 py-1.5",
         default:
           "border-transparent bg-primary text-primary-foreground [a&]:hover:bg-primary/90",
         secondary:

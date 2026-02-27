@@ -1,83 +1,62 @@
 "use server";
 
-import type { TimesSchemaData } from "@/features/booking/schema/timesSchema";
+import { z } from "zod";
+import { timesSchema } from "@/features/booking/schema/timesSchema";
+import { actionClient } from "@/lib/actionClient";
 import { prisma } from "@/lib/prisma";
 
-// Aqui vão as ações dos serviços do barbeiro
+const barberIdSchema = z.object({ barberId: z.string() });
 
-export async function getSettingsByBarberId({
-  barberId,
-}: {
-  barberId: string;
-}) {
-  try {
+export const getSettingsByBarberIdAction = actionClient
+  .inputSchema(barberIdSchema)
+  .action(async ({ parsedInput: { barberId } }) => {
     const disponibilities = await prisma.disponibility.findMany({
-      where: {
-        barberId: barberId,
-      },
+      where: { barberId },
     });
 
     if (!disponibilities || disponibilities.length === 0) {
-      return null;
+      return { settings: null };
     }
 
-    // Como o front-end espera um array de dias e um horário único,
-    // reconstruímos esse objeto a partir dos registros do banco.
-    // Assumimos que, se editado via UI atual, o horário é igual para todos.
     return {
-      barberId,
-      daysOfWeek: disponibilities.map(d => d.dayOfWeek),
-      startTime: disponibilities[0].startTime,
-      endTime: disponibilities[0].endTime,
-    };
-  } catch (error) {
-    console.error("Erro no Prisma:", error);
-    throw new Error("Não foi possível buscar as configurações.");
-  }
-}
-
-export async function createDisponibility(
-  data: TimesSchemaData,
-  barberId: string,
-) {
-  const selectedDates: number[] = [];
-
-  for (let i = 0; i <= 6; i++) {
-    if (data[i.toString() as "0" | "1" | "2" | "3" | "4" | "5" | "6"]) {
-      selectedDates.push(i);
-    }
-  }
-
-  const startTime = data.horario_abertura;
-  const endTime = data.horario_fechamento;
-
-  // Usamos transaction para garantir que limpamos os antigos e criamos os novos
-  await prisma.$transaction(async tx => {
-    // 1. Remove disponibilidade anterior desse barbeiro
-    await tx.disponibility.deleteMany({
-      where: {
-        barberId: barberId,
+      settings: {
+        barberId,
+        daysOfWeek: disponibilities.map(d => d.dayOfWeek),
+        startTime: disponibilities[0].startTime,
+        endTime: disponibilities[0].endTime,
       },
-    });
-
-    // 2. Cria novas entradas para cada dia selecionado
-    if (selectedDates.length > 0) {
-      await tx.disponibility.createMany({
-        data: selectedDates.map(day => ({
-          barberId: barberId,
-          dayOfWeek: day,
-          startTime: startTime,
-          endTime: endTime,
-        })),
-      });
-    }
+    };
   });
 
-  // Retornamos o formato esperado pelo front-end para atualizar o cache
-  return {
-    daysOfWeek: selectedDates,
-    startTime: startTime,
-    endTime: endTime,
-    barberId: barberId,
-  };
-}
+export const createDisponibilityAction = actionClient
+  .inputSchema(timesSchema.extend({ barberId: z.string() }))
+  .action(async ({ parsedInput }) => {
+    const { barberId, horario_abertura, horario_fechamento, ...days } = parsedInput;
+    const selectedDates = Object.entries(days)
+      .filter(([, val]) => val === true)
+      .map(([key]) => Number(key));
+
+    await prisma.$transaction(async tx => {
+      await tx.disponibility.deleteMany({ where: { barberId } });
+      if (selectedDates.length > 0) {
+        await tx.disponibility.createMany({
+          data: selectedDates.map(day => ({
+            barberId,
+            dayOfWeek: day,
+            startTime: horario_abertura,
+            endTime: horario_fechamento,
+          })),
+        });
+      }
+    });
+
+    return {
+      settings: {
+        daysOfWeek: selectedDates,
+        startTime: horario_abertura,
+        endTime: horario_fechamento,
+        barberId,
+      },
+    };
+  });
+

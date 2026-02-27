@@ -1,14 +1,15 @@
 "use client";
 
+import { EllipsisIcon } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useAction } from "next-safe-action/hooks";
 import { useState } from "react";
 import { toast } from "sonner";
 import type { BookingClient } from "@/features/booking/components/booking-client";
+import CancelAlertDialog from "@/features/booking/components/cancel-booking-alert-dialog";
 import { cancelBooking } from "@/features/booking/functions/cancel-booking";
 import { cancelBookingCheckoutSession } from "@/features/booking/functions/cancel-booking-checkout-session";
-import CancelAlertDialog from "@/features/booking/components/cancel-booking-alert-dialog";
 import { PhoneItem } from "@/shared/components/phone-item";
 import { Avatar, AvatarImage } from "@/shared/components/ui/avatar";
 import { Button } from "@/shared/components/ui/button";
@@ -19,18 +20,21 @@ import {
   SheetDescription,
   SheetHeader,
   SheetTitle,
+  SheetTrigger,
 } from "@/shared/components/ui/sheet";
 
 interface CancelBookingProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   booking: BookingClient | null;
+  showTrigger?: boolean;
 }
 
 export function CancelBooking({
   open,
   onOpenChange,
   booking,
+  showTrigger = false,
 }: CancelBookingProps) {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
@@ -94,6 +98,14 @@ export function CancelBooking({
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
+      {showTrigger && (
+        <SheetTrigger asChild>
+          <Button variant={"secondary"}>
+            <EllipsisIcon />
+            Ver detalhes
+          </Button>
+        </SheetTrigger>
+      )}
       <SheetContent className="w-[90%] max-w-92.5 overflow-y-auto p-0">
         <SheetHeader className="px-5 py-6 text-left">
           <SheetTitle>Informações da Reserva</SheetTitle>

@@ -1,7 +1,7 @@
 "use server";
 
-import { prisma } from "@/lib/prisma";
 import { endOfDay, startOfDay } from "date-fns";
+import { prisma } from "@/lib/prisma";
 
 export async function getBookingsBarber(barberId: string) {
   const startDay = startOfDay(new Date());
@@ -20,7 +20,6 @@ export async function getBookingsBarber(barberId: string) {
     },
   });
 
-  console.log(bookings);
   return bookings;
 }
 

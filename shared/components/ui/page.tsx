@@ -1,5 +1,5 @@
 export const PageContainer = ({ children }: { children: React.ReactNode }) => {
-  return <div className="space-y-6 p-5">{children}</div>;
+  return <div className="">{children}</div>;
 };
 
 export const PageSectionTitle = ({
@@ -15,7 +15,11 @@ export const PageSectionTitle = ({
 };
 
 export const PageSection = ({ children }: { children: React.ReactNode }) => {
-  return <div className="space-y-3 px-5 py-1 my-2">{children}</div>;
+  return (
+    <div className="my-2 w-full space-y-3 px-5 py-1 lg:mx-auto lg:max-w-[60%]">
+      {children}
+    </div>
+  );
 };
 
 export const PageSectionScroller = ({
