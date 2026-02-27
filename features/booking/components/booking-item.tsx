@@ -1,48 +1,38 @@
 "use client";
 
 import { Avatar, AvatarImage } from "@/shared/components/ui/avatar";
+import { Badge } from "@/shared/components/ui/badge";
 import { Card } from "@/shared/components/ui/card";
 
 interface BookingItemProps {
-  // status: "confirmed" | "finished" | "cancelled";
   serviceName: string;
   date: Date;
   counterPart: {
     name: string;
     imageUrl: string;
   };
+  status?: "SCHEDULED" | "PENDING" | "COMPLETED" | "CANCELLED";
   onClick?: () => void;
 }
 
 const BookingItem = ({
-  // status,
   serviceName,
   date,
   counterPart,
+  status,
   onClick,
 }: BookingItemProps) => {
-  // const getBadgeVariant = (s: string) => {
-  //   if (s === "confirmed") return "success";
-  //   if (s === "cancelled") return "destructive";
-  //   return "secondary";
-  // };
   return (
     <Card
       className="flex w-full min-w-full cursor-pointer flex-row items-center justify-between p-0 transition-opacity hover:opacity-75"
       onClick={onClick}
     >
-      {/* ESQUERDA - INFORMAÇÕES DO SERVIÇO E BARBEIRO */}
       <div className="flex flex-1 flex-col gap-2 p-4">
-        {/* Já tem os tabs para indicar */}
-        {/* <Badge variant={getBadgeVariant(status)} className="font-bold">
-          {status === "confirmed"
-            ? "CONFIRMADO"
-            : status === "cancelled"
-              ? "CANCELADO"
-              : "FINALIZADO"}
-        </Badge> */}
         <div className="flex flex-col gap-2">
-          <p className="font-bold">{serviceName}</p>
+          <p className="text-lg">
+            <span className="font-bold">Serviço Selecionado: </span>
+            {serviceName}
+          </p>
           <div className="flex items-center gap-2">
             <Avatar>
               <AvatarImage src={counterPart.imageUrl} />
@@ -54,6 +44,11 @@ const BookingItem = ({
 
       {/* DIREITA - INFORMAÇÔES DO HORÁRIO */}
       <div className="flex h-full flex-col items-center justify-center border-l p-4 py-3">
+        {status === "PENDING" && (
+          <Badge variant="secondary" className="mb-2">
+            Aguardando confirmação
+          </Badge>
+        )}
         <p className="text-xs capitalize">
           {date.toLocaleDateString("pt-BR", { month: "long" })}
         </p>

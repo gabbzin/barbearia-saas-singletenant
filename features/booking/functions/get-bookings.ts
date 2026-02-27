@@ -20,7 +20,6 @@ export async function getBookingsBarber(barberId: string) {
     },
   });
 
-  console.log(bookings);
   return bookings;
 }
 

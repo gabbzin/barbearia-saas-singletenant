@@ -11,6 +11,7 @@ import {
   MapPinIcon,
   PlusIcon,
 } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { IconBadge } from "@/shared/components/icon-badge";
 import { Badge } from "@/shared/components/ui/badge";
@@ -22,6 +23,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/shared/components/ui/card";
+import { clientRoutes } from "@/shared/constants/routes";
 import { PhotoAndName } from "@/shared/new_components/photo-and-name";
 import { useBarbershopStore } from "@/stores/barbershop.store";
 import AddEventCalendar from "../functions/download-ics";
@@ -35,6 +37,8 @@ interface NextBookingProps {
 export function NextBooking({ nextBooking, lastBookingday }: NextBookingProps) {
   const [isMounted, setIsMounted] = useState(false);
   const barbershop = useBarbershopStore(s => s.barbershop);
+
+  const { push } = useRouter();
 
   useEffect(() => {
     setIsMounted(true);
@@ -152,7 +156,12 @@ export function NextBooking({ nextBooking, lastBookingday }: NextBookingProps) {
           mutedPhrase="Barbeiro"
         />
         <div className="flex gap-3">
-          <Button variant={"secondary"}>
+          <Button
+            variant={"secondary"}
+            onClick={() => {
+              push(clientRoutes.bookings);
+            }}
+          >
             <EllipsisIcon />
             Ver detalhes
           </Button>

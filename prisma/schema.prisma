@@ -202,9 +202,10 @@ model Plan {
 // ========================================================
 
 enum BookingStatus {
-  SCHEDULED
-  COMPLETED
-  CANCELLED
+  SCHEDULED // Agendado
+  // PENDING // Pendente (ex: Aguardando confirmação do barbeiro)
+  COMPLETED // Finalizado
+  CANCELLED // Cancelado
 }
 
 model Booking {

@@ -1,31 +1,26 @@
 "use client";
 
-import type { Barber, BarberService, Booking, User } from "@prisma/client";
 import { useState } from "react";
 import BookingItem from "@/features/booking/components/booking-item";
 import { CancelBooking } from "@/features/booking/components/cancel-booking";
-import { PageContainer, PageSection } from "@/shared/components/ui/page";
+import { PageSection, PageSectionTitle } from "@/shared/components/ui/page";
 import {
   Tabs,
   TabsContent,
   TabsList,
   TabsTrigger,
 } from "@/shared/components/ui/tabs";
+import type { getBookingsUser } from "../functions/get-bookings";
 
 interface BookingsClientProps {
-  bookings: (Booking & {
-    service: BarberService & {
-      barber: Barber & {
-        user: User | null;
-      };
-    };
-  })[];
+  bookings: Awaited<ReturnType<typeof getBookingsUser>> | null;
 }
 
 export type BookingClient = {
   id: string;
   date: Date;
   stripeChargeId?: string | null;
+  status: "SCHEDULED" | "PENDING" | "COMPLETED" | "CANCELLED";
   service: {
     name: string;
     priceInCents: number;
@@ -43,12 +38,12 @@ export default function BookingsClient({ bookings }: BookingsClientProps) {
   );
   const [isSheetOpen, setIsSheetOpen] = useState(false);
 
-  const now = new Date();
-
   if (!bookings || bookings.length === 0) {
     return (
       <PageSection>
-        <h1 className="font-bold text-xl">Agendamentos</h1>
+        <PageSectionTitle>
+          Agendamentos
+        </PageSectionTitle>
         <div className="mt-4">
           <p className="text-muted-foreground text-sm">
             Você não tem agendamentos.
@@ -58,16 +53,16 @@ export default function BookingsClient({ bookings }: BookingsClientProps) {
     );
   }
 
-  const confirmedBookings = bookings.filter(
-    (booking) => booking.date > now && booking.status === "SCHEDULED",
+  const scheduledBookings = bookings.filter(
+    booking => booking.status === "SCHEDULED",
   );
 
   const cancelledBookings = bookings.filter(
-    (booking) => booking.status === "CANCELLED",
+    booking => booking.status === "CANCELLED",
   );
 
   const finishedBookings = bookings.filter(
-    (booking) => booking.date <= now && booking.status !== "CANCELLED",
+    booking => booking.status === "COMPLETED",
   );
 
   const handleClickBooking = (booking: BookingClient) => {
@@ -75,97 +70,60 @@ export default function BookingsClient({ bookings }: BookingsClientProps) {
     setIsSheetOpen(true);
   };
 
+  const tabs = [
+    { label: "Confirmados", value: "scheduled" },
+    { label: "Cancelados", value: "cancelled" },
+    { label: "Finalizados", value: "finished" },
+  ];
+
   return (
     <>
-      <PageContainer>
-        <h1 className="font-bold text-xl">Agendamentos</h1>
-        <Tabs defaultValue="confirmed">
+      <PageSection>
+        <PageSectionTitle>Agendamentos</PageSectionTitle>
+        <Tabs defaultValue={tabs[0].value}>
           <TabsList className="mb-4">
-            <TabsTrigger value="confirmed">Confirmados</TabsTrigger>
-            <TabsTrigger value="cancelled">Cancelados</TabsTrigger>
-            <TabsTrigger value="finished">Finalizados</TabsTrigger>
+            {tabs.map(tab => (
+              <TabsTrigger key={tab.value} value={tab.value}>
+                {tab.label}
+              </TabsTrigger>
+            ))}
           </TabsList>
-          <TabsContent value="confirmed">
-            <PageSection>
-              {confirmedBookings.length === 0 ? (
-                <p className="text-muted-foreground text-sm">
-                  Você não tem agendamentos confirmados.
-                </p>
-              ) : (
-                confirmedBookings.map((booking) => (
-                  <BookingItem
-                    key={booking.id}
-                    serviceName={booking.service.name}
-                    date={booking.date}
-                    counterPart={{
-                      name: booking.service.barber.user?.name ?? "Barbeiro",
-                      imageUrl: booking.service.barber.imageUrl,
-                    }}
-                    onClick={() =>
-                      handleClickBooking({
-                        id: booking.id,
-                        date: booking.date,
-                        stripeChargeId: booking.stripeChargeId,
-                        service: {
-                          name: booking.service.name,
-                          priceInCents: booking.service.priceInCents,
-                        },
-                        barber: {
-                          name: booking.service.barber.user?.name ?? "Barbeiro",
-                          imageUrl: booking.service.barber.imageUrl,
-                          phone: booking.service.barber.phone,
-                        },
-                      })
+          {tabs.map(tab => {
+            const list =
+              tab.value === "scheduled"
+                ? scheduledBookings
+                : tab.value === "cancelled"
+                  ? cancelledBookings
+                  : finishedBookings;
+
+            const emptyMessages: Record<
+              (typeof tabs)[number]["value"],
+              string
+            > = {
+              scheduled: "Você não tem agendamentos marcados ou pendentes.",
+              cancelled: "Você não tem agendamentos cancelados.",
+              finished: "Você não tem agendamentos finalizados.",
+            };
+
+            return (
+              <TabsContent key={tab.value} value={tab.value}>
+                {list.length === 0 ? (
+                  <p className="text-muted-foreground text-sm">
+                    {emptyMessages[tab.value]}
+                  </p>
+                ) : (
+                  <BookingDetails
+                    bookings={list}
+                    onClick={
+                      tab.value === "scheduled" ? handleClickBooking : undefined
                     }
                   />
-                ))
-              )}
-            </PageSection>
-          </TabsContent>
-          <TabsContent value="cancelled">
-            <PageSection>
-              {cancelledBookings.length === 0 ? (
-                <p className="text-muted-foreground text-sm">
-                  Você não tem agendamentos cancelados.
-                </p>
-              ) : (
-                cancelledBookings.map((booking) => (
-                  <BookingItem
-                    key={booking.id}
-                    serviceName={booking.service.name}
-                    date={booking.date}
-                    counterPart={{
-                      name: booking.service.barber.user?.name ?? "Barbeiro",
-                      imageUrl: booking.service.barber.imageUrl,
-                    }}
-                  />
-                ))
-              )}
-            </PageSection>
-          </TabsContent>
-          <TabsContent value="finished">
-            <PageSection>
-              {finishedBookings.length === 0 ? (
-                <p className="text-muted-foreground text-sm">
-                  Você não tem agendamentos finalizados.
-                </p>
-              ) : (
-                finishedBookings.map((booking) => (
-                  <BookingItem
-                    key={booking.id}
-                    serviceName={booking.service.name}
-                    date={booking.date}
-                    counterPart={{
-                      name: booking.service.barber.user?.name ?? "Barbeiro",
-                      imageUrl: booking.service.barber.imageUrl,
-                    }}
-                  />
-                ))
-              )}
-            </PageSection>
-          </TabsContent>
+                )}
+              </TabsContent>
+            );
+          })}
         </Tabs>
-      </PageContainer>
+      </PageSection>
 
       <CancelBooking
         open={isSheetOpen}
@@ -175,3 +133,49 @@ export default function BookingsClient({ bookings }: BookingsClientProps) {
     </>
   );
 }
+
+interface BookingDetailsProps {
+  bookings: Awaited<ReturnType<typeof getBookingsUser>>;
+  onClick?: (booking: BookingClient) => void;
+}
+
+const BookingDetails = ({ bookings, onClick }: BookingDetailsProps) => {
+  if (!bookings || bookings.length === 0) {
+    return null;
+  }
+
+  return bookings.map(booking => {
+    const isPendingVisual =
+      booking.status === "SCHEDULED" && booking.date < new Date();
+
+    const bookingClient: BookingClient = {
+      id: booking.id,
+      date: booking.date,
+      stripeChargeId: booking.stripeChargeId,
+      status: booking.status,
+      service: {
+        name: booking.service.name,
+        priceInCents: booking.service.priceInCents,
+      },
+      barber: {
+        name: booking.service.barber.user?.name ?? "Barbeiro",
+        imageUrl: booking.service.barber.user?.image ?? "/default-avatar.png",
+        phone: booking.service.barber.phone,
+      },
+    };
+
+    return (
+      <BookingItem
+        key={booking.id}
+        serviceName={booking.service.name}
+        date={booking.date}
+        counterPart={{
+          name: booking.service.barber.user?.name ?? "Barbeiro",
+          imageUrl: booking.service.barber.user?.image ?? "/default-avatar.png",
+        }}
+        status={isPendingVisual ? "PENDING" : booking.status}
+        onClick={onClick ? () => onClick(bookingClient) : undefined}
+      />
+    );
+  });
+};

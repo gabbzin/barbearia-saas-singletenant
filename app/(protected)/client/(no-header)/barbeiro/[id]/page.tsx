@@ -21,7 +21,9 @@ import {
 import { Separator } from "@/shared/components/ui/separator";
 import { clientRoutes } from "@/shared/constants/routes";
 
-const BarberPage = async (props: PageProps<"/client/barbeiro/[id]">) => {
+const route = clientRoutes.barberDetailsconst;
+
+const BarberPage = async (props: PageProps<typeof route>) => {
   const { id } = await props.params;
 
   const barber = await getBarberById(id);
