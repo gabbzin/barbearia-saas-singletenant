@@ -2,31 +2,31 @@ import Link from "next/link";
 import BarberItem from "@/features/barber/components/barber-item";
 import { getBarbers } from "@/features/barber/services/barbers.repository";
 import { getHistory } from "@/features/booking/actions/get-history";
-import { getLastBooking } from "@/features/booking/actions/get-last-booking";
+import { getLastBookingAction } from "@/features/booking/actions/get-last-booking-action";
+import { getNextBookingAction } from "@/features/booking/actions/get-next-booking-action";
 import { NextBooking } from "@/features/booking/components/next-booking";
-import { getNextBooking } from "@/features/booking/functions/get-bookings";
 import { getCurrentSubscriptionAction } from "@/features/signature/actions/get-current-subscription";
 import { SignatureCard } from "@/features/signature/components/signature-card";
-import { verifySession } from "@/features/user/repository/user.repository";
 import { PageSection, PageSectionTitle } from "@/shared/components/ui/page";
 import { ClientNavs } from "@/shared/new_components/client-navs";
 import { HistoryList } from "@/shared/new_components/history-list";
 
 export default async function Home() {
-  const user = await verifySession();
-
-  const barbers = await getBarbers();
-  const history = await getHistory();
-  const plan = await getCurrentSubscriptionAction();
-  const nextBooking = await getNextBooking(user?.id ?? "");
-  const lastBookingday = await getLastBooking();
+  const [barbers, history, plan, nextBooking, lastBookingday] =
+    await Promise.all([
+      getBarbers(),
+      getHistory(),
+      getCurrentSubscriptionAction(),
+      getNextBookingAction(),
+      getLastBookingAction(),
+    ]);
 
   return (
     <main className="flex flex-col gap-2">
       {/* Próximo agendamento */}
       <PageSection>
         <NextBooking
-          nextBooking={nextBooking}
+          nextBooking={nextBooking.data ?? null}
           lastBookingday={lastBookingday.data?.lastDate ?? null}
         />
       </PageSection>

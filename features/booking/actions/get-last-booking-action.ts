@@ -4,7 +4,7 @@ import { verifySession } from "@/features/user/repository/user.repository";
 import { actionClient } from "@/lib/actionClient";
 import { prisma } from "@/lib/prisma";
 
-export const getLastBooking = actionClient.action(async () => {
+export const getLastBookingAction = actionClient.action(async () => {
   const session = await verifySession();
 
   if (!session) {

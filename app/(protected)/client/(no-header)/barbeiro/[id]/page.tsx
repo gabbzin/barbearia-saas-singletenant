@@ -68,20 +68,33 @@ const BarberPage = async (props: PageProps<"/client/barbeiro/[id]">) => {
                 imageUrl={barber.user?.image}
                 size={12}
               />
-              <h1 className="font-bold text-foreground text-xl">
-                {barber.user?.name}
-              </h1>
+              <div className="space-y-1">
+                <h1 className="font-bold text-foreground text-xl">
+                  {barber.user?.name}
+                </h1>
+                {barber.services.length > 0 ? (
+                  <p className="text-muted-foreground text-sm">
+                    {barber.services.length} serviços disponíveis
+                  </p>
+                ) : null}
+              </div>
             </div>
           </PageSection>
 
           <Separator />
 
           <PageSection>
-            <PageSectionTitle>Redes Sociais</PageSectionTitle>
-            <div className="mt-2 flex flex-1 items-center justify-center gap-6">
-              <RiFacebookFill />
-              <RiInstagramFill />
-              <RiTwitterXFill />
+            <PageSectionTitle>Redes sociais</PageSectionTitle>
+            <div className="mt-2 flex flex-wrap items-center gap-3">
+              <Button size="icon" variant="outline">
+                <RiInstagramFill className="size-4" />
+              </Button>
+              <Button size="icon" variant="outline">
+                <RiFacebookFill className="size-4" />
+              </Button>
+              <Button size="icon" variant="outline">
+                <RiTwitterXFill className="size-4" />
+              </Button>
             </div>
           </PageSection>
 
@@ -89,7 +102,7 @@ const BarberPage = async (props: PageProps<"/client/barbeiro/[id]">) => {
 
           <PageSection>
             <PageSectionTitle>Serviços</PageSectionTitle>
-            <div className="grid gap-4 space-y-3 lg:grid-cols-2">
+            <div className="grid gap-4 md:grid-cols-2">
               {barber.services.map(service => (
                 <ServiceItem
                   key={service.id}
@@ -112,7 +125,7 @@ const BarberPage = async (props: PageProps<"/client/barbeiro/[id]">) => {
                 barber.phone.map(phone => (
                   <div
                     key={phone}
-                    className="flex w-full flex-col items-center justify-between"
+                    className="flex w-full flex-col items-start justify-between"
                   >
                     <PhoneItem phone={phone} />
                   </div>
