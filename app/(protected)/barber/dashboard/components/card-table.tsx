@@ -35,13 +35,13 @@ export function CardTable(props: CardTableProps) {
         ) : null}
       </CardHeader>
       <CardContent className="p-0">
-        <Table className="block max-h-52 w-full overflow-y-auto text-left">
-          <TableHeader className="sticky top-0 z-100 border-b bg-muted/40">
+        <Table className="w-full text-left">
+          <TableHeader className="border-b bg-muted/40">
             <TableRow>
               {props.tableTitles.map(item => (
                 <TableHead
                   key={item}
-                  className="w-full px-6 py-3 font-semibold text-muted-foreground text-xs uppercase tracking-wide"
+                  className="px-6 py-3 font-semibold text-muted-foreground text-xs uppercase tracking-wide"
                 >
                   {item}
                 </TableHead>

@@ -13,7 +13,7 @@ import CardInfo from "@/features/barber/components/card-info";
 import { verifySession } from "@/features/user/repository/user.repository";
 import { prisma } from "@/lib/prisma";
 import { Alert, AlertTitle } from "@/shared/components/ui/alert";
-import { Avatar, AvatarImage } from "@/shared/components/ui/avatar";
+import { Badge } from "@/shared/components/ui/badge";
 import {
   Card,
   CardContent,
@@ -93,10 +93,20 @@ export default async function BarberDashboardPage() {
 
   const info = await getBarberDashboardInfos({ barberId });
 
-  const horariosData = await prisma.disponibility.findFirst({
-    where: { barberId: barberId },
+  const horariosData = await prisma.disponibility.findUnique({
+    where: {
+      barberId_dayOfWeek: {
+        barberId: barberId,
+        dayOfWeek: new Date().getDay(),
+      },
+    },
   });
 
+  console.log(
+    horariosData?.startTime,
+    horariosData?.endTime,
+    typeof horariosData?.startTime,
+  );
   const defaultTimesValues = horariosData
     ? {
         horario_abertura: horariosData.startTime,
@@ -114,7 +124,7 @@ export default async function BarberDashboardPage() {
   return (
     <main className="pb-20">
       <PageSection>
-        {horariosData && (
+        {!horariosData && (
           <div className="mb-4">
             <Alert>
               <AlertTitle className="flex items-center gap-2">
@@ -163,8 +173,12 @@ export default async function BarberDashboardPage() {
             />
             <CardInfo
               Icon={Calendar}
-              title="Dia de hoje"
-              value={format(new Date(), "dd 'de' MMM")}
+              title={horariosData?.endTime ? "Trabalho até:" : "Dia de hoje"}
+              value={
+                horariosData?.endTime
+                  ? horariosData.endTime
+                  : format(new Date(), "dd 'de' MMM")
+              }
               variant="yellow"
             />
           </section>
@@ -172,7 +186,7 @@ export default async function BarberDashboardPage() {
           <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
             <div className="space-y-8 lg:col-span-2">
               <CardTable
-                titleCard="Próximos agendamentos (máx 5)"
+                titleCard="Próximos agendamentos (máx. 5)"
                 linkText="Ver agenda completa"
                 url="/barber/schedule"
                 tableTitles={["Cliente", "Serviço", "Data/Hora", "Status"]}
@@ -181,15 +195,6 @@ export default async function BarberDashboardPage() {
                   <TableRow className="border-t">
                     <TableCell className="px-6 py-4">
                       <div className="flex items-center gap-3">
-                        <Avatar>
-                          <AvatarImage
-                            src={info.data.nextBooking.user.image ?? undefined}
-                            alt={
-                              info.data.nextBooking.user.name ?? "User Avatar"
-                            }
-                            className="object-cover"
-                          />
-                        </Avatar>
                         <div className="flex flex-col">
                           <span className="font-semibold text-sm">
                             {info.data.nextBooking.user.name}
@@ -197,23 +202,27 @@ export default async function BarberDashboardPage() {
                         </div>
                       </div>
                     </TableCell>
-                    <TableCell className="px-6 py-4 text-muted-foreground text-sm">
+                    <TableCell className="px-6 py-4 font-semibold text-muted-foreground text-sm">
                       {info.data.nextBooking.service.name}
                     </TableCell>
                     <TableCell className="px-6 py-4 text-sm">
                       <p className="font-semibold">
-                        {info.data.nextBooking.date
-                          .toTimeString()
-                          .substring(0, 5)}
+                        {format(info.data.nextBooking.date, "HH:mm")}
                       </p>
                       <p className="font-semibold text-[10px] text-muted-foreground uppercase">
                         Hoje
                       </p>
                     </TableCell>
                     <TableCell className="px-6 py-4 text-sm">
-                      <span className="rounded-full bg-emerald-100 px-3 py-1 font-semibold text-[10px] text-emerald-700 uppercase tracking-tight">
-                        Confirmado
-                      </span>
+                      <Badge
+                        variant={
+                          info.data.nextBooking.status === "CANCELLED"
+                            ? "destructive"
+                            : "success"
+                        }
+                      >
+                        {info.data.nextBooking.status.toUpperCase()}
+                      </Badge>
                     </TableCell>
                   </TableRow>
                 ) : (

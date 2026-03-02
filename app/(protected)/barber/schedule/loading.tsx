@@ -1,14 +1,10 @@
 import { BookingSkeleton } from "@/features/booking/components/booking-skeleton";
-import Footer from "@/shared/components/footer";
-import Header from "@/shared/components/header";
 import { PageContainer, PageSection } from "@/shared/components/ui/page";
 
 export default function Loading() {
   return (
     <div className="flex min-h-screen flex-1 flex-col justify-between">
       <div>
-        <Header />
-
         <PageContainer>
           {/* Título estático para não pular layout */}
           <h1 className="mb-4 font-bold text-xl">Agendamentos</h1>
@@ -31,8 +27,6 @@ export default function Loading() {
           </PageSection>
         </PageContainer>
       </div>
-
-      <Footer />
     </div>
   );
 }
