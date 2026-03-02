@@ -213,7 +213,6 @@ async function seedDatabase() {
         name: "João Silva",
         email: "joaosilva@gmail.com",
         password: "Senha123#",
-        role: "CLIENT",
       },
     });
 
