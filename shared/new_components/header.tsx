@@ -4,6 +4,7 @@ import { UserIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useUserStore } from "@/stores/user.store";
+import { SidebarMenu } from "../components/sidebar-menu";
 import { AnimatedThemeToggler } from "../components/ui/animated-theme-toggler";
 import { Button } from "../components/ui/button";
 import { publicRoutes } from "../constants/routes";
@@ -40,6 +41,10 @@ export function Header() {
           <UserIcon />
           {width > 640 && "Meu Perfil"}
         </Button>
+        <SidebarMenu
+          isSubscriber={user?.subscription?.hasPlan ?? false}
+          role={user?.role ?? "USER"}
+        />
       </div>
     </header>
   );

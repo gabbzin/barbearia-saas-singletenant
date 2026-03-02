@@ -2,6 +2,12 @@ export const publicRoutes = {
   profile: "/profile",
 };
 
+export const authRoutes = {
+  login: "/login",
+  register: "/register",
+  forgotPassword: "/forgot-password",
+};
+
 export const clientRoutes = {
   dashboard: "/client",
   bookings: "/client/bookings",

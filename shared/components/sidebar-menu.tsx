@@ -1,6 +1,5 @@
 "use client";
 
-import { authClient } from "@/lib/auth-client";
 import type { Barber, User } from "@prisma/client";
 import {
   CalendarIcon,
@@ -10,21 +9,21 @@ import {
   LogOut,
   type LucideIcon,
   MenuIcon,
-  ScissorsIcon,
   UserIcon,
   UserStar,
   X,
 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { authClient } from "@/lib/auth-client";
 import CancelAlertDialog from "../../features/booking/components/cancel-booking-alert-dialog";
-import { ProfilePhoto } from "./profile-photo";
 import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "./ui/accordion";
+  authRoutes,
+  barberRoutes,
+  clientRoutes,
+  publicRoutes,
+} from "../constants/routes";
+import { ProfilePhoto } from "./profile-photo";
 import { Button } from "./ui/button";
 import { Separator } from "./ui/separator";
 import {
@@ -42,17 +41,17 @@ interface Route {
 }
 
 const ROUTES: Route[] = [
-  { name: "Início", path: "/", icon: HomeIcon },
-  { name: "Barbeiros", path: "/barbeiros", icon: ScissorsIcon },
-  { name: "Agendamentos", path: "/bookings", icon: CalendarIcon },
-  { name: "Assinaturas", path: "/signature", icon: CreditCardIcon },
-  { name: "Perfil", path: "/profile", icon: UserIcon },
+  { name: "Início", path: clientRoutes.dashboard, icon: HomeIcon },
+  // { name: "Barbeiros", path: , icon: ScissorsIcon },
+  { name: "Agendamentos", path: clientRoutes.bookings, icon: CalendarIcon },
+  { name: "Assinaturas", path: clientRoutes.signature, icon: CreditCardIcon },
+  { name: "Perfil", path: publicRoutes.profile, icon: UserIcon },
 ];
 
 // Rotas exclusivas de barbeiro
 const BARBER_ROUTES: Route[] = [
-  { name: "Dashboard", path: "/barber/dashboard", icon: HomeIcon },
-  { name: "Agenda", path: "/barber/schedule", icon: CalendarIcon },
+  { name: "Dashboard", path: barberRoutes.dashboard, icon: HomeIcon },
+  { name: "Agenda", path: barberRoutes.schedule, icon: CalendarIcon },
 ];
 
 const ADMIN_ROUTES: Route[] = [
@@ -60,16 +59,12 @@ const ADMIN_ROUTES: Route[] = [
 ];
 
 interface SidebarMenuProps {
-  barbers: (Barber & { user: User | null })[];
+  barbers?: (Barber & { user: User | null })[];
   isSubscriber: boolean;
-  role?: string;
+  role: string;
 }
 
-export const SidebarMenu = ({
-  barbers,
-  isSubscriber,
-  role,
-}: SidebarMenuProps) => {
+export const SidebarMenu = ({ isSubscriber, role }: SidebarMenuProps) => {
   const { data: session } = authClient.useSession();
   const { push } = useRouter();
 
@@ -77,7 +72,7 @@ export const SidebarMenu = ({
     await authClient.signOut({
       fetchOptions: {
         onSuccess: () => {
-          push("/login");
+          push(authRoutes.login);
         },
       },
     });
@@ -147,28 +142,29 @@ export const SidebarMenu = ({
                     </Link>
                   </Button>
                 ) : (
-                  <Accordion key={route.name} type="single" collapsible>
-                    <AccordionItem value="barbers">
-                      <AccordionTrigger className="cursor-pointer px-3 py-2 hover:bg-accent hover:text-accent-foreground hover:no-underline dark:hover:bg-accent/50">
-                        <div className="flex items-center gap-3">
-                          <route.icon className="size-4" />
-                          Barbeiros
-                        </div>
-                      </AccordionTrigger>
+                  <>Hello World</>
+                  // <Accordion key={route.name} type="single" collapsible>
+                  //   <AccordionItem value="barbers">
+                  //     <AccordionTrigger className="cursor-pointer px-3 py-2 hover:bg-accent hover:text-accent-foreground hover:no-underline dark:hover:bg-accent/50">
+                  //       <div className="flex items-center gap-3">
+                  //         <route.icon className="size-4" />
+                  //         Barbeiros
+                  //       </div>
+                  //     </AccordionTrigger>
 
-                      <AccordionContent className="flex flex-col">
-                        {barbers.map(barber => (
-                          <Link
-                            key={barber.id}
-                            href={`/barbeiro/${barber.id}`}
-                            className="px-10 py-2 text-sm hover:bg-accent hover:text-accent-foreground hover:underline dark:hover:bg-accent/50"
-                          >
-                            {barber.user?.name}
-                          </Link>
-                        ))}
-                      </AccordionContent>
-                    </AccordionItem>
-                  </Accordion>
+                  //     <AccordionContent className="flex flex-col">
+                  //       {barbers.map(barber => (
+                  //         <Link
+                  //           key={barber.id}
+                  //           href={`/barbeiro/${barber.id}`}
+                  //           className="px-10 py-2 text-sm hover:bg-accent hover:text-accent-foreground hover:underline dark:hover:bg-accent/50"
+                  //         >
+                  //           {barber.user?.name}
+                  //         </Link>
+                  //       ))}
+                  //     </AccordionContent>
+                  //   </AccordionItem>
+                  // </Accordion>
                 ),
               )}
             </div>
