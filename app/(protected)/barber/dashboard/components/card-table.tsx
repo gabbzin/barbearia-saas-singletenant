@@ -25,7 +25,7 @@ interface CardTableProps {
 
 export function CardTable(props: CardTableProps) {
   return (
-    <Card className="overflow-y-auto rounded-3xl border bg-card shadow-sm">
+    <Card className="overflow-hidden rounded-3xl border bg-card shadow-sm">
       <CardHeader className="flex flex-row items-center justify-between border-b px-6 py-4">
         <CardTitle className="font-bold text-lg">{props.titleCard}</CardTitle>
         {props.url && props.linkText ? (
@@ -35,13 +35,13 @@ export function CardTable(props: CardTableProps) {
         ) : null}
       </CardHeader>
       <CardContent className="p-0">
-        <Table className="w-full text-left">
-          <TableHeader className="border-b bg-muted/40">
+        <Table className="block max-h-52 w-full overflow-y-auto text-left">
+          <TableHeader className="sticky top-0 z-100 border-b bg-muted/40">
             <TableRow>
               {props.tableTitles.map(item => (
                 <TableHead
                   key={item}
-                  className="px-6 py-3 font-semibold text-muted-foreground text-xs uppercase tracking-wide"
+                  className="w-full px-6 py-3 font-semibold text-muted-foreground text-xs uppercase tracking-wide"
                 >
                   {item}
                 </TableHead>

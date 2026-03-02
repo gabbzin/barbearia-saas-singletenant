@@ -24,13 +24,14 @@ export function TableSettings({ barberId }: { barberId: string }) {
   return (
     <CardTable
       titleCard="Horários padrão"
-      linkText="Ajustar"
-      url="/barber/settings"
       tableTitles={["Dia da semana", "Horário"]}
     >
       {isLoading && !settings ? (
         <TableRow>
-          <TableCell colSpan={2} className="px-6 py-4 text-muted-foreground text-sm">
+          <TableCell
+            colSpan={2}
+            className="px-6 py-4 text-muted-foreground text-sm"
+          >
             Carregando horários padrão...
           </TableCell>
         </TableRow>
@@ -45,7 +46,7 @@ export function TableSettings({ barberId }: { barberId: string }) {
           >
             <TableCell className="px-6 py-4">{daysMap[day]}</TableCell>
             <TableCell className="px-6 py-4">
-              {settings.startTime} - {settings.endTime}
+              {settings.startTime}-{settings.endTime}
             </TableCell>
           </TableRow>
         ))
@@ -59,7 +60,7 @@ export function TableSettings({ barberId }: { barberId: string }) {
                   <span>Nenhum horário padrão configurado.</span>
                 </div>
                 <span className="text-muted-foreground text-xs">
-                  Use o botão "Ajustar" acima para definir seus horários.
+                  Use o botão abaixo para definir seus horários.
                 </span>
               </AlertTitle>
             </Alert>

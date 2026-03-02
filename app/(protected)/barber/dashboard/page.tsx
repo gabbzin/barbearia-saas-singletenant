@@ -26,7 +26,7 @@ import { getBarberDashboardInfos } from "./actions/getInfos";
 import { CardTable } from "./components/card-table";
 import { SpeedDial } from "./components/SpeedDial";
 import { TableService } from "./components/table-service";
-import { TableSettings } from "./components/table-times-services";
+import { TableSettings } from "./components/table-settings";
 
 type RevenuePoint = {
   label: string;
