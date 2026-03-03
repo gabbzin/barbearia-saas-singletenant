@@ -17,7 +17,7 @@ export const clientRoutes = {
 } as const;
 
 export const barberRoutes = {
-  dashboard: "/barber",
+  dashboard: "/barber/dashboard",
   schedule: "/barber/schedule",
 } as const;
 

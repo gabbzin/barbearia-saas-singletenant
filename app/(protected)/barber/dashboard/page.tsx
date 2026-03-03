@@ -1,6 +1,7 @@
 import { format } from "date-fns";
 import {
   AlertCircle,
+  AlertCircleIcon,
   Banknote,
   Calendar,
   Scissors,
@@ -9,6 +10,13 @@ import {
   UserIcon,
 } from "lucide-react";
 import CardInfo from "@/features/barber/components/card-info";
+import { getBarberDefaultTimes } from "@/features/dashboard_barber/actions/getDefaultTimes";
+import { getBarberDashboardInfos } from "@/features/dashboard_barber/actions/getInfos";
+import { CardTable } from "@/features/dashboard_barber/components/card-table";
+import { BarChartGraph } from "@/features/dashboard_barber/components/charts/barchart-comp";
+import { SpeedDial } from "@/features/dashboard_barber/components/SpeedDial";
+import { TableService } from "@/features/dashboard_barber/components/table-service";
+import { TableSettings } from "@/features/dashboard_barber/components/table-settings";
 import { Alert, AlertTitle } from "@/shared/components/ui/alert";
 import { Badge } from "@/shared/components/ui/badge";
 import {
@@ -19,57 +27,6 @@ import {
 } from "@/shared/components/ui/card";
 import { PageSection } from "@/shared/components/ui/page";
 import { TableCell, TableRow } from "@/shared/components/ui/table";
-import { getBarberDefaultTimes } from "./actions/getDefaultTimes";
-import { getBarberDashboardInfos } from "./actions/getInfos";
-import { CardTable } from "./components/card-table";
-import { SpeedDial } from "./components/SpeedDial";
-import { TableService } from "./components/table-service";
-import { TableSettings } from "./components/table-settings";
-
-type RevenuePoint = {
-  label: string;
-  value: number;
-};
-
-const REVENUE_CHART_DATA: RevenuePoint[] = [
-  { label: "Set", value: 3100 },
-  { label: "Out", value: 4200 },
-  { label: "Nov", value: 3800 },
-  { label: "Dez", value: 5100 },
-  { label: "Jan", value: 4500 },
-  { label: "Fev", value: 4250 },
-];
-
-const SimpleBarChart = ({ data }: { data: RevenuePoint[] }) => {
-  const max = Math.max(...data.map(item => item.value));
-
-  if (!max) {
-    return null;
-  }
-
-  return (
-    <div className="flex h-32 items-end gap-2 px-2">
-      {data.map(item => (
-        <div
-          key={item.label}
-          className="group flex flex-1 flex-col items-center gap-2"
-        >
-          <div
-            className="relative w-full rounded-t-lg bg-primary/10 transition-colors group-hover:bg-primary"
-            style={{ height: `${(item.value / max) * 100}%` }}
-          >
-            <div className="pointer-events-none absolute -top-7 left-1/2 -translate-x-1/2 rounded bg-popover px-2 py-1 text-[10px] text-popover-foreground opacity-0 shadow-sm transition-opacity group-hover:opacity-100">
-              R$ {item.value}
-            </div>
-          </div>
-          <span className="font-semibold text-[10px] text-muted-foreground uppercase">
-            {item.label}
-          </span>
-        </div>
-      ))}
-    </div>
-  );
-};
 
 export default async function BarberDashboardPage() {
   const [info, defaultTimes] = await Promise.all([
@@ -116,7 +73,7 @@ export default async function BarberDashboardPage() {
             </div>
           </div>
 
-          <section className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
+          <section className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-5">
             <CardInfo
               Icon={Scissors}
               title="Realizados"
@@ -136,10 +93,14 @@ export default async function BarberDashboardPage() {
               variant="green"
             />
             <CardInfo
+              Icon={AlertCircleIcon}
+              title="Não confirmados"
+              value={info.data?.bookingsNotConfirmedToday}
+              variant="red"
+            />
+            <CardInfo
               Icon={Calendar}
-              title={
-                horariosData?.endTime ? "Trabalho hoje até:" : "Dia de hoje"
-              }
+              title={horariosData?.endTime ? "Trabalho até:" : "Dia de hoje"}
               value={
                 horariosData?.endTime
                   ? horariosData.endTime
@@ -158,39 +119,41 @@ export default async function BarberDashboardPage() {
                 tableTitles={["Cliente", "Serviço", "Data/Hora", "Status"]}
               >
                 {info.data?.nextBooking ? (
-                  <TableRow className="border-t">
-                    <TableCell className="px-6 py-4">
-                      <div className="flex items-center gap-3">
-                        <div className="flex flex-col">
-                          <span className="font-semibold text-sm">
-                            {info.data.nextBooking.user.name}
-                          </span>
+                  info.data.nextBooking.map(booking => (
+                    <TableRow className="border-t" key={booking.id}>
+                      <TableCell className="px-6 py-4">
+                        <div className="flex items-center gap-3">
+                          <div className="flex flex-col">
+                            <span className="font-semibold text-sm">
+                              {booking.user.name}
+                            </span>
+                          </div>
                         </div>
-                      </div>
-                    </TableCell>
-                    <TableCell className="px-6 py-4 font-semibold text-muted-foreground text-sm">
-                      {info.data.nextBooking.service.name}
-                    </TableCell>
-                    <TableCell className="px-6 py-4 text-sm">
-                      <p className="font-semibold">
-                        {format(info.data.nextBooking.date, "HH:mm")}
-                      </p>
-                      <p className="font-semibold text-[10px] text-muted-foreground uppercase">
-                        Hoje
-                      </p>
-                    </TableCell>
-                    <TableCell className="px-6 py-4 text-sm">
-                      <Badge
-                        variant={
-                          info.data.nextBooking.status === "CANCELLED"
-                            ? "destructive"
-                            : "success"
-                        }
-                      >
-                        {info.data.nextBooking.status.toUpperCase()}
-                      </Badge>
-                    </TableCell>
-                  </TableRow>
+                      </TableCell>
+                      <TableCell className="px-6 py-4 font-semibold text-muted-foreground text-sm">
+                        {booking.service.name}
+                      </TableCell>
+                      <TableCell className="px-6 py-4 text-sm">
+                        <p className="font-semibold">
+                          {format(booking.date, "HH:mm")}
+                        </p>
+                        <p className="font-semibold text-[10px] text-muted-foreground uppercase">
+                          Hoje
+                        </p>
+                      </TableCell>
+                      <TableCell className="px-6 py-4 text-sm">
+                        <Badge
+                          variant={
+                            booking.status === "CANCELLED"
+                              ? "destructive"
+                              : "success"
+                          }
+                        >
+                          {booking.status.toUpperCase()}
+                        </Badge>
+                      </TableCell>
+                    </TableRow>
+                  ))
                 ) : (
                   <TableRow>
                     <TableCell
@@ -234,7 +197,15 @@ export default async function BarberDashboardPage() {
                       )}
                     </div>
                   </div>
-                  <SimpleBarChart data={REVENUE_CHART_DATA} />
+                  <BarChartGraph
+                    chartConfig={{
+                      saldo: {
+                        label: "Saldo",
+                        color: "#60a5fa",
+                      },
+                    }}
+                    data={info.data?.weeklyBillingData ?? []}
+                  />
                 </CardContent>
               </Card>
             </div>

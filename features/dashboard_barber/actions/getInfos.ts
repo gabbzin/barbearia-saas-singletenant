@@ -23,8 +23,8 @@ export const getBarberDashboardInfos = actionClient.action(async () => {
     const endOfDayDate = endOfDay(now);
 
     const requests = Promise.allSettled([
-      // Próximo agendamento
-      prisma.booking.findFirst({
+      // Próximos agendamentos - 0
+      prisma.booking.findMany({
         where: {
           barberId: barberId,
           date: {
@@ -39,9 +39,10 @@ export const getBarberDashboardInfos = actionClient.action(async () => {
         orderBy: {
           date: "asc",
         },
+        take: 5,
       }),
 
-      // Faturamento e atendimentos realizados hoje
+      // Faturamento e atendimentos realizados hoje - 1
       prisma.booking.aggregate({
         _sum: {
           priceInCents: true,
@@ -59,7 +60,7 @@ export const getBarberDashboardInfos = actionClient.action(async () => {
         },
       }),
 
-      // Faturamento total do dia anterior
+      // Faturamento total do dia anterior e atendimentos realizados - 2
       prisma.booking.aggregate({
         _sum: {
           priceInCents: true,
@@ -77,7 +78,7 @@ export const getBarberDashboardInfos = actionClient.action(async () => {
         },
       }),
 
-      // Agendamentos para hoje
+      // Agendamentos para hoje - 3
       prisma.booking.count({
         where: {
           barberId: barberId,
@@ -88,7 +89,7 @@ export const getBarberDashboardInfos = actionClient.action(async () => {
         },
       }),
 
-      // Agendamentos para hoje (Não confirmados)
+      // Agendamentos para hoje (Não confirmados) - 4
       prisma.booking.count({
         where: {
           barberId: barberId,
@@ -99,6 +100,46 @@ export const getBarberDashboardInfos = actionClient.action(async () => {
           status: "SCHEDULED",
         },
       }),
+
+      // Dados de faturamento semanal - 5 (Com exceção dos dias que não tem disponibilidade cadastrada, para evitar erros na consulta)
+      prisma.$queryRaw`
+        WITH current_day AS (
+          SELECT EXTRACT(DOW FROM NOW())::int AS today
+        )
+
+        SELECT 
+          CASE 
+            WHEN d.dayOfWeek = cd.today 
+            THEN CONCAT('Dia ', d.dayOfWeek, ' => Hoje')
+            ELSE CONCAT('Dia ', d.dayOfWeek)
+          END AS day,
+          
+          COALESCE(SUM(b."priceInCents"), 0) AS saldo
+
+        FROM 
+          (VALUES (0), (1), (2), (3), (4), (5), (6)) AS d(dayOfWeek)
+
+        CROSS JOIN current_day cd
+
+        INNER JOIN 
+          "Disponibility" dis 
+            ON dis."dayOfWeek" = d.dayOfWeek 
+            AND dis."barberId" = ${barberId}
+
+        LEFT JOIN 
+          "Booking" b 
+            ON b."barberId" = ${barberId}
+            AND EXTRACT(DOW FROM b."date") = d.dayOfWeek
+            AND b."status" = 'COMPLETED'
+            AND b."date" >= ${subDays(now, 6)}
+            AND b."date" <= ${endOfDayDate}
+
+        GROUP BY 
+          d.dayOfWeek, cd.today
+
+        ORDER BY 
+          (d.dayOfWeek - cd.today + 7) % 7;
+      `,
     ]);
 
     const results = await requests;
@@ -154,6 +195,33 @@ export const getBarberDashboardInfos = actionClient.action(async () => {
     const yesterdayServicesPerformed = yesterdayBillingAgg._count.id ?? 0;
 
     /**
+     * Total de agendamentos para o dia atual que ainda não foram confirmados (status "SCHEDULED" e data menor ou igual à data atual). Se houver um erro na consulta, retorna 0.
+     */
+    const bookingsNotConfirmedToday =
+      results[4].status === "fulfilled" ? results[4].value : 0;
+
+    console.log(results[5]);
+
+    const weeklyBillingBrut = (
+      results[5].status === "fulfilled" ? results[5].value : []
+    ) as [{ day: string; saldo: bigint }];
+
+    const daysOfWeekMap: Record<number, string> = {
+      0: "Domingo",
+      1: "Segunda-feira",
+      2: "Terça-feira",
+      3: "Quarta-feira",
+      4: "Quinta-feira",
+      5: "Sexta-feira",
+      6: "Sábado",
+    };
+
+    const weeklyBillingData = weeklyBillingBrut.map(item => ({
+      day: daysOfWeekMap[Number(item.day.split(" ")[1])],
+      saldo: Number(item.saldo) / 100,
+    }));
+
+    /**
      * Porcentagem de crescimento ou queda no faturamento em relação ao dia anterior. Se o faturamento do dia anterior for 0, retorna null para evitar divisão por zero.
      */
     const growthPercentage = Number(
@@ -178,6 +246,8 @@ export const getBarberDashboardInfos = actionClient.action(async () => {
       yesterdayBilling,
       yesterdayServicesPerformed,
       growthPercentage,
+      bookingsNotConfirmedToday,
+      weeklyBillingData,
     };
   } catch (error) {
     console.error("Error fetching barber dashboard infos:", error);

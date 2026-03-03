@@ -110,12 +110,14 @@ export default function BookingsClient({ bookings }: BookingsClientProps) {
                     {emptyMessages[tab.value]}
                   </p>
                 ) : (
-                  <BookingDetails
-                    bookings={list}
-                    onClick={
-                      tab.value === "scheduled" ? handleClickBooking : undefined
-                    }
-                  />
+                  <div className="flex flex-col gap-3">
+                    <BookingDetails
+                      bookings={list}
+                      onClick={
+                        tab.value === "scheduled" ? handleClickBooking : undefined
+                      }
+                    />
+                  </div>
                 )}
               </TabsContent>
             );

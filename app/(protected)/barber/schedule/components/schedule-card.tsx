@@ -158,17 +158,24 @@ export function ScheduleCard() {
                 </div>
               ) : (
                 <div className="flex flex-col gap-4">
-                  {list.map(booking => (
-                    <BookingItem
-                      key={booking.id}
-                      serviceName={booking.service.name}
-                      date={booking.date}
-                      counterPart={{
-                        name: booking.user.name,
-                        imageUrl: booking.user.image ?? "",
-                      }}
-                    />
-                  ))}
+                  {list.map(booking => {
+                    const isPendingVisual =
+                      booking.status === "SCHEDULED" &&
+                      new Date(booking.date) < new Date();
+
+                    return (
+                      <BookingItem
+                        key={booking.id}
+                        serviceName={booking.service.name}
+                        date={booking.date}
+                        counterPart={{
+                          name: booking.user.name,
+                          imageUrl: booking.user.image ?? "",
+                        }}
+                        status={isPendingVisual ? "PENDING" : booking.status}
+                      />
+                    );
+                  })}
                 </div>
               )}
             </TabsContent>
