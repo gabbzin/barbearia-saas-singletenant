@@ -78,7 +78,7 @@ export function ScheduleCard() {
     <div className="flex flex-col gap-6 self-end">
       <div className="flex w-full max-w-xs flex-col gap-2 sm:items-start sm:justify-between">
         <span className="font-medium text-muted-foreground text-sm">
-          Selecione o dia para visualizar a agenda
+          {selectedDate ? "Data selecionada:" : "Selecione uma data"}
         </span>
         <DatePicker date={selectedDate} setDate={setSelectedDate} />
       </div>

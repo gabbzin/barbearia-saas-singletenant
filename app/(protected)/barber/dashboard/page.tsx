@@ -86,29 +86,6 @@ export default async function BarberDashboardPage() {
     return;
   }
 
-  // const horariosData = await prisma.disponibility.findUnique({
-  //   where: {
-  //     barberId_dayOfWeek: {
-  //       barberId: barberId,
-  //       dayOfWeek: new Date().getDay(),
-  //     },
-  //   },
-  // });
-
-  // const defaultTimesValues = horariosData
-  //   ? {
-  //       horario_abertura: horariosData.startTime,
-  //       horario_fechamento: horariosData.endTime,
-  //       "0": horariosData.dayOfWeek === 0,
-  //       "1": horariosData.dayOfWeek === 1,
-  //       "2": horariosData.dayOfWeek === 2,
-  //       "3": horariosData.dayOfWeek === 3,
-  //       "4": horariosData.dayOfWeek === 4,
-  //       "5": horariosData.dayOfWeek === 5,
-  //       "6": horariosData.dayOfWeek === 6,
-  //     }
-  //   : undefined;
-
   return (
     <main className="pb-20">
       <PageSection>
