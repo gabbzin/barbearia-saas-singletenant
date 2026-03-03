@@ -20,7 +20,7 @@ export default function CardInfo({
   variant,
 }: CardInfoProps) {
   return (
-    <Card variant={variant} className="relative py-4">
+    <Card variant={variant} className="relative py-6">
       <CardHeader className="px-4">
         <CardTitle className="flex items-center justify-between font-semibold text-sm">
           {title}

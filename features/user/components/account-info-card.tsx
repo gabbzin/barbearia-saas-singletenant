@@ -39,7 +39,7 @@ export function AccountInfoCard({
               size="lg"
             />
             <div>
-              <p className="text-muted-foreground text-xs">Plano atual</p>
+            <p className="text-muted-foreground text-xs">Plano atual</p>
               <p className="font-medium text-sm">
                 {hasPlan ? planName : "Gratuito"}
               </p>

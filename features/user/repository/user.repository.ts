@@ -13,6 +13,7 @@ export interface UserSession {
   role?: string | null;
   stripeCustomerId?: string | null;
   barberId?: string | null;
+  subscription?: SubscriptionInfo;
 }
 /**
  * Verifica a sessão do usuário e retorna as informações do usuário e do barbeiro (se aplicável).
@@ -27,6 +28,8 @@ export const verifySession = cache(async () => {
   if (!session?.user) {
     return null;
   }
+
+  const subscrtiption = await isSubscriber(session.user.id);
 
   const barber = await prisma.barber.findUnique({
     where: {
@@ -45,6 +48,7 @@ export const verifySession = cache(async () => {
     role: session.user.role,
     stripeCustomerId: session.user.stripeCustomerId,
     barberId: session.user.role === "BARBER" ? barber?.id : null,
+    subscription: subscrtiption,
   };
 });
 

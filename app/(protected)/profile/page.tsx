@@ -9,7 +9,7 @@ import { prisma } from "@/lib/prisma";
 import { AnimatedThemeToggler } from "@/shared/components/ui/animated-theme-toggler";
 import { Button } from "@/shared/components/ui/button";
 import { PageSection, PageSectionTitle } from "@/shared/components/ui/page";
-import { clientRoutes } from "@/shared/constants/routes";
+import { barberRoutes, clientRoutes } from "@/shared/constants/routes";
 
 export default async function ProfilePage() {
   const user = await verifySession();
@@ -31,7 +31,13 @@ export default async function ProfilePage() {
       <PageSection>
         <div className="flex w-full items-center justify-between">
           <Button variant={"outline"} className="flex items-center gap-2">
-            <Link href={clientRoutes.dashboard}>
+            <Link
+              href={
+                user.role === "BARBER"
+                  ? barberRoutes.dashboard
+                  : clientRoutes.dashboard
+              }
+            >
               <ArrowLeft />
             </Link>
           </Button>

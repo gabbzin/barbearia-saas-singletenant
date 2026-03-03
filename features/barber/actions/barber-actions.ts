@@ -29,9 +29,10 @@ export const getSettingsByBarberIdAction = actionClient
   });
 
 export const createDisponibilityAction = actionClient
-  .inputSchema(timesSchema.extend({ barberId: z.string() }))
+  .inputSchema(timesSchema.safeExtend({ barberId: z.string() }))
   .action(async ({ parsedInput }) => {
-    const { barberId, horario_abertura, horario_fechamento, ...days } = parsedInput;
+    const { barberId, horario_abertura, horario_fechamento, ...days } =
+      parsedInput;
     const selectedDates = Object.entries(days)
       .filter(([, val]) => val === true)
       .map(([key]) => Number(key));
@@ -59,4 +60,3 @@ export const createDisponibilityAction = actionClient
       },
     };
   });
-

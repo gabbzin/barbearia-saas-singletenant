@@ -11,6 +11,7 @@ import GenericForm from "@/shared/components/form/generic-form";
 import InputForm from "@/shared/components/form/input-form";
 import { GoogleButton } from "@/shared/components/google-button";
 import { Card, CardContent, CardHeader } from "@/shared/components/ui/card";
+import { clientRoutes } from "@/shared/constants/routes";
 import { PasswordStrength } from "../reset-password/passwordStrength";
 
 const RegisterForm = () => {
@@ -26,7 +27,7 @@ const RegisterForm = () => {
       });
 
       toast.success("Conta criada com sucesso!");
-      router.push("/");
+      router.push(clientRoutes.dashboard);
       return;
     } catch (error) {
       toast.error(
