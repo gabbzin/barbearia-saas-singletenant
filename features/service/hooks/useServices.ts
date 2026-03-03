@@ -1,8 +1,8 @@
 "use client";
 
 import type { BarberService } from "@prisma/client";
-import { useAction } from "next-safe-action/hooks";
 import { useQueryClient } from "@tanstack/react-query";
+import { useAction } from "next-safe-action/hooks";
 import { toast } from "sonner";
 import {
   createServiceAction,
@@ -17,28 +17,37 @@ export function useServicesCRUD(barberId: string) {
   const queryClient = useQueryClient();
   const queryKey = ["services", barberId];
 
-  function updateCache(updateFn: (old: BarberService[] | undefined) => BarberService[]) {
+  function updateCache(
+    updateFn: (old: BarberService[] | undefined) => BarberService[],
+  ) {
     queryClient.setQueryData(queryKey, updateFn);
   }
 
-  const { executeAsync: fetchServices } = useAction(getServicesByBarberIdAction);
-  const { data, isLoading, isError } = useSafeQuery<{ services: BarberService[] }>(
-    queryKey,
-    () => fetchServices({ barberId }),
+  const { executeAsync: fetchServices } = useAction(
+    getServicesByBarberIdAction,
   );
+  const { data, isLoading, isError } = useSafeQuery<{
+    services: BarberService[];
+  }>(queryKey, () => fetchServices({ barberId }));
 
-  const { executeAsync: execCreate, isPending: isCreating } = useAction(createServiceAction);
-  const { executeAsync: execUpdate, isPending: isUpdating } = useAction(patchServiceAction);
+  const { executeAsync: execCreate, isPending: isCreating } =
+    useAction(createServiceAction);
+  const { executeAsync: execUpdate, isPending: isUpdating } =
+    useAction(patchServiceAction);
   const { executeAsync: execDelete } = useAction(deleteServiceAction);
 
-  const createService = async (input: { barberId: string } & serviceSchemaType) => {
+  const createService = async (
+    input: { barberId: string } & serviceSchemaType,
+  ) => {
     const result = await execCreate(input);
     if (!result?.data?.service) return;
     toast.success("Serviço criado com sucesso!");
     updateCache(old => [...(old ?? []), result.data!.service]);
   };
 
-  const updateService = async (input: { serviceId: string } & serviceSchemaType) => {
+  const updateService = async (
+    input: { serviceId: string } & serviceSchemaType,
+  ) => {
     const result = await execUpdate(input);
     if (!result?.data?.service) return;
     toast.success("Serviço atualizado com sucesso!");

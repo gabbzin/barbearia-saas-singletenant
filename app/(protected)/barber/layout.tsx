@@ -1,6 +1,5 @@
 import { notFound } from "next/navigation";
 import { verifySession } from "@/features/user/repository/user.repository";
-import Footer from "@/shared/components/footer";
 import { Header } from "@/shared/new_components/header";
 
 interface ProtectedBarberLayoutProps {
@@ -21,7 +20,6 @@ export default async function ProtectedBarberLayout({
     <div className="flex min-h-screen flex-col">
       <Header />
       <div className="flex-1">{children}</div>
-      <Footer />
     </div>
   );
 }

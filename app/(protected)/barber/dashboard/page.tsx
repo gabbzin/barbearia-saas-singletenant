@@ -8,10 +8,7 @@ import {
   TrendingUp,
   UserIcon,
 } from "lucide-react";
-import { notFound } from "next/navigation";
 import CardInfo from "@/features/barber/components/card-info";
-import { verifySession } from "@/features/user/repository/user.repository";
-import { prisma } from "@/lib/prisma";
 import { Alert, AlertTitle } from "@/shared/components/ui/alert";
 import { Badge } from "@/shared/components/ui/badge";
 import {
@@ -22,6 +19,7 @@ import {
 } from "@/shared/components/ui/card";
 import { PageSection } from "@/shared/components/ui/page";
 import { TableCell, TableRow } from "@/shared/components/ui/table";
+import { getBarberDefaultTimes } from "./actions/getDefaultTimes";
 import { getBarberDashboardInfos } from "./actions/getInfos";
 import { CardTable } from "./components/card-table";
 import { SpeedDial } from "./components/SpeedDial";
@@ -74,47 +72,42 @@ const SimpleBarChart = ({ data }: { data: RevenuePoint[] }) => {
 };
 
 export default async function BarberDashboardPage() {
-  const session = await verifySession();
+  const [info, defaultTimes] = await Promise.all([
+    getBarberDashboardInfos(),
+    getBarberDefaultTimes(),
+  ]);
 
-  if (!session || session?.role === "USER") {
-    notFound();
+  const barberId = info.data?.barberId ? info.data.barberId : null;
+
+  const horariosData = defaultTimes.data?.horariosData ?? null;
+  const defaultTimesValues = defaultTimes.data?.defaultTimes ?? undefined;
+
+  if (!barberId) {
+    return;
   }
 
-  const barber = await prisma.barber.findUnique({
-    where: { userId: session.id },
-    select: { id: true },
-  });
+  // const horariosData = await prisma.disponibility.findUnique({
+  //   where: {
+  //     barberId_dayOfWeek: {
+  //       barberId: barberId,
+  //       dayOfWeek: new Date().getDay(),
+  //     },
+  //   },
+  // });
 
-  if (!barber) {
-    notFound();
-  }
-
-  const barberId = barber.id;
-
-  const info = await getBarberDashboardInfos({ barberId });
-
-  const horariosData = await prisma.disponibility.findUnique({
-    where: {
-      barberId_dayOfWeek: {
-        barberId: barberId,
-        dayOfWeek: new Date().getDay(),
-      },
-    },
-  });
-  
-  const defaultTimesValues = horariosData
-    ? {
-        horario_abertura: horariosData.startTime,
-        horario_fechamento: horariosData.endTime,
-        "0": horariosData.dayOfWeek === 0,
-        "1": horariosData.dayOfWeek === 1,
-        "2": horariosData.dayOfWeek === 2,
-        "3": horariosData.dayOfWeek === 3,
-        "4": horariosData.dayOfWeek === 4,
-        "5": horariosData.dayOfWeek === 5,
-        "6": horariosData.dayOfWeek === 6,
-      }
-    : undefined;
+  // const defaultTimesValues = horariosData
+  //   ? {
+  //       horario_abertura: horariosData.startTime,
+  //       horario_fechamento: horariosData.endTime,
+  //       "0": horariosData.dayOfWeek === 0,
+  //       "1": horariosData.dayOfWeek === 1,
+  //       "2": horariosData.dayOfWeek === 2,
+  //       "3": horariosData.dayOfWeek === 3,
+  //       "4": horariosData.dayOfWeek === 4,
+  //       "5": horariosData.dayOfWeek === 5,
+  //       "6": horariosData.dayOfWeek === 6,
+  //     }
+  //   : undefined;
 
   return (
     <main className="pb-20">
@@ -141,8 +134,7 @@ export default async function BarberDashboardPage() {
                 Dashboard de <span className="text-primary">Gestão</span>
               </h1>
               <p className="mt-1 font-medium text-muted-foreground text-sm italic">
-                Olá, {session.name ?? "Usuário"}. Aqui está o resumo estratégico
-                do seu dia.
+                Aqui está o resumo estratégico do seu dia.
               </p>
             </div>
           </div>
