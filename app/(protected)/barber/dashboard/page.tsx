@@ -9,7 +9,6 @@ import {
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { verifySession } from "@/features/user/repository/user.repository";
-import { prisma } from "@/lib/prisma";
 import CardInfo from "@/features/barber/components/card-info";
 import { Alert, AlertTitle } from "@/shared/components/ui/alert";
 import { Avatar, AvatarImage } from "@/shared/components/ui/avatar";
@@ -17,7 +16,7 @@ import { Button } from "@/shared/components/ui/button";
 import { Card, CardContent } from "@/shared/components/ui/card";
 import { PageSection, PageSectionTitle } from "@/shared/components/ui/page";
 import { Separator } from "@/shared/components/ui/separator";
-import { getBarberDashboardInfos } from "./actions/getInfos";
+import { getBarberDashboardInfos, getBarberDefaultTimes } from "./actions/getInfos";
 import { SpeedDial } from "./components/SpeedDial";
 import { TableService } from "./components/table-service";
 import { TableSettings } from "./components/table-times-services";
@@ -25,44 +24,22 @@ import { TableSettings } from "./components/table-times-services";
 const BarberDashboardPage = async () => {
   const session = await verifySession();
 
-  if (!session || session?.role === "USER") {
+  if (!session || session.role !== "BARBER" || !session.barberId) {
     notFound();
   }
 
-  const barber = await prisma.barber.findUnique({
-    where: { userId: session.id },
-    select: { id: true },
-  });
+  const barberId = session.barberId;
 
-  if (!barber) {
-    notFound();
-  }
+  const [info, defaultTimesResult] = await Promise.all([
+    getBarberDashboardInfos(),
+    getBarberDefaultTimes(),
+  ]);
 
-  const barberId = barber.id;
-
-  const info = await getBarberDashboardInfos({ barberId });
-
-  const horariosData = await prisma.disponibility.findFirst({
-    where: { barberId: barberId },
-  });
-
-  const defaultTimesValues = horariosData
-    ? {
-        horario_abertura: horariosData.startTime,
-        horario_fechamento: horariosData.endTime,
-        "0": horariosData.dayOfWeek === 0,
-        "1": horariosData.dayOfWeek === 1,
-        "2": horariosData.dayOfWeek === 2,
-        "3": horariosData.dayOfWeek === 3,
-        "4": horariosData.dayOfWeek === 4,
-        "5": horariosData.dayOfWeek === 5,
-        "6": horariosData.dayOfWeek === 6,
-      }
-    : undefined;
+  const defaultTimesValues = defaultTimesResult?.data?.defaultTimes ?? undefined;
 
   return (
     <main>
-      {!horariosData && (
+      {!defaultTimesValues && (
         <Alert>
           <AlertTitle className="flex items-center gap-2">
             <div className="flex items-center gap-2">

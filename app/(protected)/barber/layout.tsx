@@ -12,8 +12,7 @@ export default async function ProtectedBarberLayout({
 }: ProtectedBarberLayoutProps) {
   const session = await verifySession();
 
-  // Usuário comum não pode acessar as rotas de barbeiro
-  if (session?.role === "USER") {
+  if (!session || session.role === "USER") {
     return notFound();
   }
 
