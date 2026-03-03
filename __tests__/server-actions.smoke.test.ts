@@ -9,6 +9,7 @@ const actions = [
   "@/features/booking/functions/create-booking-checkout-session",
   "@/features/booking/functions/cancel-booking",
   "@/features/booking/functions/get-bookings",
+  "@/features/booking/actions/get-bookings-barber-action",
   "@/features/booking/actions/get-bookings-user-action",
   "@/features/booking/actions/confirm-booking-checkout",
   "@/features/signature/actions/create-signature",
@@ -49,3 +50,4 @@ describe("Server actions smoke test", () => {
     }
   });
 });
+

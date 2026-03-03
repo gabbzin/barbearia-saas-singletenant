@@ -15,8 +15,8 @@ import {
   TabsTrigger,
 } from "@/shared/components/ui/tabs";
 
-export function ScheduleCard({ barberId }: { barberId: string }) {
-  const { data: bookings, isLoading } = useBookings(barberId);
+export function ScheduleCard() {
+  const { data: bookings, isLoading } = useBookings();
 
   const { execute, isPending } = useAction(confirmBookingAction, {
     onError: ({ error }) => {

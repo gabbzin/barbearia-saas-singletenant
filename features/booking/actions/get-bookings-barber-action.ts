@@ -1,24 +1,20 @@
 "use server";
 
-import { returnValidationErrors } from "next-safe-action";
-import { z } from "zod";
 import { getBookingsBarber } from "@/features/booking/functions/get-bookings";
 import { verifySession } from "@/features/user/repository/user.repository";
 import { actionClient } from "@/lib/actionClient";
 
-const inputSchema = z.object({ barberId: z.string() });
+export const getBookingsBarberAction = actionClient.action(async () => {
+  const session = await verifySession();
 
-export const getBookingsBarberAction = actionClient
-  .inputSchema(inputSchema)
-  .action(async ({ parsedInput: { barberId } }) => {
-    const session = await verifySession();
+  if (!session) {
+    throw new Error("Usuário não autenticado.");
+  }
 
-    if (!session) {
-      return returnValidationErrors(inputSchema, {
-        _errors: ["Usuário não autenticado."],
-      });
-    }
+  if (!session.barberId) {
+    throw new Error("Usuário não autorizado.");
+  }
 
-    const bookings = await getBookingsBarber(barberId);
-    return { bookings };
-  });
+  const bookings = await getBookingsBarber(session.barberId);
+  return { bookings };
+});

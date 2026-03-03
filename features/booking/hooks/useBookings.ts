@@ -5,11 +5,11 @@ import { getBookingsBarberAction } from "@/features/booking/actions/get-bookings
 import { useSafeQuery } from "@/hooks/use-safe-query";
 import type { getBookingsBarber } from "../functions/get-bookings";
 
-export function useBookings(barberId: string) {
+export function useBookings() {
   const { executeAsync } = useAction(getBookingsBarberAction);
   const { data, isLoading, isError } = useSafeQuery<{
     bookings: Awaited<ReturnType<typeof getBookingsBarber>>;
-  }>(["bookings", barberId], () => executeAsync({ barberId }));
+  }>(["bookings"], () => executeAsync());
 
   return { data: data?.bookings ?? null, isLoading, isError };
 }
