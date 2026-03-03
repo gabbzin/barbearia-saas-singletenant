@@ -1,7 +1,6 @@
 import { notFound } from "next/navigation";
 import { verifySession } from "@/features/user/repository/user.repository";
-import Header from "@/shared/components/header";
-import Footer from "@/shared/components/footer";
+import { Header } from "@/shared/new_components/header";
 
 interface ProtectedBarberLayoutProps {
   children: React.ReactNode;
@@ -12,15 +11,14 @@ export default async function ProtectedBarberLayout({
 }: ProtectedBarberLayoutProps) {
   const session = await verifySession();
 
-  if (!session || session.role === "USER") {
+  if (!session || session.role !== "BARBER" || !session.barberId) {
     return notFound();
   }
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="flex min-h-screen flex-col">
       <Header />
       <div className="flex-1">{children}</div>
-      <Footer />
     </div>
   );
 }

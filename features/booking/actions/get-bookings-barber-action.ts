@@ -1,20 +1,35 @@
 "use server";
 
+import { returnValidationErrors } from "next-safe-action";
+import { z } from "zod";
 import { getBookingsBarber } from "@/features/booking/functions/get-bookings";
 import { verifySession } from "@/features/user/repository/user.repository";
 import { actionClient } from "@/lib/actionClient";
 
-export const getBookingsBarberAction = actionClient.action(async () => {
-  const session = await verifySession();
-
-  if (!session) {
-    throw new Error("Usuário não autenticado.");
-  }
-
-  if (!session.barberId) {
-    throw new Error("Usuário não autorizado.");
-  }
-
-  const bookings = await getBookingsBarber(session.barberId);
-  return { bookings };
+const inputSchema = z.object({
+  date: z.string().optional(),
 });
+
+export const getBookingsBarberAction = actionClient
+  .inputSchema(inputSchema)
+  .action(async ({ parsedInput: { date } }) => {
+    const session = await verifySession();
+
+    if (!session || session.role !== "BARBER" || !session.barberId) {
+      return returnValidationErrors(inputSchema, {
+        _errors: ["Usuário não autorizado."],
+      });
+    }
+
+    const barberId = session.barberId;
+
+    const targetDate = date
+      ? (() => {
+          const [year, month, day] = date.split("-").map(Number);
+          return new Date(year, month - 1, day);
+        })()
+      : undefined;
+
+    const bookings = await getBookingsBarber(barberId, targetDate);
+    return { bookings };
+  });

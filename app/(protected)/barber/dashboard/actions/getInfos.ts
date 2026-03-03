@@ -1,23 +1,25 @@
 "use server";
 
-import { endOfDay, startOfDay } from "date-fns";
+import { endOfDay, startOfDay, subDays } from "date-fns";
 import { verifySession } from "@/features/user/repository/user.repository";
 import { actionClient } from "@/lib/actionClient";
 import { prisma } from "@/lib/prisma";
 import { convertBRL } from "@/utils/convertBRL";
 
 export const getBarberDashboardInfos = actionClient.action(async () => {
-  const session = await verifySession();
-
-  if (!session?.barberId) {
-    throw new Error("Não autorizado.");
-  }
-
-  const barberId = session.barberId;
-
   try {
+    const session = await verifySession();
+
+    if (!session || session.role !== "BARBER") {
+      throw new Error("Unauthorized");
+    }
+
+    const barberId = session.barberId as string;
+
+    // Variaveis de busca
     const now = new Date();
     const startOfDayDate = startOfDay(now);
+    const yesterday = subDays(now, 1);
     const endOfDayDate = endOfDay(now);
 
     const requests = Promise.allSettled([
@@ -57,12 +59,42 @@ export const getBarberDashboardInfos = actionClient.action(async () => {
         },
       }),
 
+      // Faturamento total do dia anterior
+      prisma.booking.aggregate({
+        _sum: {
+          priceInCents: true,
+        },
+        _count: {
+          id: true,
+        },
+        where: {
+          barberId: barberId,
+          date: {
+            gte: startOfDay(yesterday),
+            lte: endOfDay(yesterday),
+          },
+          status: "COMPLETED",
+        },
+      }),
+
       // Agendamentos para hoje
       prisma.booking.count({
         where: {
           barberId: barberId,
           date: {
             gte: startOfDayDate,
+          },
+          status: "SCHEDULED",
+        },
+      }),
+
+      // Agendamentos para hoje (Não confirmados)
+      prisma.booking.count({
+        where: {
+          barberId: barberId,
+          date: {
+            gte: startOfDayDate,
+            lte: now,
           },
           status: "SCHEDULED",
         },
@@ -79,54 +111,49 @@ export const getBarberDashboardInfos = actionClient.action(async () => {
         ? results[1].value
         : { _sum: { priceInCents: 0 }, _count: { id: 0 } };
 
+    const yesterdayBillingAgg =
+      results[2].status === "fulfilled"
+        ? results[2].value
+        : { _sum: { priceInCents: 0 }, _count: { id: 0 } };
+
     const totalSchedules =
-      results[2].status === "fulfilled" ? results[2].value : 0;
+      results[3].status === "fulfilled" ? results[3].value : 0;
 
     const todayBilling = convertBRL(billing._sum.priceInCents ?? 0);
+
+    const yesterdayBilling = convertBRL(
+      yesterdayBillingAgg._sum.priceInCents ?? 0,
+    );
+
     const servicesPerformed = billing._count.id ?? 0;
 
+    const yesterdayServicesPerformed = yesterdayBillingAgg._count.id ?? 0;
+
+    const growthPercentage = Number(
+      yesterdayBillingAgg._sum.priceInCents && billing._sum.priceInCents
+        ? (
+            ((billing._sum.priceInCents -
+              yesterdayBillingAgg._sum.priceInCents) /
+              yesterdayBillingAgg._sum.priceInCents) *
+            100
+          ).toFixed(2)
+        : 0,
+    );
+
     return {
+      barberId,
       nextBooking,
       billing,
       todayBilling,
       totalSchedules,
       servicesPerformed,
+      yesterdayBillingAgg,
+      yesterdayBilling,
+      yesterdayServicesPerformed,
+      growthPercentage,
     };
   } catch (error) {
     console.error("Error fetching barber dashboard infos:", error);
     throw error;
   }
-});
-
-export const getBarberDefaultTimes = actionClient.action(async () => {
-  const session = await verifySession();
-
-  if (!session?.barberId) {
-    throw new Error("Não autorizado.");
-  }
-
-  const disponibilities = await prisma.disponibility.findMany({
-    where: { barberId: session.barberId },
-  });
-
-  if (!disponibilities || disponibilities.length === 0) {
-    return { defaultTimes: null };
-  }
-
-  const activeDays = new Set(disponibilities.map(disp => disp.dayOfWeek));
-  const first = disponibilities[0];
-
-  return {
-    defaultTimes: {
-      horario_abertura: first.startTime,
-      horario_fechamento: first.endTime,
-      0: activeDays.has(0),
-      1: activeDays.has(1),
-      2: activeDays.has(2),
-      3: activeDays.has(3),
-      4: activeDays.has(4),
-      5: activeDays.has(5),
-      6: activeDays.has(6),
-    },
-  };
 });

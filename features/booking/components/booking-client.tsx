@@ -41,9 +41,7 @@ export default function BookingsClient({ bookings }: BookingsClientProps) {
   if (!bookings || bookings.length === 0) {
     return (
       <PageSection>
-        <PageSectionTitle>
-          Agendamentos
-        </PageSectionTitle>
+        <PageSectionTitle>Agendamentos</PageSectionTitle>
         <div className="mt-4">
           <p className="text-muted-foreground text-sm">
             Você não tem agendamentos.
@@ -112,12 +110,14 @@ export default function BookingsClient({ bookings }: BookingsClientProps) {
                     {emptyMessages[tab.value]}
                   </p>
                 ) : (
-                  <BookingDetails
-                    bookings={list}
-                    onClick={
-                      tab.value === "scheduled" ? handleClickBooking : undefined
-                    }
-                  />
+                  <div className="flex flex-col gap-3">
+                    <BookingDetails
+                      bookings={list}
+                      onClick={
+                        tab.value === "scheduled" ? handleClickBooking : undefined
+                      }
+                    />
+                  </div>
                 )}
               </TabsContent>
             );

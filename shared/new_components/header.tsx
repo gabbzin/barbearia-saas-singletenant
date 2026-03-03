@@ -4,8 +4,10 @@ import { UserIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useUserStore } from "@/stores/user.store";
+import { SidebarMenu } from "../components/sidebar-menu";
 import { AnimatedThemeToggler } from "../components/ui/animated-theme-toggler";
 import { Button } from "../components/ui/button";
+import { publicRoutes } from "../constants/routes";
 import { PhotoAndName } from "./photo-and-name";
 
 export function Header() {
@@ -34,11 +36,15 @@ export function Header() {
         <Button
           variant={"outline"}
           className="flex items-center gap-2"
-          onClick={() => replace("/client/profile")}
+          onClick={() => replace(publicRoutes.profile)}
         >
           <UserIcon />
           {width > 640 && "Meu Perfil"}
         </Button>
+        <SidebarMenu
+          isSubscriber={user?.subscription?.hasPlan ?? false}
+          role={user?.role ?? "USER"}
+        />
       </div>
     </header>
   );

@@ -5,6 +5,7 @@ import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Toaster } from "sonner";
 import { verifySession } from "@/features/user/repository/user.repository";
 import { getInfosBarbershop } from "@/shared/actions/get-infos-barbershop";
+import { TooltipProvider } from "@/shared/components/ui/tooltip";
 import { AppHydrator } from "@/stores/hydrator/app.hydrator";
 import QueryProvider from "../providers/query-provider";
 
@@ -60,9 +61,11 @@ export default async function RootLayout({
       >
         <AppHydrator barbershopData={barbershop} userData={user} />
         <QueryProvider>
-          {children}
-          <Toaster />
-          <SpeedInsights />
+          <TooltipProvider>
+            {children}
+            <Toaster />
+            <SpeedInsights />
+          </TooltipProvider>
         </QueryProvider>
       </body>
     </html>
