@@ -128,45 +128,19 @@ export const SidebarMenu = ({ isSubscriber, role }: SidebarMenuProps) => {
         {(role === "USER" || role === "ADMIN") && (
           <>
             <div className="flex w-full flex-col px-2">
-              {ROUTES.map(route =>
-                route.name !== "Barbeiros" ? (
-                  <Button
-                    key={route.name}
-                    variant="ghost"
-                    className="w-full justify-start gap-3 rounded-full px-5 py-3"
-                    asChild
-                  >
-                    <Link href={route.path}>
-                      <route.icon className="size-4" />
-                      <span className="font-medium text-sm">{route.name}</span>
-                    </Link>
-                  </Button>
-                ) : (
-                  <>Hello World</>
-                  // <Accordion key={route.name} type="single" collapsible>
-                  //   <AccordionItem value="barbers">
-                  //     <AccordionTrigger className="cursor-pointer px-3 py-2 hover:bg-accent hover:text-accent-foreground hover:no-underline dark:hover:bg-accent/50">
-                  //       <div className="flex items-center gap-3">
-                  //         <route.icon className="size-4" />
-                  //         Barbeiros
-                  //       </div>
-                  //     </AccordionTrigger>
-
-                  //     <AccordionContent className="flex flex-col">
-                  //       {barbers.map(barber => (
-                  //         <Link
-                  //           key={barber.id}
-                  //           href={`/barbeiro/${barber.id}`}
-                  //           className="px-10 py-2 text-sm hover:bg-accent hover:text-accent-foreground hover:underline dark:hover:bg-accent/50"
-                  //         >
-                  //           {barber.user?.name}
-                  //         </Link>
-                  //       ))}
-                  //     </AccordionContent>
-                  //   </AccordionItem>
-                  // </Accordion>
-                ),
-              )}
+              {ROUTES.map(route => (
+                <Button
+                  key={route.name}
+                  variant="ghost"
+                  className="w-full justify-start gap-3 rounded-full px-5 py-3"
+                  asChild
+                >
+                  <Link href={route.path}>
+                    <route.icon className="size-4" />
+                    <span className="font-medium text-sm">{route.name}</span>
+                  </Link>
+                </Button>
+              ))}
             </div>
 
             <Separator className="p-0.2" />
@@ -245,7 +219,7 @@ export const SidebarMenu = ({ isSubscriber, role }: SidebarMenuProps) => {
           {session && (
             <Button
               variant="ghost"
-              className="w-full justify-start gap-3 rounded-full px-5 py-3"
+              className="w-full justify-start gap-3 rounded-full px-5 py-3 hover:bg-destructive/75 hover:text-white"
               onClick={handleLogout}
             >
               <LogOut className="size-4" />

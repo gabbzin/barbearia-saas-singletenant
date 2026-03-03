@@ -14,7 +14,7 @@ const Header = () => {
   const [isSubscriber, setIsSubscriber] = useState<{ hasPlan: boolean }>({
     hasPlan: false,
   });
-  const [role, setRole] = useState<userRole | string | undefined>("USER");
+  const [role, setRole] = useState<userRole | string>("USER");
 
   const { executeAsync } = useAction(getHeaderData);
 

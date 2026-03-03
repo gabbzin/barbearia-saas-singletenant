@@ -101,12 +101,7 @@ export default async function BarberDashboardPage() {
       },
     },
   });
-
-  console.log(
-    horariosData?.startTime,
-    horariosData?.endTime,
-    typeof horariosData?.startTime,
-  );
+  
   const defaultTimesValues = horariosData
     ? {
         horario_abertura: horariosData.startTime,
@@ -173,7 +168,9 @@ export default async function BarberDashboardPage() {
             />
             <CardInfo
               Icon={Calendar}
-              title={horariosData?.endTime ? "Trabalho até:" : "Dia de hoje"}
+              title={
+                horariosData?.endTime ? "Trabalho hoje até:" : "Dia de hoje"
+              }
               value={
                 horariosData?.endTime
                   ? horariosData.endTime
