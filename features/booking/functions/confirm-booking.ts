@@ -37,5 +37,7 @@ export async function confirmBooking(bookingId: string) {
     },
   });
 
-  return revalidatePath(barberRoutes.schedule);
+  revalidatePath(barberRoutes.schedule);
+
+  return { success: true };
 }

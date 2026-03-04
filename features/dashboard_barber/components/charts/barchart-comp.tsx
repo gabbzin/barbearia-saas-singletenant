@@ -19,7 +19,7 @@ interface BarChartGraphProps {
   chartConfig: ChartConfig;
   data: {
     day: string;
-    saldo: number;
+    saldoEmReais: number;
   }[];
 }
 
@@ -61,7 +61,7 @@ export function BarChartGraph({ chartConfig, data }: BarChartGraphProps) {
             />
           }
         />
-        <Bar dataKey="saldo" fill="var(--chart-2)" radius={4} />
+        <Bar dataKey="saldoEmReais" fill="var(--chart-2)" radius={4} />
       </BarChart>
     </ChartContainer>
   );

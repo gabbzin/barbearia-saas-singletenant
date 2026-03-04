@@ -118,8 +118,8 @@ export default async function BarberDashboardPage() {
                 url="/barber/schedule"
                 tableTitles={["Cliente", "Serviço", "Data/Hora", "Status"]}
               >
-                {info.data?.nextBooking ? (
-                  info.data.nextBooking.map(booking => (
+                {info.data?.nextBookings && info.data.nextBookings.length > 0 ? (
+                  info.data.nextBookings.map(booking => (
                     <TableRow className="border-t" key={booking.id}>
                       <TableCell className="px-6 py-4">
                         <div className="flex items-center gap-3">
@@ -199,7 +199,7 @@ export default async function BarberDashboardPage() {
                   </div>
                   <BarChartGraph
                     chartConfig={{
-                      saldo: {
+                      saldoEmReais: {
                         label: "Saldo",
                         color: "#60a5fa",
                       },
