@@ -21,7 +21,7 @@ export function DatePicker({ date, setDate }: DatePickerProps) {
         <Button
           variant="outline"
           data-empty={!date}
-          className="w-70 justify-start text-left font-normal data-[empty=true]:text-muted-foreground"
+          className="w-full justify-start text-left font-normal data-[empty=true]:text-muted-foreground"
         >
           <CalendarIcon />
           {date ? (

@@ -25,7 +25,12 @@ export async function getBookingsBarber(barberId: string, targetDate?: Date) {
     },
   });
 
-  return bookings;
+  // Usar customer, pois o campo de usuário pode mudar, mas o cliente é o mesmo.
+  return bookings.map(booking => ({
+    ...booking,
+    customer: booking.user,
+    user: undefined,
+  }));
 }
 
 export async function getBookingsUser(userId: string) {
