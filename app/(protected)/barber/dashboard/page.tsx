@@ -14,6 +14,7 @@ import { getBarberDefaultTimes } from "@/features/dashboard_barber/actions/getDe
 import { getBarberDashboardInfos } from "@/features/dashboard_barber/actions/getInfos";
 import { CardTable } from "@/features/dashboard_barber/components/card-table";
 import { BarChartGraph } from "@/features/dashboard_barber/components/charts/barchart-comp";
+import { NewBookingManualDialog } from "@/features/dashboard_barber/components/new-booking-manual-dialog";
 import { SpeedDial } from "@/features/dashboard_barber/components/SpeedDial";
 import { TableService } from "@/features/dashboard_barber/components/table-service";
 import { TableSettings } from "@/features/dashboard_barber/components/table-settings";
@@ -71,6 +72,7 @@ export default async function BarberDashboardPage() {
                 Aqui está o resumo estratégico do seu dia.
               </p>
             </div>
+            <NewBookingManualDialog barberId={barberId} />
           </div>
 
           <section className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-5">
@@ -118,7 +120,8 @@ export default async function BarberDashboardPage() {
                 url="/barber/schedule"
                 tableTitles={["Cliente", "Serviço", "Data/Hora", "Status"]}
               >
-                {info.data?.nextBookings && info.data.nextBookings.length > 0 ? (
+                {info.data?.nextBookings &&
+                info.data.nextBookings.length > 0 ? (
                   info.data.nextBookings.map(booking => (
                     <TableRow className="border-t" key={booking.id}>
                       <TableCell className="px-6 py-4">

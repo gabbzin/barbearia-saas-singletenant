@@ -24,7 +24,7 @@ export function SelectForm(props: SelectFormProps) {
       onValueChange={props.onChange}
       name={props.name}
     >
-      <SelectTrigger className="w-full max-w-sm">
+      <SelectTrigger className="w-full">
         <SelectValue placeholder={props.placeholder ?? "Selecione uma opção"} />
       </SelectTrigger>
       <SelectContent>
