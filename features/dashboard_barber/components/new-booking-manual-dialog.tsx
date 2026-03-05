@@ -1,10 +1,13 @@
 "use client";
 
 import { PlusIcon } from "lucide-react";
+import { useAction } from "next-safe-action/hooks";
 import { useState } from "react";
 import { Controller, useFormContext } from "react-hook-form";
 import { toast } from "sonner";
 import z from "zod";
+import { createBookingWithoutSession } from "@/features/booking/functions/create-booking-without-session";
+import { useAvailableTimeSlots } from "@/features/booking/hooks/use-available-time-slots";
 import { useServicesCRUD } from "@/features/service/hooks/useServices";
 import { DatePicker } from "@/shared/components/date-picker";
 import GenericForm from "@/shared/components/form/generic-form";
@@ -36,6 +39,7 @@ const newBookingSchema = z.object({
   paymentMethod: z
     .string({ error: "A forma de pagamento é obrigatória" })
     .min(1, "A forma de pagamento é obrigatória"),
+  time: z.string({ error: "O horário é obrigatório" }),
 });
 
 const defaultValues: newBookingSchemaType = {
@@ -44,6 +48,7 @@ const defaultValues: newBookingSchemaType = {
   service: "",
   date: new Date(),
   paymentMethod: "",
+  time: "",
 };
 
 type newBookingSchemaType = z.infer<typeof newBookingSchema>;
@@ -51,16 +56,48 @@ type newBookingSchemaType = z.infer<typeof newBookingSchema>;
 export function NewBookingManualDialog({
   barberId,
 }: NewBookingManualDialogProps) {
-  const { services } = useServicesCRUD(barberId);
+  // Variaveis
+  const [selectedDate, setSelectedDate] = useState<Date>();
   const [open, setOpen] = useState(false);
   const today = new Date();
   today.setHours(0, 0, 0, 0);
 
+  // Hooks
+  const { services } = useServicesCRUD(barberId);
+  const { executeAsync, isPending } = useAction(createBookingWithoutSession);
+
+  const { availableTimeSlots, isAvailableTimePending } = useAvailableTimeSlots(
+    barberId,
+    selectedDate,
+  );
+
+  // Funções
   const handleCreateBooking = async (data: newBookingSchemaType) => {
-    console.log(data);
-    toast.info("Rodou aqui chefe");
+    const [hours, minutes] = data.time.split(":");
+
+    const date = new Date(data.date);
+    date.setHours(Number(hours), Number(minutes), 0, 0);
+
+    const result = await executeAsync({
+      serviceId: data.service,
+      date,
+      name: data.name,
+      phone: data.phone,
+      paymentMethod: data.paymentMethod,
+    });
+
+    if (result?.serverError || result?.validationErrors) {
+      toast.error(
+        result.validationErrors?._errors?.[0] ?? "Erro ao criar agendamento.",
+      );
+      return;
+    }
+
+    toast.success(`Agendamento para ${data.name} criado com sucesso!`);
+    setOpen(false);
   };
 
+  // React
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
@@ -86,6 +123,7 @@ export function NewBookingManualDialog({
           }}
           onSubmit={handleCreateBooking}
           submitText="Criar agendamento"
+          disabled={isPending}
         >
           <InputForm
             label="Nome do cliente"
@@ -125,19 +163,36 @@ export function NewBookingManualDialog({
           </div>
 
           <div className="grid gap-3 lg:grid-cols-2">
-            <DatePickerForm before={today} />
             <div className="space-y-1.5">
-              <Label htmlFor="manual-booking-payment">Forma de pagamento</Label>
-              <SelectForm<newBookingSchemaType>
-                name="paymentMethod"
-                placeholder="Método de pagamento"
-                items={[
-                  { value: "dinheiro", label: "Dinheiro" },
-                  { value: "pix", label: "Pix" },
-                  { value: "cartao", label: "Cartão" },
-                ]}
+              <Label htmlFor="manual-booking-date">Data</Label>
+              <DateField setSelectedDate={setSelectedDate} />
+            </div>
+            <div className="space-y-1.5">
+              <Label htmlFor="manual-booking-date">Hora</Label>
+              <SelectForm
+                name="time"
+                placeholder="Selecione o horário"
+                items={
+                  availableTimeSlots?.map(time => ({
+                    value: time,
+                    label: time,
+                  })) || []
+                }
+                disabled={isAvailableTimePending}
               />
             </div>
+          </div>
+          <div className="space-y-1.5">
+            <Label htmlFor="manual-booking-payment">Forma de pagamento</Label>
+            <SelectForm<newBookingSchemaType>
+              name="paymentMethod"
+              placeholder="Método de pagamento"
+              items={[
+                { value: "dinheiro", label: "Dinheiro" },
+                { value: "pix", label: "Pix" },
+                { value: "cartao", label: "Cartão" },
+              ]}
+            />
           </div>
         </GenericForm>
       </DialogContent>
@@ -145,27 +200,30 @@ export function NewBookingManualDialog({
   );
 }
 
-interface DatePickerFormProps {
-  before: Date;
-}
-
-function DatePickerForm({ before }: DatePickerFormProps) {
+function DateField({
+  setSelectedDate,
+}: {
+  setSelectedDate: (date: Date | undefined) => void;
+}) {
   const { control } = useFormContext<newBookingSchemaType>();
 
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
   return (
-    <div className="space-y-1.5">
-      <Label htmlFor="manual-booking-date">Data</Label>
-      <Controller
-        name="date"
-        control={control}
-        render={({ field }) => (
-          <DatePicker
-            date={field.value ?? before}
-            setDate={field.onChange}
-            before={before}
-          />
-        )}
-      />
-    </div>
+    <Controller
+      name="date"
+      control={control}
+      render={({ field }) => (
+        <DatePicker
+          date={field.value ?? today}
+          setDate={date => {
+            field.onChange(date);
+            setSelectedDate(date);
+          }}
+          before={today}
+        />
+      )}
+    />
   );
 }

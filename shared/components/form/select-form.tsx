@@ -19,6 +19,7 @@ interface SelectFormProps<T extends FieldValues> {
   placeholder?: string;
   groupLabels?: string;
   items: { value: string; label: string }[];
+  disabled?: boolean;
 }
 
 export function SelectForm<T extends FieldValues>({
@@ -26,6 +27,7 @@ export function SelectForm<T extends FieldValues>({
   placeholder,
   groupLabels,
   items,
+  disabled,
 }: SelectFormProps<T>) {
   const { control } = useFormContext<T>();
 
@@ -37,7 +39,7 @@ export function SelectForm<T extends FieldValues>({
         <Select
           value={field.value}
           onValueChange={field.onChange}
-          disabled={field.disabled}
+          disabled={field.disabled || disabled}
         >
           <SelectTrigger className="w-full">
             <SelectValue placeholder={placeholder ?? "Selecione uma opção"} />
