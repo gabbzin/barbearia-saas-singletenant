@@ -238,6 +238,7 @@ model Booking {
   // Payment
   stripeChargeId String? @unique
   stripeEventId  String? @unique
+  paymentMethod  String? 
 
   // Timestamps
   createdAt   DateTime  @default(now())

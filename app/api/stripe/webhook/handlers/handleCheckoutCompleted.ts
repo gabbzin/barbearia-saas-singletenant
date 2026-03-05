@@ -54,6 +54,7 @@ export async function handleCheckoutCompleted(
         barberId,
         stripeChargeId: chargeId || null,
         stripeEventId: eventId,
+        paymentMethod: "card",
         priceInCents: session.amount_total ?? 0,
       },
     });

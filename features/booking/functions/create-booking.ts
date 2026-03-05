@@ -9,11 +9,12 @@ import { prisma } from "@/lib/prisma";
 const inputSchema = z.object({
   serviceId: z.uuid(),
   date: z.date(),
+  paymentMethod: z.string()
 });
 
 export const createBooking = actionClient
   .inputSchema(inputSchema)
-  .action(async ({ parsedInput: { serviceId, date } }) => {
+  .action(async ({ parsedInput: { serviceId, date, paymentMethod } }) => {
     const user = await verifySession();
 
     if (!user) {
@@ -61,6 +62,7 @@ export const createBooking = actionClient
         userId: user.id,
         serviceId: serviceId,
         date,
+        paymentMethod,
         priceInCents: service.priceInCents,
       },
     });
