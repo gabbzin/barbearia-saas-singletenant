@@ -213,7 +213,7 @@ export default async function BarberDashboardPage() {
               </Card>
             </div>
 
-            <div className="space-y-8">
+            <div className="grid grid-cols-1 gap-2 md:grid-cols-2 lg:grid-cols-1 lg:space-y-8">
               <TableService barberId={barberId} />
               <TableSettings barberId={barberId} />
             </div>

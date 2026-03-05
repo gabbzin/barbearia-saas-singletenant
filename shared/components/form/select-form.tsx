@@ -1,4 +1,10 @@
 import {
+  Controller,
+  type FieldValues,
+  type Path,
+  useFormContext,
+} from "react-hook-form";
+import {
   Select,
   SelectContent,
   SelectGroup,
@@ -8,45 +14,56 @@ import {
   SelectValue,
 } from "../ui/select";
 
-type SelectFormProps = {
-  name?: string;
+interface SelectFormProps<T extends FieldValues> {
+  name: Path<T>;
   placeholder?: string;
-  value?: string;
-  onChange?: (value: string) => void;
   groupLabels?: string;
   items: { value: string; label: string }[];
-};
+}
 
-export function SelectForm(props: SelectFormProps) {
+export function SelectForm<T extends FieldValues>({
+  name,
+  placeholder,
+  groupLabels,
+  items,
+}: SelectFormProps<T>) {
+  const { control } = useFormContext<T>();
+
   return (
-    <Select
-      value={props.value}
-      onValueChange={props.onChange}
-      name={props.name}
-    >
-      <SelectTrigger className="w-full">
-        <SelectValue placeholder={props.placeholder ?? "Selecione uma opção"} />
-      </SelectTrigger>
-      <SelectContent>
-        {props.groupLabels ? (
-          <SelectGroup>
-            <SelectLabel>{props.groupLabels}</SelectLabel>
-            {props.items.map(item => (
-              <SelectItem key={item.value} value={item.value}>
-                {item.label}
-              </SelectItem>
-            ))}
-          </SelectGroup>
-        ) : (
-          <div>
-            {props.items.map(item => (
-              <SelectItem key={item.value} value={item.value}>
-                {item.label}
-              </SelectItem>
-            ))}
-          </div>
-        )}
-      </SelectContent>
-    </Select>
+    <Controller
+      name={name}
+      control={control}
+      render={({ field }) => (
+        <Select
+          value={field.value}
+          onValueChange={field.onChange}
+          disabled={field.disabled}
+        >
+          <SelectTrigger className="w-full">
+            <SelectValue placeholder={placeholder ?? "Selecione uma opção"} />
+          </SelectTrigger>
+          <SelectContent>
+            {groupLabels ? (
+              <SelectGroup>
+                <SelectLabel>{groupLabels}</SelectLabel>
+                {items.map(item => (
+                  <SelectItem key={item.value} value={item.value}>
+                    {item.label}
+                  </SelectItem>
+                ))}
+              </SelectGroup>
+            ) : (
+              <div>
+                {items.map(item => (
+                  <SelectItem key={item.value} value={item.value}>
+                    {item.label}
+                  </SelectItem>
+                ))}
+              </div>
+            )}
+          </SelectContent>
+        </Select>
+      )}
+    />
   );
 }

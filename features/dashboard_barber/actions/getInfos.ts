@@ -90,11 +90,12 @@ export const getBarberDashboardInfos = actionClient.action(async () => {
         },
       }),
 
-      // Agendamentos não confirmados - 4
+      // Agendamentos não confirmados de hoje - 4
       prisma.booking.count({
         where: {
           barberId: barberId,
           date: {
+            gte: startOfDayDate,
             lte: now,
           },
           status: "SCHEDULED",
@@ -214,14 +215,14 @@ export const getBarberDashboardInfos = actionClient.action(async () => {
       6: "Sábado",
     };
 
-    const weeklyBillingData = weeklyBillingBrut.map((item) => {
+    const weeklyBillingData = weeklyBillingBrut.map(item => {
       return {
         day: daysOfWeekMap[Number(item.day.split(" ")[1])],
         saldoEmReais: Number(item.saldo) / 100,
       };
     });
 
-    console.log(nextBookings)
+    console.log(nextBookings);
 
     /**
      * Porcentagem de crescimento ou queda no faturamento em relação ao dia anterior. Se o faturamento do dia anterior for 0, retorna null para evitar divisão por zero.

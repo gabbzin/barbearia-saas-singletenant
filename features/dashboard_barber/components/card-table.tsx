@@ -25,7 +25,7 @@ interface CardTableProps {
 
 export function CardTable(props: CardTableProps) {
   return (
-    <Card className="overflow-hidden rounded-3xl border bg-card shadow-sm">
+    <Card className="min-w-fit overflow-hidden rounded-3xl border bg-card shadow-sm">
       <CardHeader className="flex flex-row items-center justify-between border-b px-6 py-4">
         <CardTitle className="font-bold text-lg">{props.titleCard}</CardTitle>
         {props.url && props.linkText ? (

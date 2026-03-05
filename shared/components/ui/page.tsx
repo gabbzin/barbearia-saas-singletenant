@@ -16,7 +16,7 @@ export const PageSectionTitle = ({
 
 export const PageSection = ({ children }: { children: React.ReactNode }) => {
   return (
-    <div className="my-2 w-full space-y-3 px-5 py-1 lg:mx-auto lg:max-w-[60%]">
+    <div className="my-2 w-full space-y-3 px-5 py-1 lg:mx-auto lg:max-w-[70%]">
       {children}
     </div>
   );
