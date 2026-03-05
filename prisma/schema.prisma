@@ -224,6 +224,11 @@ model Booking {
   barberId String
   barber   Barber @relation(fields: [barberId], references: [id])
 
+  // Ghost User
+  customerName  String?
+  customerPhone String?
+
+  // Rating (optional)
   rating Rating?
 
   // Subscription (optional)
@@ -242,6 +247,7 @@ model Booking {
   @@index([userId])
   @@index([barberId, date])
   @@index([status])
+  @@index([customerName])
 }
 
 enum DiaSemana {

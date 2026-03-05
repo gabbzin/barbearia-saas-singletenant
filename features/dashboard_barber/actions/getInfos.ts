@@ -1,6 +1,7 @@
 "use server";
 
 import { endOfDay, startOfDay, subDays } from "date-fns";
+import { getBookingsBarber } from "@/features/booking/functions/get-bookings";
 import { verifySession } from "@/features/user/repository/user.repository";
 import { actionClient } from "@/lib/actionClient";
 import { prisma } from "@/lib/prisma";
@@ -24,24 +25,7 @@ export const getBarberDashboardInfos = actionClient.action(async () => {
 
     const requests = Promise.allSettled([
       // Próximos agendamentos - 0
-      prisma.booking.findMany({
-        where: {
-          barberId: barberId,
-          date: {
-            gte: startOfDayDate,
-            lte: endOfDayDate,
-          },
-          status: "SCHEDULED",
-        },
-        include: {
-          service: true,
-          user: true,
-        },
-        orderBy: {
-          date: "asc",
-        },
-        take: 5,
-      }),
+      getBookingsBarber(barberId, now, 5),
 
       // Faturamento e atendimentos realizados hoje - 1
       prisma.booking.aggregate({

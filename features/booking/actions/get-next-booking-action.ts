@@ -2,7 +2,7 @@
 
 import { verifySession } from "@/features/user/repository/user.repository";
 import { actionClient } from "@/lib/actionClient";
-import { getNextBooking } from "../functions/get-bookings";
+import { getNextBookingClient } from "../functions/get-bookings";
 
 export const getNextBookingAction = actionClient.action(async () => {
   const session = await verifySession();
@@ -13,7 +13,7 @@ export const getNextBookingAction = actionClient.action(async () => {
 
   const userId = session.id;
 
-  const nextBooking = await getNextBooking(userId);
+  const nextBooking = await getNextBookingClient(userId);
 
   if (!nextBooking) {
     return null;

@@ -128,7 +128,7 @@ export default async function BarberDashboardPage() {
                         <div className="flex items-center gap-3">
                           <div className="flex flex-col">
                             <span className="font-semibold text-sm">
-                              {booking.user.name}
+                              {booking.client.name}
                             </span>
                           </div>
                         </div>

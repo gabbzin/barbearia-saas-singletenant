@@ -27,10 +27,10 @@ import { clientRoutes } from "@/shared/constants/routes";
 import { PhotoAndName } from "@/shared/new_components/photo-and-name";
 import { useBarbershopStore } from "@/stores/barbershop.store";
 import AddEventCalendar from "../functions/download-ics";
-import type { getNextBooking } from "../functions/get-bookings";
+import type { getNextBookingClient } from "../functions/get-bookings";
 
 interface NextBookingProps {
-  nextBooking: Awaited<ReturnType<typeof getNextBooking>> | null;
+  nextBooking: Awaited<ReturnType<typeof getNextBookingClient>> | null;
   lastBookingday: Date | null;
 }
 
