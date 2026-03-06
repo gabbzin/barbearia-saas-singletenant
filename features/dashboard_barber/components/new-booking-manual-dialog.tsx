@@ -3,13 +3,12 @@
 import { PlusIcon } from "lucide-react";
 import { useAction } from "next-safe-action/hooks";
 import { useState } from "react";
-import { Controller, useFormContext } from "react-hook-form";
 import { toast } from "sonner";
 import z from "zod";
 import { createBookingWithoutSession } from "@/features/booking/functions/create-booking-without-session";
 import { useAvailableTimeSlots } from "@/features/booking/hooks/use-available-time-slots";
 import { useServicesCRUD } from "@/features/service/hooks/useServices";
-import { DatePicker } from "@/shared/components/date-picker";
+import { DatePickerForm } from "@/shared/components/form/date-picker-form";
 import GenericForm from "@/shared/components/form/generic-form";
 import InputForm from "@/shared/components/form/input-form";
 import { SelectForm } from "@/shared/components/form/select-form";
@@ -56,15 +55,17 @@ type newBookingSchemaType = z.infer<typeof newBookingSchema>;
 export function NewBookingManualDialog({
   barberId,
 }: NewBookingManualDialogProps) {
-  // Variaveis
-  const [selectedDate, setSelectedDate] = useState<Date>();
-  const [open, setOpen] = useState(false);
+  // Constante de tempo
   const today = new Date();
   today.setHours(0, 0, 0, 0);
 
+  // Variaveis de estado
+  const [selectedDate, setSelectedDate] = useState<Date>(today);
+  const [open, setOpen] = useState(false);
+
   // Hooks
   const { services } = useServicesCRUD(barberId);
-  const { executeAsync, isPending } = useAction(createBookingWithoutSession);
+  const { executeAsync } = useAction(createBookingWithoutSession);
 
   const { availableTimeSlots, isAvailableTimePending } = useAvailableTimeSlots(
     barberId,
@@ -123,7 +124,6 @@ export function NewBookingManualDialog({
           }}
           onSubmit={handleCreateBooking}
           submitText="Criar agendamento"
-          disabled={isPending}
         >
           <InputForm
             label="Nome do cliente"
@@ -165,7 +165,10 @@ export function NewBookingManualDialog({
           <div className="grid gap-3 lg:grid-cols-2">
             <div className="space-y-1.5">
               <Label htmlFor="manual-booking-date">Data</Label>
-              <DateField setSelectedDate={setSelectedDate} />
+              <DatePickerForm
+                name="date"
+                setSelectedDate={date => setSelectedDate(date ?? today)}
+              />
             </div>
             <div className="space-y-1.5">
               <Label htmlFor="manual-booking-date">Hora</Label>
@@ -197,33 +200,5 @@ export function NewBookingManualDialog({
         </GenericForm>
       </DialogContent>
     </Dialog>
-  );
-}
-
-function DateField({
-  setSelectedDate,
-}: {
-  setSelectedDate: (date: Date | undefined) => void;
-}) {
-  const { control } = useFormContext<newBookingSchemaType>();
-
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-
-  return (
-    <Controller
-      name="date"
-      control={control}
-      render={({ field }) => (
-        <DatePicker
-          date={field.value ?? today}
-          setDate={date => {
-            field.onChange(date);
-            setSelectedDate(date);
-          }}
-          before={today}
-        />
-      )}
-    />
   );
 }

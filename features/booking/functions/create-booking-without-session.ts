@@ -42,6 +42,7 @@ export const createBookingWithoutSession = actionClient
       });
     }
     const barberId = session?.barberId || service.barberId;
+    const userId = `${GHOST_USER_ID}`;
 
     const booking = await prisma.booking.create({
       data: {
@@ -52,7 +53,7 @@ export const createBookingWithoutSession = actionClient
         paymentMethod,
         priceInCents: service.priceInCents,
         serviceId: serviceId,
-        userId: GHOST_USER_ID,
+        userId,
       },
     });
 
