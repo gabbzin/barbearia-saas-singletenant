@@ -1,6 +1,6 @@
 import { DollarSign, PlusIcon, Scissors, Users } from "lucide-react";
 import { getBarbers } from "@/features/barber/services/barbers.repository";
-import Header from "@/shared/components/header";
+import { Header } from "@/shared/components/header";
 import { Avatar, AvatarImage } from "@/shared/components/ui/avatar";
 import { Button } from "@/shared/components/ui/button";
 import {

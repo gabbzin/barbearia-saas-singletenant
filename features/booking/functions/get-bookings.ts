@@ -39,6 +39,7 @@ export async function getBookingsBarber(
         ? {
             name: booking.customerName ?? "Cliente",
             phone: booking.customerPhone ?? "Telefone não informado",
+            image: "",
           }
         : booking.user,
     user: undefined,

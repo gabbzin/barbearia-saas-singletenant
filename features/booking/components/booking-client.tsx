@@ -160,9 +160,9 @@ const BookingDetails = ({ bookings, onClick }: BookingDetailsProps) => {
         priceInCents: booking.service.priceInCents,
       },
       barber: {
-        name: booking.service.barber.user?.name ?? "Barbeiro",
-        imageUrl: booking.service.barber.user?.image ?? "/default-avatar.png",
-        phone: booking.service.barber.phone,
+        name: booking.barber.user?.name ?? "Barbeiro",
+        imageUrl: booking.barber.user?.image ?? "/default-avatar.png",
+        phone: booking.barber.phone,
       },
     };
 
@@ -172,8 +172,8 @@ const BookingDetails = ({ bookings, onClick }: BookingDetailsProps) => {
         serviceName={booking.service.name}
         date={booking.date}
         counterPart={{
-          name: booking.service.barber.user?.name ?? "Barbeiro",
-          imageUrl: booking.service.barber.user?.image ?? "/default-avatar.png",
+          name: booking.barber.user?.name ?? "Barbeiro",
+          imageUrl: booking.barber.user?.image ?? "/default-avatar.png",
         }}
         status={isPendingVisual ? "PENDING" : booking.status}
         onClick={onClick ? () => onClick(bookingClient) : undefined}
