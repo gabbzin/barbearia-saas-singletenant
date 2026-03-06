@@ -13,6 +13,8 @@ const actions = [
   "@/features/booking/actions/confirm-booking-checkout",
   "@/features/signature/actions/create-signature",
   "@/features/signature/actions/get-current-subscription",
+  "@/features/dashboard_barber/actions/getInfos",
+  "@/features/booking/functions/create-booking-without-session",
 ];
 
 describe("Server actions smoke test", () => {
