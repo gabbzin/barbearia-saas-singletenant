@@ -86,3 +86,22 @@ export async function getNextBookingClient(userId: string) {
     },
   });
 }
+
+export async function getLastBookingClient(userId: string) {
+  return await prisma.booking.findFirst({
+    where: {
+      userId,
+    },
+    include: {
+      service: true,
+      barber: {
+        include: {
+          user: true,
+        },
+      },
+    },
+    orderBy: {
+      date: "desc",
+    },
+  });
+}

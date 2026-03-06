@@ -2,7 +2,10 @@
 
 import { verifySession } from "@/features/user/repository/user.repository";
 import { actionClient } from "@/lib/actionClient";
-import { getNextBookingClient } from "../functions/get-bookings";
+import {
+  getLastBookingClient,
+  getNextBookingClient,
+} from "../functions/get-bookings";
 
 export const getNextBookingAction = actionClient.action(async () => {
   const session = await verifySession();
@@ -15,9 +18,21 @@ export const getNextBookingAction = actionClient.action(async () => {
 
   const nextBooking = await getNextBookingClient(userId);
 
+  const lastBooking = await getLastBookingClient(userId);
+
+  const lastDate = lastBooking?.date ?? null;
+
+  const nextBookingData = {
+    nextBooking,
+    lastDate,
+  };
+
   if (!nextBooking) {
-    return null;
+    return {
+      nextBooking: null,
+      lastDate,
+    };
   }
 
-  return nextBooking;
+  return nextBookingData;
 });

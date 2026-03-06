@@ -31,10 +31,13 @@ import type { getNextBookingClient } from "../functions/get-bookings";
 
 interface NextBookingProps {
   nextBooking: Awaited<ReturnType<typeof getNextBookingClient>> | null;
-  lastBookingday: Date | null;
+  lastBookingDate: Date | null;
 }
 
-export function NextBooking({ nextBooking, lastBookingday }: NextBookingProps) {
+export function NextBooking({
+  nextBooking,
+  lastBookingDate,
+}: NextBookingProps) {
   const [isMounted, setIsMounted] = useState(false);
   const barbershop = useBarbershopStore(s => s.barbershop);
 
@@ -56,14 +59,18 @@ export function NextBooking({ nextBooking, lastBookingday }: NextBookingProps) {
           <div>
             <p className="mt-2 font-bold">Você ainda não tem horário marcado</p>
             <p className="text-muted-foreground text-sm">
-              Seu último corte foi há{" "}
-              {lastBookingday
-                ? Math.floor(
-                    (Date.now() - lastBookingday.getTime()) /
+              {lastBookingDate ? (
+                <span>
+                  Seu último corte foi há{" "}
+                  {Math.floor(
+                    (Date.now() - lastBookingDate.getTime()) /
                       (1000 * 60 * 60 * 24),
-                  )
-                : 0}{" "}
-              dias. Que tal dar um trato no visual essa semana?
+                  )}
+                  dias. Que tal dar um trato no visual essa semana?
+                </span>
+              ) : (
+                "Você nunca marcou um horário. Vamos agendar um!"
+              )}
             </p>
           </div>
           <Button variant={"gold"}>
@@ -85,10 +92,10 @@ export function NextBooking({ nextBooking, lastBookingday }: NextBookingProps) {
 
   // Atualizar para usar dados reais do nextBooking
   const eventConfig: CalendarOptions = {
-    title: `${nextBooking?.service.name} com ${nextBooking?.service?.barber?.user?.name}`,
+    title: `${nextBooking?.service.name} com ${nextBooking?.barber.user?.name}`,
     start: bookingDate,
     end: timeEnd,
-    description: `Agendamento de serviço na barbearia com ${nextBooking?.service?.barber?.user?.name}.`,
+    description: `Agendamento de serviço na barbearia com ${nextBooking?.barber.user?.name}.`,
     location: "Barbearia XYZ",
   };
 
@@ -151,8 +158,8 @@ export function NextBooking({ nextBooking, lastBookingday }: NextBookingProps) {
 
       <CardFooter className="flex justify-between gap-2 *:text-xs">
         <PhotoAndName
-          name={nextBooking?.service?.barber?.user?.name ?? "Barbeiro"}
-          imageUrl={nextBooking?.service.barber.user?.image}
+          name={nextBooking?.barber.user?.name ?? "Barbeiro"}
+          imageUrl={nextBooking?.barber.user?.image}
           mutedPhrase="Barbeiro"
         />
         <div className="flex gap-3">
