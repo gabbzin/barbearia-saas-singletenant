@@ -211,16 +211,15 @@ export const getBarberDashboardInfos = actionClient.action(async () => {
     /**
      * Porcentagem de crescimento ou queda no faturamento em relação ao dia anterior. Se o faturamento do dia anterior for 0, retorna null para evitar divisão por zero.
      */
-    const growthPercentage = Number(
-      yesterdayBillingAgg._sum.priceInCents && billing._sum.priceInCents
-        ? (
-            ((billing._sum.priceInCents -
-              yesterdayBillingAgg._sum.priceInCents) /
-              yesterdayBillingAgg._sum.priceInCents) *
-            100
-          ).toFixed(2)
-        : 0,
-    );
+    const todayTotal = billing._sum.priceInCents ?? 0;
+    const yesterdayTotal = yesterdayBillingAgg._sum.priceInCents ?? 0;
+
+    const growthPercentage =
+      yesterdayTotal === 0
+        ? todayTotal / 100
+        : ((todayTotal - yesterdayTotal) / yesterdayTotal) * 100;
+
+    console.log(growthPercentage);
 
     return {
       barberId,

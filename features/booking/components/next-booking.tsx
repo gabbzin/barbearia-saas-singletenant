@@ -10,11 +10,11 @@ import {
   EllipsisIcon,
   MapPinIcon,
   PlusIcon,
+  ScissorsIcon,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { IconBadge } from "@/shared/components/icon-badge";
-import { PhotoAndName } from "@/shared/components/photo-and-name";
 import { Badge } from "@/shared/components/ui/badge";
 import { Button } from "@/shared/components/ui/button";
 import {
@@ -127,7 +127,7 @@ export function NextBooking({
       <CardContent>
         <main className="flex items-center gap-3 py-2 font-poppins">
           <Card className="flex flex-1 items-center justify-between gap-2">
-            <CardContent className="mx-2 flex w-full items-center justify-between gap-6">
+            <CardContent className="mx-2 flex w-full flex-col items-start justify-between gap-6 sm:flex-row sm:items-center">
               <div className="flex items-center gap-4">
                 <div className="rounded-md bg-gold p-2 text-primary-foreground">
                   <CalendarIcon size={20} strokeWidth={2.5} />
@@ -139,6 +139,17 @@ export function NextBooking({
                   <p className="font-semibold text-sm">
                     {day} de {month} às{" "}
                     {isMounted ? format(bookingDate, "HH:mm") : "--:--"}
+                  </p>
+                </div>
+              </div>
+              <div className="flex items-center gap-4">
+                <div className="rounded-md bg-gold p-2 text-primary-foreground">
+                  <ScissorsIcon size={20} strokeWidth={2.5} />
+                </div>
+                <div>
+                  <p className="text-primary/50 text-xs uppercase">Barbeiro</p>
+                  <p className="font-semibold text-sm">
+                    {nextBooking?.barber.user?.name}
                   </p>
                 </div>
               </div>
@@ -156,27 +167,20 @@ export function NextBooking({
         </main>
       </CardContent>
 
-      <CardFooter className="flex justify-between gap-2 *:text-xs">
-        <PhotoAndName
-          name={nextBooking?.barber.user?.name ?? "Barbeiro"}
-          imageUrl={nextBooking?.barber.user?.image}
-          mutedPhrase="Barbeiro"
-        />
-        <div className="flex gap-3">
-          <Button
-            variant={"secondary"}
-            onClick={() => {
-              push(clientRoutes.bookings);
-            }}
-          >
-            <EllipsisIcon />
-            Ver detalhes
-          </Button>
-          <Button variant={"default"} onClick={handleButtonClick}>
-            <CalendarFoldIcon />
-            Adicionar
-          </Button>
-        </div>
+      <CardFooter className="flex flex-col items-end justify-end gap-2 *:text-xs sm:flex-row">
+        <Button
+          variant={"secondary"}
+          onClick={() => {
+            push(clientRoutes.bookings);
+          }}
+        >
+          <EllipsisIcon />
+          Ver detalhes
+        </Button>
+        <Button variant={"default"} onClick={handleButtonClick}>
+          <CalendarFoldIcon />
+          Adicionar
+        </Button>
       </CardFooter>
     </Card>
   );
