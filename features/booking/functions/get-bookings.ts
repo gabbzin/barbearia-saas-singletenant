@@ -91,6 +91,10 @@ export async function getLastBookingClient(userId: string) {
   return await prisma.booking.findFirst({
     where: {
       userId,
+      status: "COMPLETED",
+      rating: {
+        is: null,
+      },
     },
     include: {
       service: true,
