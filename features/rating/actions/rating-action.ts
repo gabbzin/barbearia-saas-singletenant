@@ -1,3 +1,5 @@
+"use server";
+
 import { returnValidationErrors } from "next-safe-action";
 import z from "zod";
 import { verifySession } from "@/features/user/repository/user.repository";
