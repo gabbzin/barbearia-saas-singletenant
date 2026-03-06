@@ -5,8 +5,12 @@ import { useState } from "react";
 import { Input } from "@/shared/components/ui/input";
 import { Label } from "@/shared/components/ui/label";
 
-export function InputStars() {
-  const [rating, setRating] = useState(0);
+interface InputStarsProps {
+  rating: number;
+  setRating: (rating: number) => void;
+}
+
+export function InputStars({ rating, setRating }: InputStarsProps) {
   const [hover, setHover] = useState(0);
 
   return (

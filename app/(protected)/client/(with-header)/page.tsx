@@ -8,9 +8,9 @@ import { NextBooking } from "@/features/booking/components/next-booking";
 import { RatingDialog } from "@/features/rating/components/rating-dialog";
 import { getCurrentSubscriptionAction } from "@/features/signature/actions/get-current-subscription";
 import { SignatureCard } from "@/features/signature/components/signature-card";
+import { ClientNavs } from "@/shared/components/client-navs";
+import { HistoryList } from "@/shared/components/history-list";
 import { PageSection, PageSectionTitle } from "@/shared/components/ui/page";
-import { ClientNavs } from "@/shared/new_components/client-navs";
-import { HistoryList } from "@/shared/new_components/history-list";
 
 export default async function Home() {
   const [barbers, history, plan, nextBooking, lastBooking] = await Promise.all([

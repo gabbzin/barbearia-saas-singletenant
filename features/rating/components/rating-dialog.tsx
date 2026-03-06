@@ -1,7 +1,10 @@
 "use client";
 
+import { useAction } from "next-safe-action/hooks";
 import { useState } from "react";
+import { toast } from "sonner";
 import type { getLastBookingAction } from "@/features/booking/actions/get-last-booking-action";
+import { SpinLoader } from "@/shared/components/spinLoader";
 import { Button } from "@/shared/components/ui/button";
 import {
   Dialog,
@@ -10,6 +13,7 @@ import {
   DialogTitle,
 } from "@/shared/components/ui/dialog";
 import { Input } from "@/shared/components/ui/input";
+import { RatingAction } from "../actions/rating-action";
 import { InputStars } from "./input-stars";
 
 interface RatingDialogProps {
@@ -19,10 +23,40 @@ interface RatingDialogProps {
 export function RatingDialog({ lastBooking }: RatingDialogProps) {
   const hasBooking = !!lastBooking;
   const [open, setOpen] = useState(hasBooking);
+  const [ratingValue, setRatingValue] = useState(0);
+  const [comment, setComment] = useState("");
+
+  const { executeAsync, isPending } = useAction(RatingAction);
 
   if (!hasBooking || !lastBooking) {
     return null;
   }
+
+  const handleSubmit = async () => {
+    const payload = {
+      ratingValue,
+      comment,
+      bookingId: lastBooking.id,
+    };
+
+    if (ratingValue === 0) {
+      toast.error("Por favor, selecione uma avaliação antes de enviar.");
+      return;
+    }
+
+    const result = await executeAsync(payload);
+
+    if (result.serverError || result.validationErrors) {
+      toast.error(
+        result.serverError ||
+          result.validationErrors?._errors?.[0] ||
+          "Erro ao enviar avaliação",
+      );
+    }
+
+    toast.success("Avaliação enviada com sucesso!");
+    setOpen(false);
+  };
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -37,12 +71,18 @@ export function RatingDialog({ lastBooking }: RatingDialogProps) {
               {lastBooking.barber.user?.name}
             </p>
             <p>Como foi sua experiência com esse atendimento?</p>
-            <InputStars />
+            <InputStars rating={ratingValue} setRating={setRatingValue} />
           </div>
           <div className="space-y-2">
-            <Input placeholder="Comentário (opcional)" />
+            <Input
+              placeholder="Comentário (opcional)"
+              value={comment}
+              onChange={e => setComment(e.target.value)}
+            />
           </div>
-          <Button>Enviar avaliação</Button>
+          <Button onClick={handleSubmit} disabled={isPending}>
+            {isPending ? <SpinLoader /> : "Enviar avaliação"}
+          </Button>
         </div>
       </DialogContent>
     </Dialog>

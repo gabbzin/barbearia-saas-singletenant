@@ -2,9 +2,9 @@
 
 import { History, Plus, User } from "lucide-react";
 import { toast } from "sonner";
-import { DatePicker } from "../components/date-picker";
-import { SelectForm } from "../components/form/select-form";
-import { Button } from "../components/ui/button";
+import { DatePicker } from "./date-picker";
+import { SelectForm } from "./form/select-form";
+import { Button } from "./ui/button";
 import {
   Dialog,
   DialogContent,
@@ -12,9 +12,9 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "../components/ui/dialog";
-import { Input } from "../components/ui/input";
-import { Label } from "../components/ui/label";
+} from "./ui/dialog";
+import { Input } from "./ui/input";
+import { Label } from "./ui/label";
 
 export function ClientNavs() {
   const actions = [

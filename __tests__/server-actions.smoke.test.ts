@@ -15,6 +15,9 @@ const actions = [
   "@/features/signature/actions/get-current-subscription",
   "@/features/dashboard_barber/actions/getInfos",
   "@/features/booking/functions/create-booking-without-session",
+  "@/features/booking/actions/get-next-booking-action",
+  "@/features/booking/actions/get-last-booking-action",
+  "@/features/rating/actions/rating-action",
 ];
 
 describe("Server actions smoke test", () => {

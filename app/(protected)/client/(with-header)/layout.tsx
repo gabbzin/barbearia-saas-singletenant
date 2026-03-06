@@ -1,4 +1,4 @@
-import { Header } from "@/shared/new_components/header";
+import { Header } from "@/shared/components/header";
 
 interface ProtectedUserLayoutProps {
   children: React.ReactNode;

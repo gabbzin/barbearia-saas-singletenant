@@ -1,4 +1,4 @@
-import { ProfilePhoto } from "../components/profile-photo";
+import { ProfilePhoto } from "./profile-photo";
 
 interface PhotoAndNameProps {
   name: string;

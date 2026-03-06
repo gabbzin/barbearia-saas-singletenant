@@ -14,6 +14,7 @@ import {
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { IconBadge } from "@/shared/components/icon-badge";
+import { PhotoAndName } from "@/shared/components/photo-and-name";
 import { Badge } from "@/shared/components/ui/badge";
 import { Button } from "@/shared/components/ui/button";
 import {
@@ -24,7 +25,6 @@ import {
   CardTitle,
 } from "@/shared/components/ui/card";
 import { clientRoutes } from "@/shared/constants/routes";
-import { PhotoAndName } from "@/shared/new_components/photo-and-name";
 import { useBarbershopStore } from "@/stores/barbershop.store";
 import AddEventCalendar from "../functions/download-ics";
 import type { getNextBookingClient } from "../functions/get-bookings";

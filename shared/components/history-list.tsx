@@ -2,7 +2,7 @@ import { format } from "date-fns";
 import { ScissorsIcon } from "lucide-react";
 import type { getHistory } from "@/features/booking/actions/get-history";
 import { cn } from "@/lib/utils";
-import { Card, CardContent } from "../components/ui/card";
+import { Card, CardContent } from "./ui/card";
 
 interface HistoryListProps {
   history: Awaited<ReturnType<typeof getHistory>>;
