@@ -14,6 +14,7 @@ import { getBarberDefaultTimes } from "@/features/dashboard_barber/actions/getDe
 import { getBarberDashboardInfos } from "@/features/dashboard_barber/actions/getInfos";
 import { CardTable } from "@/features/dashboard_barber/components/card-table";
 import { BarChartGraph } from "@/features/dashboard_barber/components/charts/barchart-comp";
+import { NewBookingManualDialog } from "@/features/dashboard_barber/components/new-booking-manual-dialog";
 import { SpeedDial } from "@/features/dashboard_barber/components/SpeedDial";
 import { TableService } from "@/features/dashboard_barber/components/table-service";
 import { TableSettings } from "@/features/dashboard_barber/components/table-settings";
@@ -71,6 +72,7 @@ export default async function BarberDashboardPage() {
                 Aqui está o resumo estratégico do seu dia.
               </p>
             </div>
+            <NewBookingManualDialog barberId={barberId} />
           </div>
 
           <section className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-5">
@@ -118,14 +120,15 @@ export default async function BarberDashboardPage() {
                 url="/barber/schedule"
                 tableTitles={["Cliente", "Serviço", "Data/Hora", "Status"]}
               >
-                {info.data?.nextBooking ? (
-                  info.data.nextBooking.map(booking => (
+                {info.data?.nextBookings &&
+                info.data.nextBookings.length > 0 ? (
+                  info.data.nextBookings.map(booking => (
                     <TableRow className="border-t" key={booking.id}>
                       <TableCell className="px-6 py-4">
                         <div className="flex items-center gap-3">
                           <div className="flex flex-col">
                             <span className="font-semibold text-sm">
-                              {booking.user.name}
+                              {booking.client.name}
                             </span>
                           </div>
                         </div>
@@ -199,7 +202,7 @@ export default async function BarberDashboardPage() {
                   </div>
                   <BarChartGraph
                     chartConfig={{
-                      saldo: {
+                      saldoEmReais: {
                         label: "Saldo",
                         color: "#60a5fa",
                       },
@@ -210,7 +213,7 @@ export default async function BarberDashboardPage() {
               </Card>
             </div>
 
-            <div className="space-y-8">
+            <div className="grid grid-cols-1 gap-2 md:grid-cols-2 lg:grid-cols-1 lg:space-y-8">
               <TableService barberId={barberId} />
               <TableSettings barberId={barberId} />
             </div>

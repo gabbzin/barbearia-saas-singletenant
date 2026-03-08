@@ -10,10 +10,10 @@ import {
   TabsList,
   TabsTrigger,
 } from "@/shared/components/ui/tabs";
-import type { getBookingsUser } from "../functions/get-bookings";
+import type { getBookingsClient } from "../functions/get-bookings";
 
 interface BookingsClientProps {
-  bookings: Awaited<ReturnType<typeof getBookingsUser>> | null;
+  bookings: Awaited<ReturnType<typeof getBookingsClient>> | null;
 }
 
 export type BookingClient = {
@@ -114,7 +114,9 @@ export default function BookingsClient({ bookings }: BookingsClientProps) {
                     <BookingDetails
                       bookings={list}
                       onClick={
-                        tab.value === "scheduled" ? handleClickBooking : undefined
+                        tab.value === "scheduled"
+                          ? handleClickBooking
+                          : undefined
                       }
                     />
                   </div>
@@ -135,7 +137,7 @@ export default function BookingsClient({ bookings }: BookingsClientProps) {
 }
 
 interface BookingDetailsProps {
-  bookings: Awaited<ReturnType<typeof getBookingsUser>>;
+  bookings: Awaited<ReturnType<typeof getBookingsClient>>;
   onClick?: (booking: BookingClient) => void;
 }
 
@@ -158,9 +160,9 @@ const BookingDetails = ({ bookings, onClick }: BookingDetailsProps) => {
         priceInCents: booking.service.priceInCents,
       },
       barber: {
-        name: booking.service.barber.user?.name ?? "Barbeiro",
-        imageUrl: booking.service.barber.user?.image ?? "/default-avatar.png",
-        phone: booking.service.barber.phone,
+        name: booking.barber.user?.name ?? "Barbeiro",
+        imageUrl: booking.barber.user?.image ?? "/default-avatar.png",
+        phone: booking.barber.phone,
       },
     };
 
@@ -170,8 +172,8 @@ const BookingDetails = ({ bookings, onClick }: BookingDetailsProps) => {
         serviceName={booking.service.name}
         date={booking.date}
         counterPart={{
-          name: booking.service.barber.user?.name ?? "Barbeiro",
-          imageUrl: booking.service.barber.user?.image ?? "/default-avatar.png",
+          name: booking.barber.user?.name ?? "Barbeiro",
+          imageUrl: booking.barber.user?.image ?? "/default-avatar.png",
         }}
         status={isPendingVisual ? "PENDING" : booking.status}
         onClick={onClick ? () => onClick(bookingClient) : undefined}

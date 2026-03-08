@@ -10,6 +10,10 @@ const inputSchema = z.object({
   date: z.string().optional(),
 });
 
+/**
+ * Ação para obter os agendamentos de um barbeiro, com opção de filtrar por data.
+ * Com a data for fornecida, retorna os agendamentos para aquele dia específico.
+ */
 export const getBookingsBarberAction = actionClient
   .inputSchema(inputSchema)
   .action(async ({ parsedInput: { date } }) => {
@@ -31,5 +35,6 @@ export const getBookingsBarberAction = actionClient
       : undefined;
 
     const bookings = await getBookingsBarber(barberId, targetDate);
+
     return { bookings };
   });

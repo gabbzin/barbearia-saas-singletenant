@@ -2,7 +2,7 @@
 
 import { verifySession } from "@/features/user/repository/user.repository";
 import { actionClient } from "@/lib/actionClient";
-import { prisma } from "@/lib/prisma";
+import { getLastBookingClient } from "../functions/get-bookings";
 
 export const getLastBookingAction = actionClient.action(async () => {
   const session = await verifySession();
@@ -13,19 +13,11 @@ export const getLastBookingAction = actionClient.action(async () => {
 
   const userId = session.id;
 
-  const lastBooking = await prisma.booking.findFirst({
-    where: {
-      userId,
-    },
-    orderBy: {
-      date: "desc",
-    },
-  });
+  const lastBooking = await getLastBookingClient(userId);
 
   if (!lastBooking) {
-    return { lastBooking: null };
+    return null;
   }
 
-  const lastDate = lastBooking.date;
-  return { lastDate: lastDate };
+  return lastBooking;
 });

@@ -1,9 +1,14 @@
 "use server";
 
 import { endOfDay, startOfDay } from "date-fns";
+import { GHOST_USER_ID } from "@/lib/consts";
 import { prisma } from "@/lib/prisma";
 
-export async function getBookingsBarber(barberId: string, targetDate?: Date) {
+export async function getBookingsBarber(
+  barberId: string,
+  targetDate?: Date,
+  take?: number,
+) {
   const baseDate = targetDate ?? new Date();
   const startDay = startOfDay(baseDate);
   const endDay = endOfDay(baseDate);
@@ -23,24 +28,34 @@ export async function getBookingsBarber(barberId: string, targetDate?: Date) {
     orderBy: {
       date: "asc",
     },
+    take: take ?? undefined,
   });
 
-  return bookings;
+  // Usar customer, pois o campo de usuário pode mudar, mas o cliente é o mesmo.
+  return bookings.map(booking => ({
+    ...booking,
+    client:
+      booking.userId === GHOST_USER_ID
+        ? {
+            name: booking.customerName ?? "Cliente",
+            phone: booking.customerPhone ?? "Telefone não informado",
+            image: "",
+          }
+        : booking.user,
+    user: undefined,
+  }));
 }
 
-export async function getBookingsUser(userId: string) {
+export async function getBookingsClient(userId: string) {
   return await prisma.booking.findMany({
     where: {
       userId: userId,
     },
     include: {
-      service: {
+      service: true,
+      barber: {
         include: {
-          barber: {
-            include: {
-              user: true,
-            },
-          },
+          user: true,
         },
       },
     },
@@ -50,7 +65,7 @@ export async function getBookingsUser(userId: string) {
   });
 }
 
-export async function getNextBooking(userId: string) {
+export async function getNextBookingClient(userId: string) {
   return await prisma.booking.findFirst({
     where: {
       userId: userId,
@@ -60,18 +75,38 @@ export async function getNextBooking(userId: string) {
       },
     },
     include: {
-      service: {
+      service: true,
+      barber: {
         include: {
-          barber: {
-            include: {
-              user: true,
-            },
-          },
+          user: true,
         },
       },
     },
     orderBy: {
       date: "asc",
+    },
+  });
+}
+
+export async function getLastBookingClient(userId: string) {
+  return await prisma.booking.findFirst({
+    where: {
+      userId,
+      status: "COMPLETED",
+      rating: {
+        is: null,
+      },
+    },
+    include: {
+      service: true,
+      barber: {
+        include: {
+          user: true,
+        },
+      },
+    },
+    orderBy: {
+      date: "desc",
     },
   });
 }

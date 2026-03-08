@@ -1,6 +1,7 @@
 "use server";
 
 import { endOfDay, startOfDay, subDays } from "date-fns";
+import { getBookingsBarber } from "@/features/booking/functions/get-bookings";
 import { verifySession } from "@/features/user/repository/user.repository";
 import { actionClient } from "@/lib/actionClient";
 import { prisma } from "@/lib/prisma";
@@ -24,23 +25,7 @@ export const getBarberDashboardInfos = actionClient.action(async () => {
 
     const requests = Promise.allSettled([
       // Próximos agendamentos - 0
-      prisma.booking.findMany({
-        where: {
-          barberId: barberId,
-          date: {
-            gte: startOfDayDate,
-          },
-          status: "SCHEDULED",
-        },
-        include: {
-          service: true,
-          user: true,
-        },
-        orderBy: {
-          date: "asc",
-        },
-        take: 5,
-      }),
+      getBookingsBarber(barberId, now, 5),
 
       // Faturamento e atendimentos realizados hoje - 1
       prisma.booking.aggregate({
@@ -89,7 +74,7 @@ export const getBarberDashboardInfos = actionClient.action(async () => {
         },
       }),
 
-      // Agendamentos para hoje (Não confirmados) - 4
+      // Agendamentos não confirmados de hoje - 4
       prisma.booking.count({
         where: {
           barberId: barberId,
@@ -110,7 +95,7 @@ export const getBarberDashboardInfos = actionClient.action(async () => {
         SELECT 
           CASE 
             WHEN d.dayOfWeek = cd.today 
-            THEN CONCAT('Dia ', d.dayOfWeek, ' => Hoje')
+            THEN CONCAT('Dia ', d.dayOfWeek, ' (Hoje)')
             ELSE CONCAT('Dia ', d.dayOfWeek)
           END AS day,
           
@@ -138,7 +123,7 @@ export const getBarberDashboardInfos = actionClient.action(async () => {
           d.dayOfWeek, cd.today
 
         ORDER BY 
-          (d.dayOfWeek - cd.today + 7) % 7;
+          (d.dayOfWeek - cd.today + 6) % 7;
       `,
     ]);
 
@@ -147,7 +132,7 @@ export const getBarberDashboardInfos = actionClient.action(async () => {
     /**
      * Próximo agendamento para o dia atual. Se houver um erro na consulta, retorna null.
      */
-    const nextBooking =
+    const nextBookings =
       results[0].status === "fulfilled" ? results[0].value : null;
 
     /**
@@ -200,8 +185,6 @@ export const getBarberDashboardInfos = actionClient.action(async () => {
     const bookingsNotConfirmedToday =
       results[4].status === "fulfilled" ? results[4].value : 0;
 
-    console.log(results[5]);
-
     const weeklyBillingBrut = (
       results[5].status === "fulfilled" ? results[5].value : []
     ) as [{ day: string; saldo: bigint }];
@@ -216,28 +199,31 @@ export const getBarberDashboardInfos = actionClient.action(async () => {
       6: "Sábado",
     };
 
-    const weeklyBillingData = weeklyBillingBrut.map(item => ({
-      day: daysOfWeekMap[Number(item.day.split(" ")[1])],
-      saldo: Number(item.saldo) / 100,
-    }));
+    const weeklyBillingData = weeklyBillingBrut.map(item => {
+      return {
+        day: daysOfWeekMap[Number(item.day.split(" ")[1])],
+        saldoEmReais: Number(item.saldo) / 100,
+      };
+    });
+
+    console.log(nextBookings);
 
     /**
      * Porcentagem de crescimento ou queda no faturamento em relação ao dia anterior. Se o faturamento do dia anterior for 0, retorna null para evitar divisão por zero.
      */
-    const growthPercentage = Number(
-      yesterdayBillingAgg._sum.priceInCents && billing._sum.priceInCents
-        ? (
-            ((billing._sum.priceInCents -
-              yesterdayBillingAgg._sum.priceInCents) /
-              yesterdayBillingAgg._sum.priceInCents) *
-            100
-          ).toFixed(2)
-        : 0,
-    );
+    const todayTotal = billing._sum.priceInCents ?? 0;
+    const yesterdayTotal = yesterdayBillingAgg._sum.priceInCents ?? 0;
+
+    const growthPercentage =
+      yesterdayTotal === 0
+        ? todayTotal / 100
+        : ((todayTotal - yesterdayTotal) / yesterdayTotal) * 100;
+
+    console.log(growthPercentage);
 
     return {
       barberId,
-      nextBooking,
+      nextBookings,
       billing,
       todayBilling,
       totalSchedules,

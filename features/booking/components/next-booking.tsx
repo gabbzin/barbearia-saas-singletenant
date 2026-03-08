@@ -10,6 +10,7 @@ import {
   EllipsisIcon,
   MapPinIcon,
   PlusIcon,
+  ScissorsIcon,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -24,17 +25,19 @@ import {
   CardTitle,
 } from "@/shared/components/ui/card";
 import { clientRoutes } from "@/shared/constants/routes";
-import { PhotoAndName } from "@/shared/new_components/photo-and-name";
 import { useBarbershopStore } from "@/stores/barbershop.store";
 import AddEventCalendar from "../functions/download-ics";
-import type { getNextBooking } from "../functions/get-bookings";
+import type { getNextBookingClient } from "../functions/get-bookings";
 
 interface NextBookingProps {
-  nextBooking: Awaited<ReturnType<typeof getNextBooking>> | null;
-  lastBookingday: Date | null;
+  nextBooking: Awaited<ReturnType<typeof getNextBookingClient>> | null;
+  lastBookingDate: Date | null;
 }
 
-export function NextBooking({ nextBooking, lastBookingday }: NextBookingProps) {
+export function NextBooking({
+  nextBooking,
+  lastBookingDate,
+}: NextBookingProps) {
   const [isMounted, setIsMounted] = useState(false);
   const barbershop = useBarbershopStore(s => s.barbershop);
 
@@ -56,14 +59,18 @@ export function NextBooking({ nextBooking, lastBookingday }: NextBookingProps) {
           <div>
             <p className="mt-2 font-bold">Você ainda não tem horário marcado</p>
             <p className="text-muted-foreground text-sm">
-              Seu último corte foi há{" "}
-              {lastBookingday
-                ? Math.floor(
-                    (Date.now() - lastBookingday.getTime()) /
+              {lastBookingDate ? (
+                <span>
+                  Seu último corte foi há{" "}
+                  {Math.floor(
+                    (Date.now() - lastBookingDate.getTime()) /
                       (1000 * 60 * 60 * 24),
-                  )
-                : 0}{" "}
-              dias. Que tal dar um trato no visual essa semana?
+                  )}
+                  dias. Que tal dar um trato no visual essa semana?
+                </span>
+              ) : (
+                "Você nunca marcou um horário. Vamos agendar um!"
+              )}
             </p>
           </div>
           <Button variant={"gold"}>
@@ -85,10 +92,10 @@ export function NextBooking({ nextBooking, lastBookingday }: NextBookingProps) {
 
   // Atualizar para usar dados reais do nextBooking
   const eventConfig: CalendarOptions = {
-    title: `${nextBooking?.service.name} com ${nextBooking?.service?.barber?.user?.name}`,
+    title: `${nextBooking?.service.name} com ${nextBooking?.barber.user?.name}`,
     start: bookingDate,
     end: timeEnd,
-    description: `Agendamento de serviço na barbearia com ${nextBooking?.service?.barber?.user?.name}.`,
+    description: `Agendamento de serviço na barbearia com ${nextBooking?.barber.user?.name}.`,
     location: "Barbearia XYZ",
   };
 
@@ -120,7 +127,7 @@ export function NextBooking({ nextBooking, lastBookingday }: NextBookingProps) {
       <CardContent>
         <main className="flex items-center gap-3 py-2 font-poppins">
           <Card className="flex flex-1 items-center justify-between gap-2">
-            <CardContent className="mx-2 flex w-full items-center justify-between gap-6">
+            <CardContent className="mx-2 flex w-full flex-col items-start justify-between gap-6 sm:flex-row sm:items-center">
               <div className="flex items-center gap-4">
                 <div className="rounded-md bg-gold p-2 text-primary-foreground">
                   <CalendarIcon size={20} strokeWidth={2.5} />
@@ -132,6 +139,17 @@ export function NextBooking({ nextBooking, lastBookingday }: NextBookingProps) {
                   <p className="font-semibold text-sm">
                     {day} de {month} às{" "}
                     {isMounted ? format(bookingDate, "HH:mm") : "--:--"}
+                  </p>
+                </div>
+              </div>
+              <div className="flex items-center gap-4">
+                <div className="rounded-md bg-gold p-2 text-primary-foreground">
+                  <ScissorsIcon size={20} strokeWidth={2.5} />
+                </div>
+                <div>
+                  <p className="text-primary/50 text-xs uppercase">Barbeiro</p>
+                  <p className="font-semibold text-sm">
+                    {nextBooking?.barber.user?.name}
                   </p>
                 </div>
               </div>
@@ -149,27 +167,20 @@ export function NextBooking({ nextBooking, lastBookingday }: NextBookingProps) {
         </main>
       </CardContent>
 
-      <CardFooter className="flex justify-between gap-2 *:text-xs">
-        <PhotoAndName
-          name={nextBooking?.service?.barber?.user?.name ?? "Barbeiro"}
-          imageUrl={nextBooking?.service.barber.user?.image}
-          mutedPhrase="Barbeiro"
-        />
-        <div className="flex gap-3">
-          <Button
-            variant={"secondary"}
-            onClick={() => {
-              push(clientRoutes.bookings);
-            }}
-          >
-            <EllipsisIcon />
-            Ver detalhes
-          </Button>
-          <Button variant={"default"} onClick={handleButtonClick}>
-            <CalendarFoldIcon />
-            Adicionar
-          </Button>
-        </div>
+      <CardFooter className="flex flex-col items-end justify-end gap-2 *:text-xs sm:flex-row">
+        <Button
+          variant={"secondary"}
+          onClick={() => {
+            push(clientRoutes.bookings);
+          }}
+        >
+          <EllipsisIcon />
+          Ver detalhes
+        </Button>
+        <Button variant={"default"} onClick={handleButtonClick}>
+          <CalendarFoldIcon />
+          Adicionar
+        </Button>
       </CardFooter>
     </Card>
   );

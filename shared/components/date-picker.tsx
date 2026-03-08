@@ -10,9 +10,11 @@ import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 interface DatePickerProps {
   date: Date;
   setDate: (date: Date) => void;
+  before?: Date;
+  after?: Date;
 }
 
-export function DatePicker({ date, setDate }: DatePickerProps) {
+export function DatePicker({ date, setDate, before, after }: DatePickerProps) {
   const [open, setOpen] = useState(false);
 
   return (
@@ -21,7 +23,7 @@ export function DatePicker({ date, setDate }: DatePickerProps) {
         <Button
           variant="outline"
           data-empty={!date}
-          className="w-70 justify-start text-left font-normal data-[empty=true]:text-muted-foreground"
+          className="w-full justify-start text-left font-normal data-[empty=true]:text-muted-foreground"
         >
           <CalendarIcon />
           {date ? (
@@ -40,6 +42,11 @@ export function DatePicker({ date, setDate }: DatePickerProps) {
           onSelect={date => {
             setDate(date);
             setOpen(false);
+          }}
+          // @ts-expect-error - Funciona isso aqui, mas o tipo do componente calendar tá estranho
+          disabled={{
+            before: before ? before : undefined,
+            after: after ? after : undefined,
           }}
         />
       </PopoverContent>

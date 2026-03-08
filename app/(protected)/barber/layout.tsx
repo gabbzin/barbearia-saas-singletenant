@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import { verifySession } from "@/features/user/repository/user.repository";
-import { Header } from "@/shared/new_components/header";
+import { Header } from "@/shared/components/header";
 
 interface ProtectedBarberLayoutProps {
   children: React.ReactNode;

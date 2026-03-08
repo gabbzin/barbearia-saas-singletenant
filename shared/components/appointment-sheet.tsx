@@ -1,8 +1,6 @@
 "use client";
 
 import type { Barber, BarberService, User } from "@prisma/client";
-import { useQuery } from "@tanstack/react-query";
-import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { useRouter } from "next/navigation";
 import { useAction } from "next-safe-action/hooks";
@@ -10,7 +8,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { createBooking } from "@/features/booking/functions/create-booking";
 import { createBookingCheckoutSession } from "@/features/booking/functions/create-booking-checkout-session";
-import { getDateAvailableTimeSlots } from "@/features/booking/functions/get-date-available-time-slots";
+import { useAvailableTimeSlots } from "@/features/booking/hooks/use-available-time-slots";
 import type { SubscriptionInfo } from "@/features/user/repository/user.repository";
 import { isPastTimeSlot } from "@/utils/isPastTimeSlot";
 import { clientRoutes } from "../constants/routes";
@@ -47,34 +45,10 @@ const AppointmentSheet = ({
   const { executeAsync: executeCheckoutAsync, isPending: isCheckoutPending } =
     useAction(createBookingCheckoutSession);
 
-  const selectedDateKey = selectedDate
-    ? format(selectedDate, "yyyy-MM-dd")
-    : null;
-
-  const { data: availableTimeSlots, isPending: isAvailableTimePending } =
-    useQuery<string[]>({
-      queryKey: [
-        "date-available-time-slots",
-        service.barberId,
-        selectedDateKey,
-      ],
-      queryFn: async () => {
-        const result = await getDateAvailableTimeSlots({
-          barberId: service.barberId,
-          // biome-ignore lint/style/noNonNullAssertion: <Sempre vai ter valor aqui>
-          date: selectedDate!,
-        });
-        if (result.validationErrors || result.serverError) {
-          toast.error(
-            `Erro ao buscar horários disponíveis: ${result.validationErrors?._errors?.[0] || result.serverError}`,
-          );
-          return [];
-        }
-
-        return result?.data || [];
-      },
-      enabled: !!selectedDate,
-    });
+  const { availableTimeSlots, isAvailableTimePending } = useAvailableTimeSlots(
+    service.barberId,
+    selectedDate,
+  );
 
   const handleDateSelect = (date: Date | undefined) => {
     setSelectedDate(date);
@@ -119,6 +93,7 @@ const AppointmentSheet = ({
       result = await executeAsync({
         serviceId: service.id,
         date,
+        paymentMethod: payMethod,
       });
     }
 

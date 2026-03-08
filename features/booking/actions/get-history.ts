@@ -7,6 +7,8 @@ import { prisma } from "@/lib/prisma";
 export const getHistory = actionClient.action(async () => {
   const session = await verifySession();
 
+  const now = new Date();
+
   if (!session) {
     throw new Error("Usuário não autenticado.");
   }
@@ -33,5 +35,10 @@ export const getHistory = actionClient.action(async () => {
     return { history: null };
   }
 
-  return { history };
+  return {
+    history: history.map(booking => ({
+      ...booking,
+      status: booking.date > now ? "PENDING" : booking.status,
+    })),
+  };
 });

@@ -1,0 +1,38 @@
+"use client";
+
+import { useQuery } from "@tanstack/react-query";
+import { format } from "date-fns";
+import { toast } from "sonner";
+import { getDateAvailableTimeSlots } from "@/features/booking/functions/get-date-available-time-slots";
+
+export function useAvailableTimeSlots(barberId: string, selectedDate?: Date) {
+  const selectedDateKey = selectedDate
+    ? format(selectedDate, "yyyy-MM-dd")
+    : null;
+
+  const { data: availableTimeSlots, isPending: isAvailableTimePending } =
+    useQuery<string[]>({
+      queryKey: ["date-available-time-slots", barberId, selectedDateKey],
+      queryFn: async () => {
+        const result = await getDateAvailableTimeSlots({
+          barberId,
+          // biome-ignore lint/style/noNonNullAssertion: <Sempre vai ter valor aqui>
+          date: selectedDate!,
+        });
+
+        if (result.validationErrors || result.serverError) {
+          toast.error(
+            `Erro ao buscar horários disponíveis: ${
+              result.validationErrors?._errors?.[0] || result.serverError
+            }`,
+          );
+          return [];
+        }
+
+        return result?.data || [];
+      },
+      enabled: !!selectedDate,
+    });
+
+  return { availableTimeSlots, isAvailableTimePending };
+}

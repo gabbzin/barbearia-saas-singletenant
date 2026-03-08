@@ -16,7 +16,9 @@ interface InputFormProps<T extends FieldValues> {
   control?: Control<T>;
   classname?: string;
   disabled?: boolean;
-  mask?: "currency";
+  mask?: "currency" | "phone" | "";
+  minLength?: number;
+  maxLength?: number;
 }
 
 const formatCurrency = (value: number) => {
@@ -24,6 +26,15 @@ const formatCurrency = (value: number) => {
     style: "currency",
     currency: "BRL",
   }).format(value);
+};
+
+const formatPhone = (value: string) => {
+  const cleaned = value.replace(/\D/g, "");
+  const match = cleaned.match(/^(\d{2})(\d{5})(\d{4})$/);
+  if (match) {
+    return `(${match[1]}) ${match[2]}-${match[3]}`;
+  }
+  return value;
 };
 
 const InputForm = <T extends FieldValues>({
@@ -35,6 +46,8 @@ const InputForm = <T extends FieldValues>({
   classname,
   disabled,
   mask,
+  maxLength,
+  minLength,
 }: InputFormProps<T>) => {
   const context = useFormContext<T>();
   const control = propsControl || context?.control;
@@ -55,7 +68,10 @@ const InputForm = <T extends FieldValues>({
             mask === "currency" && value !== undefined
               ? // Se for currency, formata o número que está no form para Texto (R$)
                 formatCurrency(Number(value))
-              : (value ?? "");
+              : mask === "phone" && value !== undefined
+                ? // Se for phone, formata o número que está no form para Texto ((99) 99999-9999)
+                  formatPhone(String(value))
+                : (value ?? "");
           return (
             <>
               <Label
@@ -76,10 +92,15 @@ const InputForm = <T extends FieldValues>({
                     const rawValue = e.target.value.replace(/\D/g, "");
                     const numberValue = Number(rawValue) / 100;
                     onChange(numberValue);
+                  } else if (mask === "phone") {
+                    const rawValue = e.target.value.replace(/\D/g, "");
+                    onChange(rawValue);
                   } else {
                     onChange(e);
                   }
                 }}
+                maxLength={maxLength}
+                minLength={minLength}
               />
               <p className="text-red-500 text-sm">
                 {fieldState.error?.message}

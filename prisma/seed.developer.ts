@@ -1,4 +1,5 @@
 import { auth } from "@/lib/auth";
+import { GHOST_USER_ID } from "@/lib/consts";
 import { prisma } from "@/lib/prisma";
 
 async function seedDatabase() {
@@ -12,6 +13,15 @@ async function seedDatabase() {
         imageUrl:
           "https://tp9a32tu7d1qyqaz.public.blob.vercel-storage.com/templates-assets/logo.png",
         storageUrl: "https://tp9a32tu7d1qyqaz.public.blob.vercel-storage.com",
+      },
+    });
+
+    // Criand o ghost USER
+    await prisma.user.create({
+      data: {
+        id: GHOST_USER_ID,
+        name: "Ghost User",
+        email: "ghost@gmail.com",
       },
     });
 

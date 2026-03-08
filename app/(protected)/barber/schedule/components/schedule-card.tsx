@@ -140,7 +140,7 @@ export function ScheduleCard() {
                               },
                             )}
                           </strong>{" "}
-                          de <strong>{booking.user.name}</strong>.
+                          de <strong>{booking.client.name}</strong>.
                         </span>
                       }
                     >
@@ -149,8 +149,8 @@ export function ScheduleCard() {
                         serviceName={booking.service.name}
                         date={booking.date}
                         counterPart={{
-                          name: booking.user.name,
-                          imageUrl: booking.user.image ?? "",
+                          name: booking.client.name,
+                          imageUrl: booking.client.image ?? "",
                         }}
                       />
                     </ConfirmAlertDialog>
@@ -169,8 +169,8 @@ export function ScheduleCard() {
                         serviceName={booking.service.name}
                         date={booking.date}
                         counterPart={{
-                          name: booking.user.name,
-                          imageUrl: booking.user.image ?? "",
+                          name: booking.client.name,
+                          imageUrl: booking.client.image ?? "",
                         }}
                         status={isPendingVisual ? "PENDING" : booking.status}
                       />
