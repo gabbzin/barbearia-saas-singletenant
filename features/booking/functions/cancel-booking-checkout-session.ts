@@ -47,10 +47,10 @@ export const cancelBookingCheckoutSession = actionClient
       await stripeClient.refunds.create({
         charge: booking.stripeChargeId,
       });
-      // biome-ignore lint/suspicious/noExplicitAny: <Erro não tem tipagem explicita>
-    } catch (err: any) {
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : "Erro ao processar reembolso";
       return returnValidationErrors(inputSchema, {
-        _errors: [err.message || "Erro ao processar reembolso"],
+        _errors: [message],
       });
     }
 

@@ -58,7 +58,7 @@ export function Testimonials() {
                   ))}
                 </div>
                 <p className="mb-8 text-lg text-zinc-300 leading-relaxed">
-                  "{test.text}"
+                  &quot;{test.text}&quot;
                 </p>
               </div>
               <div className="flex items-center gap-4 border-zinc-800 border-t pt-6">

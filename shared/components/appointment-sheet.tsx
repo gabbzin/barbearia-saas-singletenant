@@ -73,7 +73,8 @@ const AppointmentSheet = ({
   const handleConfirm = async () => {
     if (!selectedDate || !selectedTime) return;
 
-    // biome-ignore lint/suspicious/noExplicitAny: <Não precisa tipar aqui>
+    // biome-ignore lint/suspicious/noExplicitAny: result can be from two different actions with distinct types
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let result: any;
 
     const timeSplitted = selectedTime.split(":");

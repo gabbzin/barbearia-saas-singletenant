@@ -25,6 +25,7 @@ async function seedDatabase() {
       },
     });
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars -- reserved for future use
     const _images = [
       "https://utfs.io/f/c97a2dc9-cf62-468b-a851-bfd2bdde775f-16p.png",
       "https://utfs.io/f/45331760-899c-4b4b-910e-e00babb6ed81-16q.png",

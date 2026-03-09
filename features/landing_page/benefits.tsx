@@ -58,7 +58,7 @@ export function Benefits() {
         </div>
 
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {BENEFITS.map((ben, _idx) => (
+          {BENEFITS.map((ben) => (
             <Card
               key={ben.title}
               className="group rounded-3xl border border-amber-500/30 bg-foreground py-6 transition-colors hover:bg-zinc-800/50"
