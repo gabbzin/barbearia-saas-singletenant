@@ -49,3 +49,6 @@ generated/
 
 # gemini layouts
 gemini/
+
+# package-lock.json (projeto usa pnpm)
+package-lock.json
