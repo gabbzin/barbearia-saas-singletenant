@@ -137,7 +137,7 @@ model Barber {
   disponibility  Disponibility[]
   exceptionDates ExceptionDate[]
   ratings        Rating[]
-  socialMedia     SocialMedia[]
+  socialMedia    SocialMedia[]
 
   @@index([userId])
 }
@@ -238,7 +238,7 @@ model Booking {
   // Payment
   stripeChargeId String? @unique
   stripeEventId  String? @unique
-  paymentMethod  String? 
+  paymentMethod  String?
 
   // Timestamps
   createdAt   DateTime  @default(now())
@@ -308,16 +308,18 @@ model Rating {
   userId   String
   user     User   @relation(fields: [userId], references: [id])
 
+  asked Boolean @default(false) // Se o sistema já perguntou ao usuário para avaliar
+
   createdAt DateTime @default(now())
 }
 
 model SocialMedia {
-  id        String @id @default(uuid())
-  barberId  String
-  barber    Barber @relation(fields: [barberId], references: [id], onDelete: Cascade)
+  id       String @id @default(uuid())
+  barberId String
+  barber   Barber @relation(fields: [barberId], references: [id], onDelete: Cascade)
 
-  platform  String // e.g., "Instagram", "Facebook"
-  url       String // Link para o perfil de mídia social
+  platform String // e.g., "Instagram", "Facebook"
+  url      String // Link para o perfil de mídia social
 
   @@index([barberId])
 }

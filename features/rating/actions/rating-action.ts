@@ -7,7 +7,7 @@ import { actionClient } from "@/lib/actionClient";
 import { prisma } from "@/lib/prisma";
 
 const inputSchema = z.object({
-  ratingValue: z.number().min(1).max(5),
+  ratingValue: z.number().min(1).max(5).optional(),
   comment: z.string().optional(),
   bookingId: z.string(),
 });
@@ -52,6 +52,7 @@ export const RatingAction = actionClient
     const rating = await prisma.rating.findFirst({
       where: {
         bookingId,
+        asked: true,
       },
     });
 
@@ -70,6 +71,7 @@ export const RatingAction = actionClient
         userId,
         ratingValue,
         comment,
+        asked: true,
       },
     });
 

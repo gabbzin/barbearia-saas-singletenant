@@ -45,7 +45,7 @@ export default async function BarberDashboardPage() {
   }
 
   return (
-    <main className="pb-20">
+    <main>
       <PageSection>
         {!horariosData && (
           <div className="mb-4">

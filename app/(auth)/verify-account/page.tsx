@@ -2,6 +2,7 @@ import Image from "next/image";
 import { redirect } from "next/navigation";
 import { verifyEmail } from "@/lib/resend/sendVerifyEmail";
 import { Card, CardContent, CardHeader } from "@/shared/components/ui/card";
+import { imagePaths } from "@/shared/constants/images";
 
 interface Props {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
@@ -20,7 +21,7 @@ export default async function VerifyAccountPage({ searchParams }: Props) {
     return (
       <main className="flex min-h-screen flex-col items-center justify-center px-4">
         <Image
-          src={"/Background.png"}
+          src={imagePaths.authBackground}
           alt="Background"
           fill
           className="-z-10 object-cover brightness-50"

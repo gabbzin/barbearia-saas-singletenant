@@ -11,6 +11,7 @@ import { SignatureCard } from "@/features/signature/components/signature-card";
 import { ClientNavs } from "@/shared/components/client-navs";
 import { HistoryList } from "@/shared/components/history-list";
 import { PageSection, PageSectionTitle } from "@/shared/components/ui/page";
+import { imagePaths } from "@/shared/constants/images";
 
 export default async function Home() {
   const [barbers, history, plan, nextBooking, lastBooking] = await Promise.all([
@@ -55,7 +56,7 @@ export default async function Home() {
               barber={{
                 id: barber.id,
                 name: barber.user?.name ?? "Barbeiro",
-                imageUrl: barber.user?.image ?? "/default-avatar.png",
+                imageUrl: barber.user?.image ?? imagePaths.defaultAvatar,
               }}
             />
           ))}

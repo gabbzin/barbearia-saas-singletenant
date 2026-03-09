@@ -3,7 +3,7 @@
 import { NextResponse } from "next/server";
 import TemplateEmailRecoverPass from "@/emails/recover-password-email";
 import { getInfosBarbershop } from "@/shared/actions/get-infos-barbershop";
-import { resendClient } from "../resend-client";
+import { transporter } from "../transporter.mail";
 
 interface SendVerificationEmailParams {
   to: string[];
@@ -17,7 +17,7 @@ export async function sendRecoveryEmail({
   token,
 }: SendVerificationEmailParams) {
   try {
-    if (!to || !token) {
+    if (!to || to.length === 0 || !token) {
       return NextResponse.json(
         { error: "Email and token are required." },
         { status: 400 },
@@ -27,24 +27,24 @@ export async function sendRecoveryEmail({
     const info = await getInfosBarbershop();
     const shopName = info?.name ?? "";
 
-    const { data, error } = await resendClient.emails.send({
-      from: `${shopName || "Barbearia"} <onboarding@resend.dev>`,
-      to,
-      subject: `Recuperação de senha${shopName ? ` - ${shopName}` : ""}`,
-      react: TemplateEmailRecoverPass({
-        barbershopName: shopName,
-        userName,
-        token,
-      }),
+    const html = TemplateEmailRecoverPass({
+      barbershopName: shopName,
+      userName,
+      token,
     });
 
-    if (error) {
-      return NextResponse.json({ error }, { status: 500 });
-    }
-
-    return NextResponse.json({ success: true, data });
+    const mailInfo = await transporter.sendMail({
+      from: `${shopName || "Barbearia"} <${process.env.EMAIL_USER}>`,
+      to,
+      subject: `Recuperação de senha${shopName ? ` - ${shopName}` : ""}`,
+      html,
+    });
+    return NextResponse.json({ success: true, messageId: mailInfo.messageId });
   } catch (error) {
     console.error("Error sending email:", error);
-    return NextResponse.json({ error }, { status: 500 });
+    return NextResponse.json(
+      { error: "Failed to send recovery email" },
+      { status: 500 },
+    );
   }
 }

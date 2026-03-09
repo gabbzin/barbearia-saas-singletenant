@@ -1,7 +1,5 @@
-import { Button, Heading, Text } from "@react-email/components";
 import { baseUrl } from "@/lib/consts";
-import { TemplateEmailBody } from "./components/body-email";
-import { button, heading, paragraph } from "./styles/style";
+import { imagePaths } from "@/shared/constants/images";
 
 interface VerifyAccountEmailProps {
   userName?: string;
@@ -13,26 +11,44 @@ export default function VerifyAccountEmail({
   userName,
   token,
   barbershopName = "",
-}: VerifyAccountEmailProps) {
-  return (
-    <TemplateEmailBody barbershopName={barbershopName}>
-      <Heading as="h1" style={heading}>
-        Verificar Email
-      </Heading>
+}: VerifyAccountEmailProps): string {
+  const safeUserName = userName ?? "usuário";
+  const year = new Date().getFullYear();
 
-      <Text style={paragraph}>
-        Olá {userName ?? "usuário"}, obrigado por criar uma conta na{" "}
-        {barbershopName}!
-      </Text>
-      <Text style={paragraph}>
-        Para realizar a verificação do seu email, pedimos que você clique no
-        link abaixo. Esse link é válido por 15 minutos. Se você não criou uma
-        conta, por favor, ignore este email.
-      </Text>
-
-      <Button style={button} href={`${baseUrl}/verify-account?token=${token}`}>
-        Verificar Email
-      </Button>
-    </TemplateEmailBody>
-  );
+  return `<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charSet="UTF-8" />
+    <title>Verificar Email</title>
+  </head>
+  <body style="background-color:#f6f9fc;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Ubuntu,sans-serif;padding:20px 0;">
+    <div style="background-color:#ffffff;margin:0 auto;max-width:600px;width:100%;">
+      <img src="${imagePaths.backgroundMail}" alt="Head" width="600" style="max-width:100%;height:auto;display:block;margin:0 auto;" />
+      <hr style="border-color:#e6ebf1;margin:24px 0;" />
+      <div style="padding:0 24px;">
+        <h1 style="font-size:22px;margin-bottom:12px;text-align:center;">Verificar Email</h1>
+        <p style="color:#525f7f;font-size:16px;line-height:24px;text-align:center;">
+          Olá ${safeUserName}, obrigado por criar uma conta na ${barbershopName}!
+        </p>
+        <p style="color:#525f7f;font-size:16px;line-height:24px;text-align:center;">
+          Para realizar a verificação do seu email, pedimos que você clique no link abaixo. Esse link é válido por 15 minutos. Se você não criou uma conta, por favor, ignore este email.
+        </p>
+        <a href="${baseUrl}/api/auth/verify-email?token=${token}&callbackURL=${encodeURIComponent(`${baseUrl}/login?verified=true`)}" style="background-color:#656ee8;border-radius:6px;color:#fff;font-size:16px;font-weight:bold;text-decoration:none;display:block;width:100%;padding:12px 0;text-align:center;margin-top:20px;">
+          Verificar Email
+        </a>
+      </div>
+      <hr style="border-color:#e6ebf1;margin:24px 0;" />
+      <div style="padding:24px;text-align:center;background-color:#000;">
+        <img src="${imagePaths.closed}" alt="closed" width="200" style="max-width:100%;height:auto;display:block;margin:0 auto;" />
+        <p style="color:#ffffff;font-size:14px;margin-top:12px;">
+          © ${year} ${barbershopName}
+        </p>
+        <p style="color:#8898aa;font-size:12px;line-height:16px;">
+          Todos os direitos reservados.
+        </p>
+        <img src="${imagePaths.dividerDown}" alt="divider" width="600" style="max-width:100%;height:auto;display:block;margin:0 auto;" />
+      </div>
+    </div>
+  </body>
+</html>`;
 }

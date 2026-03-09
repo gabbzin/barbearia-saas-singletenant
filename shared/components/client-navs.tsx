@@ -1,23 +1,22 @@
 "use client";
 
 import { History, Plus, User } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { DatePicker } from "./date-picker";
-import { SelectForm } from "./form/select-form";
+import { clientRoutes } from "../constants/routes";
 import { Button } from "./ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "./ui/dialog";
-import { Input } from "./ui/input";
-import { Label } from "./ui/label";
 
 export function ClientNavs() {
+  const { push } = useRouter();
+
   const actions = [
+    {
+      icon: Plus,
+      label: "Agendar",
+      color: "text-amber-400",
+      bg: "bg-amber-400/10",
+      action: () => push(clientRoutes.barberLucas),
+    },
     {
       icon: User,
       label: "Barbeiros",
@@ -30,13 +29,13 @@ export function ClientNavs() {
       label: "Histórico",
       color: "text-purple-400",
       bg: "bg-purple-400/10",
-      dev: true,
+      action: () => push(clientRoutes.bookings),
     },
   ];
 
   return (
     <div className="mb-10 grid grid-cols-4 gap-3">
-      <Dialog>
+      {/* <Dialog>
         <DialogTrigger asChild>
           <Button
             variant="secondary"
@@ -123,7 +122,7 @@ export function ClientNavs() {
             </Button>
           </form>
         </DialogContent>
-      </Dialog>
+      </Dialog> */}
 
       {actions.map((action, idx) => (
         <Button
@@ -137,7 +136,9 @@ export function ClientNavs() {
               ? () => {
                   toast.info("Em desenvolvimento");
                 }
-              : undefined
+              : action.action
+                ? action.action
+                : undefined
           }
         >
           <div
