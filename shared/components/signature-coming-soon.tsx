@@ -44,8 +44,7 @@ export function SignatureComingSoon() {
             </h1>
             <p className="mx-auto max-w-md text-muted-foreground text-sm leading-relaxed sm:text-base">
               Estamos trabalhando para trazer uma experiência de assinatura
-              incrível para o seu negócio. Em breve você poderá gerenciar tudo
-              por aqui.
+              incrível para o seu negócio. Em breve você poderá usar essa funcionalidade
             </p>
           </div>
 
