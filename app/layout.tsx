@@ -40,9 +40,6 @@ export async function generateMetadata(): Promise<Metadata> {
   return {
     title: info?.name ?? "Barbearia",
     description: "Agende seu horário na melhor barbearia da cidade!",
-    icons: {
-      icon: info?.imageUrl,
-    },
   };
 }
 
