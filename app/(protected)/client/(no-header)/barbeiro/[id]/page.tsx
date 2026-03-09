@@ -22,10 +22,12 @@ import { Separator } from "@/shared/components/ui/separator";
 import { imagePaths } from "@/shared/constants/images";
 import { clientRoutes } from "@/shared/constants/routes";
 
-const route = clientRoutes.barberDetailsconst;
-
-const BarberPage = async (props: PageProps<typeof route>) => {
-  const { id } = await props.params;
+const BarberPage = async ({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) => {
+  const { id } = await params;
 
   const barber = await getBarberById(id);
 
