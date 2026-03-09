@@ -205,7 +205,7 @@ const AppointmentSheet = ({
                     {service.name}
                   </p>
                   <p className="font-bold text-card-foreground text-sm">
-                    R${priceFree},00
+                    {service.priceInCents === 0 ? "A combinar" : `R$${priceFree},00`}
                   </p>
                 </div>
 
