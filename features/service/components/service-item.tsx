@@ -49,7 +49,7 @@ export function ServiceItem({ service }: ServiceItemProps) {
 
             <div className="flex w-full items-center justify-between">
               <p className="whitespace-pre font-bold text-card-foreground text-sm leading-[1.4]">
-                {priceInReais}
+                {service.priceInCents === 0 ? "Valor a combinar" : priceInReais}
               </p>
               <SheetTrigger asChild>
                 <Button className="rounded-full px-4 py-2">Reservar</Button>
