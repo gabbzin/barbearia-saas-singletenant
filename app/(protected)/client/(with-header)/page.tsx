@@ -6,18 +6,16 @@ import { getLastBookingAction } from "@/features/booking/actions/get-last-bookin
 import { getNextBookingAction } from "@/features/booking/actions/get-next-booking-action";
 import { NextBooking } from "@/features/booking/components/next-booking";
 import { RatingDialog } from "@/features/rating/components/rating-dialog";
-import { getCurrentSubscriptionAction } from "@/features/signature/actions/get-current-subscription";
-import { SignatureCard } from "@/features/signature/components/signature-card";
 import { ClientNavs } from "@/shared/components/client-navs";
 import { HistoryList } from "@/shared/components/history-list";
+import { Alert, AlertDescription, AlertTitle } from "@/shared/components/ui/alert";
 import { PageSection, PageSectionTitle } from "@/shared/components/ui/page";
 import { imagePaths } from "@/shared/constants/images";
 
 export default async function Home() {
-  const [barbers, history, plan, nextBooking, lastBooking] = await Promise.all([
+  const [barbers, history, nextBooking, lastBooking] = await Promise.all([
     getBarbers(),
     getHistory(),
-    getCurrentSubscriptionAction(),
     getNextBookingAction(),
     getLastBookingAction(),
   ]);
@@ -32,14 +30,13 @@ export default async function Home() {
         />
       </PageSection>
 
-      {/* Card de */}
       <PageSection>
-        <SignatureCard
-          hasPlan={plan?.hasPlan ?? false}
-          name={plan?.name ?? undefined}
-          validUntil={plan?.validUntil ?? undefined}
-          className=""
-        />
+        <Alert>
+          <AlertTitle>Planos de assinatura em desenvolvimento</AlertTitle>
+          <AlertDescription>
+            Em breve você poderá gerenciar um plano de assinatura exclusivo por aqui.
+          </AlertDescription>
+        </Alert>
       </PageSection>
 
       {/* Opcional (por enquanto) */}

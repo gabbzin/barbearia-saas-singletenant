@@ -42,7 +42,6 @@ interface Route {
 
 const ROUTES: Route[] = [
   { name: "Início", path: clientRoutes.dashboard, icon: HomeIcon },
-  // { name: "Barbeiros", path: , icon: ScissorsIcon },
   { name: "Agendamentos", path: clientRoutes.bookings, icon: CalendarIcon },
   { name: "Assinaturas", path: clientRoutes.signature, icon: CreditCardIcon },
   { name: "Perfil", path: publicRoutes.profile, icon: UserIcon },

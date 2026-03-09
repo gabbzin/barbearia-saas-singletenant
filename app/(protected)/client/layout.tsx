@@ -14,5 +14,5 @@ export default async function ProtectedUserLayout({
     return redirect("/barber/dashboard");
   }
 
-  return <div className="pb-20">{children}</div>;
+  return children;
 }
