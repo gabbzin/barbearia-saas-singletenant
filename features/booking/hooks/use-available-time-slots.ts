@@ -12,7 +12,7 @@ export function useAvailableTimeSlots(barberId: string, serviceId: string, selec
 
   const { data: availableTimeSlots, isPending: isAvailableTimePending } =
     useQuery<string[]>({
-      queryKey: ["date-available-time-slots", barberId, selectedDateKey],
+      queryKey: ["date-available-time-slots", barberId, serviceId, selectedDateKey],
       queryFn: async () => {
         const result = await getDateAvailableTimeSlots({
           barberId,
@@ -32,7 +32,7 @@ export function useAvailableTimeSlots(barberId: string, serviceId: string, selec
 
         return result?.data || [];
       },
-      enabled: !!selectedDate,
+      enabled: !!selectedDate && !!serviceId,
     });
 
   return { availableTimeSlots, isAvailableTimePending };
