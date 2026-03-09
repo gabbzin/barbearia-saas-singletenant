@@ -1,6 +1,6 @@
 "use client";
 
-import { useRouter } from "next/navigation"; // Use router.push em Client Components
+import { useState } from "react";
 import { toast } from "sonner";
 import {
   registerSchema,
@@ -11,12 +11,10 @@ import GenericForm from "@/shared/components/form/generic-form";
 import InputForm from "@/shared/components/form/input-form";
 import { GoogleButton } from "@/shared/components/google-button";
 import { Card, CardContent, CardHeader } from "@/shared/components/ui/card";
-import { clientRoutes } from "@/shared/constants/routes";
 import { PasswordStrength } from "../reset-password/passwordStrength";
 
 const RegisterForm = () => {
-  const router = useRouter();
-  // const [emailSend, setEmailSend] = useState(false);
+  const [emailSend, setEmailSend] = useState(false);
 
   const handleRegister = async (data: registerSchemaType) => {
     try {
@@ -26,8 +24,8 @@ const RegisterForm = () => {
         password: data.senha,
       });
 
-      toast.success("Conta criada com sucesso!");
-      router.push(clientRoutes.dashboard);
+      toast.success("Conta criada com sucesso! Verifique seu email.");
+      setEmailSend(true);
       return;
     } catch (error) {
       toast.error(
@@ -38,22 +36,22 @@ const RegisterForm = () => {
     }
   };
 
-  // if (emailSend) {
-  //   return (
-  //     <Card className="w-full max-w-md">
-  //       <CardHeader className="text-center font-bold text-3xl">
-  //         Verifique seu email
-  //       </CardHeader>
-  //       <CardContent className="px-8">
-  //         <p>
-  //           Um email de verificação foi enviado para o endereço fornecido
-  //           durante o cadastro. Por favor, verifique sua caixa de entrada e siga
-  //           as instruções para ativar sua conta.
-  //         </p>
-  //       </CardContent>
-  //     </Card>
-  //   );
-  // }
+  if (emailSend) {
+    return (
+      <Card className="w-full max-w-md">
+        <CardHeader className="text-center font-bold text-3xl">
+          Verifique seu email
+        </CardHeader>
+        <CardContent className="px-8">
+          <p>
+            Um email de verificação foi enviado para o endereço fornecido
+            durante o cadastro. Por favor, verifique sua caixa de entrada e
+            siga as instruções para ativar sua conta.
+          </p>
+        </CardContent>
+      </Card>
+    );
+  }
 
   return (
     <Card className="w-full max-w-md">

@@ -11,6 +11,7 @@ import { SignatureCard } from "@/features/signature/components/signature-card";
 import { ClientNavs } from "@/shared/components/client-navs";
 import { HistoryList } from "@/shared/components/history-list";
 import { PageSection, PageSectionTitle } from "@/shared/components/ui/page";
+import { imagePaths } from "@/shared/constants/images";
 
 export default async function Home() {
   const [barbers, history, plan, nextBooking, lastBooking] = await Promise.all([
@@ -47,7 +48,6 @@ export default async function Home() {
       </PageSection>
 
       <PageSection>
-        import {imagePaths} from "@/shared/constants/images";
         <PageSectionTitle>Nossos Profissionais</PageSectionTitle>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
           {barbers.map(barber => (

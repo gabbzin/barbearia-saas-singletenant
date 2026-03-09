@@ -12,6 +12,7 @@ import {
   PlusIcon,
   ScissorsIcon,
 } from "lucide-react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { IconBadge } from "@/shared/components/icon-badge";
@@ -74,8 +75,10 @@ export function NextBooking({
             </p>
           </div>
           <Button variant={"gold"}>
-            <PlusIcon />
-            Agendar Agora
+            <Link href={clientRoutes.barberLucas} className="flex items-center gap-2">
+              <PlusIcon />
+              Agendar Agora
+            </Link>
           </Button>
         </CardContent>
       </Card>
