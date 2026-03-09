@@ -6,3 +6,5 @@ export const baseUrl =
   process.env.NEXT_PUBLIC_BASE_URL ?? "http://localhost:3000";
 
 export const GHOST_USER_ID = "ghost-user-id";
+
+export const featureSignatureActive = false;

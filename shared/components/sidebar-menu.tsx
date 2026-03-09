@@ -14,7 +14,8 @@ import {
   X,
 } from "lucide-react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import { authClient } from "@/lib/auth-client";
 import CancelAlertDialog from "../../features/booking/components/cancel-booking-alert-dialog";
 import {
@@ -42,7 +43,6 @@ interface Route {
 
 const ROUTES: Route[] = [
   { name: "Início", path: clientRoutes.dashboard, icon: HomeIcon },
-  // { name: "Barbeiros", path: , icon: ScissorsIcon },
   { name: "Agendamentos", path: clientRoutes.bookings, icon: CalendarIcon },
   { name: "Assinaturas", path: clientRoutes.signature, icon: CreditCardIcon },
   { name: "Perfil", path: publicRoutes.profile, icon: UserIcon },
@@ -65,8 +65,17 @@ interface SidebarMenuProps {
 }
 
 export const SidebarMenu = ({ isSubscriber, role }: SidebarMenuProps) => {
+  const [open, setOpen] = useState(false);
   const { data: session } = authClient.useSession();
   const { push } = useRouter();
+  const pathname = usePathname();
+
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <Relaxa chefe>
+  useEffect(() => {
+    if (open) {
+      setOpen(false);
+    }
+  }, [pathname]);
 
   const handleLogout = async () => {
     await authClient.signOut({
@@ -79,7 +88,7 @@ export const SidebarMenu = ({ isSubscriber, role }: SidebarMenuProps) => {
   };
 
   return (
-    <Sheet>
+    <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger asChild>
         <Button variant="outline" size="icon">
           <MenuIcon />
