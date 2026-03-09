@@ -61,6 +61,7 @@ export function NewBookingManualDialog({
 
   // Variaveis de estado
   const [selectedDate, setSelectedDate] = useState<Date>(today);
+  const [selectedServiceId, setSelectedServiceId] = useState<string>("");
   const [open, setOpen] = useState(false);
 
   // Hooks
@@ -69,6 +70,7 @@ export function NewBookingManualDialog({
 
   const { availableTimeSlots, isAvailableTimePending } = useAvailableTimeSlots(
     barberId,
+    selectedServiceId,
     selectedDate,
   );
 
@@ -145,6 +147,7 @@ export function NewBookingManualDialog({
             <SelectForm
               name="service"
               placeholder="Selecione o serviço"
+              onValueChange={setSelectedServiceId}
               items={
                 services
                   ? services.map(

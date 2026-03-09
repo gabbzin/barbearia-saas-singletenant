@@ -20,6 +20,7 @@ interface SelectFormProps<T extends FieldValues> {
   groupLabels?: string;
   items: { value: string; label: string }[];
   disabled?: boolean;
+  onValueChange?: (value: string) => void;
 }
 
 export function SelectForm<T extends FieldValues>({
@@ -28,6 +29,7 @@ export function SelectForm<T extends FieldValues>({
   groupLabels,
   items,
   disabled,
+  onValueChange,
 }: SelectFormProps<T>) {
   const { control } = useFormContext<T>();
 
@@ -38,7 +40,10 @@ export function SelectForm<T extends FieldValues>({
       render={({ field }) => (
         <Select
           value={field.value}
-          onValueChange={field.onChange}
+          onValueChange={value => {
+            field.onChange(value);
+            onValueChange?.(value);
+          }}
           disabled={field.disabled || disabled}
         >
           <SelectTrigger className="w-full">
