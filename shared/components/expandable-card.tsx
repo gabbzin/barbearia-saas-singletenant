@@ -9,6 +9,7 @@ import { toast } from "sonner";
 import { createSignature } from "@/features/signature/actions/create-signature";
 import type { SubscriptionInfo } from "@/features/user/repository/user.repository";
 import { useOutsideClick } from "@/hooks/use-outside-click";
+import { imagePaths } from "@/shared/constants/images";
 import { Button } from "./ui/button";
 import { Separator } from "./ui/separator";
 
@@ -58,7 +59,7 @@ export default function ExpandableCard({ plans, myPlan }: ExpandableCardProps) {
 
   useOutsideClick(ref, () => setActive(null));
 
-  const imageFallback = "/banner-barber.png";
+  const imageFallback = imagePaths.barberBanner;
 
   const handleConfirm = async (planId: string) => {
     const result = await executeAsync({ planId });

@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { redirect } from "next/navigation";
+import { imagePaths } from "@/shared/constants/images";
 
 export function LogoLink() {
   const handleLogoClick = () => {
@@ -12,7 +13,7 @@ export function LogoLink() {
 
   return (
     <Image
-      src={"/logo.png"}
+      src={imagePaths.logoRedonda}
       alt="Logo da Barbearia 2W"
       // fill
       width={pixels}

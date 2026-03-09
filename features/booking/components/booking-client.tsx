@@ -10,6 +10,7 @@ import {
   TabsList,
   TabsTrigger,
 } from "@/shared/components/ui/tabs";
+import { imagePaths } from "@/shared/constants/images";
 import type { getBookingsClient } from "../functions/get-bookings";
 
 interface BookingsClientProps {
@@ -161,7 +162,7 @@ const BookingDetails = ({ bookings, onClick }: BookingDetailsProps) => {
       },
       barber: {
         name: booking.barber.user?.name ?? "Barbeiro",
-        imageUrl: booking.barber.user?.image ?? "/default-avatar.png",
+        imageUrl: booking.barber.user?.image ?? imagePaths.defaultAvatar,
         phone: booking.barber.phone,
       },
     };
@@ -173,7 +174,7 @@ const BookingDetails = ({ bookings, onClick }: BookingDetailsProps) => {
         date={booking.date}
         counterPart={{
           name: booking.barber.user?.name ?? "Barbeiro",
-          imageUrl: booking.barber.user?.image ?? "/default-avatar.png",
+          imageUrl: booking.barber.user?.image ?? imagePaths.defaultAvatar,
         }}
         status={isPendingVisual ? "PENDING" : booking.status}
         onClick={onClick ? () => onClick(bookingClient) : undefined}

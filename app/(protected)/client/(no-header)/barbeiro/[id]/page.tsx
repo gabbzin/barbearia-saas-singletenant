@@ -19,6 +19,7 @@ import {
   PageSectionTitle,
 } from "@/shared/components/ui/page";
 import { Separator } from "@/shared/components/ui/separator";
+import { imagePaths } from "@/shared/constants/images";
 import { clientRoutes } from "@/shared/constants/routes";
 
 const route = clientRoutes.barberDetailsconst;
@@ -37,7 +38,7 @@ const BarberPage = async (props: PageProps<typeof route>) => {
       <div className="flex min-h-screen flex-col">
         <div className="relative h-70 w-full">
           <Image
-            src={"/banner-barber.png"}
+            src={imagePaths.barberBanner}
             alt={"Banner da barbearia"}
             fill
             className="bg-black object-center"

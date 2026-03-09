@@ -1,5 +1,5 @@
 import { Img, Section, Text } from "@react-email/components";
-import { baseUrlBlob } from "@/lib/consts";
+import { imagePaths } from "@/shared/constants/images";
 import { footer, footerBox, footerText, image } from "../styles/style";
 
 export function FooterEmail({ barbershopName = "" }) {
@@ -7,12 +7,7 @@ export function FooterEmail({ barbershopName = "" }) {
 
   return (
     <Section style={footerBox}>
-      <Img
-        src={`${baseUrlBlob}/templates-assets/closed.png`}
-        alt="closed"
-        width="200"
-        style={image}
-      />
+      <Img src={imagePaths.closed} alt="closed" width="200" style={image} />
 
       <Text style={footerText}>
         © {year} {barbershopName}
@@ -21,7 +16,7 @@ export function FooterEmail({ barbershopName = "" }) {
       <Text style={footer}>Todos os direitos reservados.</Text>
 
       <Img
-        src={`${baseUrlBlob}/templates-assets/divider_down.png`}
+        src={imagePaths.dividerDown}
         alt="divider"
         width="600"
         style={image}

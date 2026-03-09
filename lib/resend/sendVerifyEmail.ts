@@ -4,7 +4,7 @@ import { NextResponse } from "next/server";
 import VerifyAccountEmail from "@/emails/verify-account-email";
 import { getInfosBarbershop } from "@/shared/actions/get-infos-barbershop";
 import { authClient } from "../auth-client";
-import { resendClient } from "../resend-client";
+import { transporter } from "../transporter.mail";
 
 interface SendVerificationEmailParams {
   to: string[];
@@ -18,7 +18,7 @@ export async function sendVerificationEmail({
   token,
 }: SendVerificationEmailParams) {
   try {
-    if (!to || !token) {
+    if (!to || to.length === 0 || !token) {
       return NextResponse.json(
         { error: "Email and token are required." },
         { status: 400 },
@@ -28,21 +28,26 @@ export async function sendVerificationEmail({
     const info = await getInfosBarbershop();
     const shopName = info?.name ?? "";
 
-    const { data, error } = await resendClient.emails.send({
-      from: `${shopName || "Barbearia"} <onboarding@resend.dev>`,
-      to,
-      subject: `Verificação de conta${shopName ? ` - ${shopName}` : ""}`,
-      react: VerifyAccountEmail({ token, barbershopName: shopName, userName }),
+    const html = VerifyAccountEmail({
+      token,
+      barbershopName: shopName,
+      userName,
     });
 
-    if (error) {
-      return NextResponse.json({ error }, { status: 500 });
-    }
+    const mailInfo = await transporter.sendMail({
+      from: `${shopName || "Barbearia"} <${process.env.EMAIL_USER}>`,
+      to,
+      subject: `Verificação de conta${shopName ? ` - ${shopName}` : ""}`,
+      html,
+    });
 
-    return NextResponse.json({ success: true, data });
+    return NextResponse.json({ success: true, messageId: mailInfo.messageId });
   } catch (error) {
     console.error("Error sending email:", error);
-    return NextResponse.json({ error }, { status: 500 });
+    return NextResponse.json(
+      { error: "Failed to send verification email" },
+      { status: 500 },
+    );
   }
 }
 

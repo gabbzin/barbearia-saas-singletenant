@@ -47,6 +47,7 @@ export default async function Home() {
       </PageSection>
 
       <PageSection>
+        import {imagePaths} from "@/shared/constants/images";
         <PageSectionTitle>Nossos Profissionais</PageSectionTitle>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
           {barbers.map(barber => (
@@ -55,7 +56,7 @@ export default async function Home() {
               barber={{
                 id: barber.id,
                 name: barber.user?.name ?? "Barbeiro",
-                imageUrl: barber.user?.image ?? "/default-avatar.png",
+                imageUrl: barber.user?.image ?? imagePaths.defaultAvatar,
               }}
             />
           ))}

@@ -8,7 +8,7 @@ import {
   Preview,
   Section,
 } from "@react-email/components";
-import { baseUrlBlob } from "@/lib/consts";
+import { imagePaths } from "@/shared/constants/images";
 import { box, container, hr, image, main } from "../styles/style";
 import { FooterEmail } from "./footer";
 
@@ -29,7 +29,7 @@ export function TemplateEmailBody({
       <Body style={main}>
         <Container style={container}>
           <Img
-            src={`${baseUrlBlob}/templates-assets/backgroundMail.jpg`}
+            src={imagePaths.backgroundMail}
             alt="Head"
             width="600"
             style={image}

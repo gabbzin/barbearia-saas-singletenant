@@ -22,6 +22,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/shared/components/ui/sheet";
+import { imagePaths } from "@/shared/constants/images";
 
 interface CancelBookingProps {
   open: boolean;
@@ -118,7 +119,7 @@ export function CancelBooking({
           {/* Imagem do Mapa e Card da Barbearia */}
           <div className="relative h-45 w-full overflow-hidden rounded-lg">
             <Image
-              src="/map.png"
+              src={imagePaths.map}
               alt="Mapa"
               fill
               className="object-cover"

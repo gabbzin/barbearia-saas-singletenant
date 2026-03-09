@@ -1,3 +1,4 @@
+import { imagePaths } from "@/shared/constants/images";
 import { ProfilePhoto } from "./profile-photo";
 
 interface PhotoAndNameProps {
@@ -20,7 +21,7 @@ export function PhotoAndName({
   return (
     <div className="flex items-center gap-2">
       <ProfilePhoto
-        imageUrl={imageUrl ?? "/default-avatar.png"}
+        imageUrl={imageUrl ?? imagePaths.defaultAvatar}
         initial={name?.substring(0, 1).toUpperCase() ?? "A"}
         size={sizePhoto}
         enabledGoldEffect={enabledGoldEffect}
