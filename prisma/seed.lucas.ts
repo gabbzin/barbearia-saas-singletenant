@@ -1,5 +1,6 @@
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { imagePaths } from "@/shared/constants/images";
 
 type LucasService = {
   name: string;
@@ -111,7 +112,7 @@ async function seedLucasBarbershop() {
     data: {
       name: "Lucas Alves Salão e Barbearia",
       address: "Endereço não informado",
-      storageUrl: "https://tp9a32tu7d1qyqaz.public.blob.vercel-storage.com",
+      storageUrl: "https://9ddqvrucqgrr1dw7.public.blob.vercel-storage.com",
     },
   });
 
@@ -138,8 +139,7 @@ async function seedLucasBarbershop() {
         description: service.description,
         priceInCents: service.priceInCents,
         durationInMinutes: service.durationInMinutes,
-        imageUrl:
-          "https://tp9a32tu7d1qyqaz.public.blob.vercel-storage.com/templates-assets/barbeiro_default.png",
+        imageUrl: imagePaths.logoQuadrada,
         barber: {
           connect: {
             id: barber.id,
