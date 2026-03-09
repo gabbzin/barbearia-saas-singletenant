@@ -121,7 +121,7 @@ async function seedLucasBarbershop() {
       name: "Lucas Alves",
       email: "lucasmatos47@gmail.com",
       image: "https://9ddqvrucqgrr1dw7.public.blob.vercel-storage.com/logo-quadrada.png",
-      password: "Senha123#",
+      password: "Le362514.",
       role: "BARBER",
     },
   });

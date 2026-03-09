@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { toast } from "sonner";
 import {
   recoverPasswordSchema,
@@ -14,7 +15,7 @@ import { Card, CardContent, CardHeader } from "@/shared/components/ui/card";
 import { PasswordStrength } from "./passwordStrength";
 
 export default function RecoverPassword() {
-  const searchParams = new URLSearchParams();
+  const searchParams = useSearchParams();
   const token = searchParams.get("token") || "";
 
   if (!token) {

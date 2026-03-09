@@ -18,6 +18,7 @@ import {
   CardHeader,
 } from "@/shared/components/ui/card";
 import { clientRoutes } from "@/shared/constants/routes";
+import { ForgotPasswordButton } from "./forgot-password-button";
 
 export default function LoginForm() {
   const router = useRouter();
@@ -69,7 +70,7 @@ export default function LoginForm() {
               type="password"
               placeholder="Digite sua senha"
             />
-            {/* <ForgotPasswordButton /> */}
+            <ForgotPasswordButton />
           </div>
         </GenericForm>
       </CardContent>

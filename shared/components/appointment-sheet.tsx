@@ -47,6 +47,7 @@ const AppointmentSheet = ({
 
   const { availableTimeSlots, isAvailableTimePending } = useAvailableTimeSlots(
     service.barberId,
+    service.id,
     selectedDate,
   );
 
@@ -135,7 +136,7 @@ const AppointmentSheet = ({
   }
 
   return (
-    <SheetContent className="w-92.5 overflow-y-auto p-0">
+    <SheetContent className="w-92.5 p-0">
       <div className="flex h-full flex-col gap-6">
         <SheetHeader className="px-5 pt-6">
           <SheetTitle className="font-bold text-lg">Fazer Reserva</SheetTitle>

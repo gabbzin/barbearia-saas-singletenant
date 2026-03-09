@@ -5,7 +5,7 @@ import { format } from "date-fns";
 import { toast } from "sonner";
 import { getDateAvailableTimeSlots } from "@/features/booking/functions/get-date-available-time-slots";
 
-export function useAvailableTimeSlots(barberId: string, selectedDate?: Date) {
+export function useAvailableTimeSlots(barberId: string, serviceId: string, selectedDate?: Date) {
   const selectedDateKey = selectedDate
     ? format(selectedDate, "yyyy-MM-dd")
     : null;
@@ -16,6 +16,7 @@ export function useAvailableTimeSlots(barberId: string, selectedDate?: Date) {
       queryFn: async () => {
         const result = await getDateAvailableTimeSlots({
           barberId,
+          serviceId,
           // biome-ignore lint/style/noNonNullAssertion: <Sempre vai ter valor aqui>
           date: selectedDate!,
         });
