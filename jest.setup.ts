@@ -11,3 +11,12 @@ if (!(global as any).TextEncoder) {
 if (!(global as any).TextDecoder) {
   (global as any).TextDecoder = TextDecoder;
 }
+
+jest.mock("next/navigation", () => ({
+  useRouter: () => ({
+    push: jest.fn(),
+    replace: jest.fn(),
+    refresh: jest.fn(),
+    prefetch: jest.fn(),
+  }),
+}));
