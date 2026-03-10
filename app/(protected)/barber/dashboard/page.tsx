@@ -28,6 +28,7 @@ import {
 } from "@/shared/components/ui/card";
 import { PageSection } from "@/shared/components/ui/page";
 import { TableCell, TableRow } from "@/shared/components/ui/table";
+import { formatarHoraLocal } from "@/utils/date-formatters";
 
 export default async function BarberDashboardPage() {
   const [info, defaultTimes] = await Promise.all([
@@ -96,7 +97,7 @@ export default async function BarberDashboardPage() {
             />
             <CardInfo
               Icon={AlertCircleIcon}
-              title="Não confirmados"
+              title="Pendentes"
               value={info.data?.bookingsNotConfirmedToday}
               variant="red"
             />
@@ -115,8 +116,8 @@ export default async function BarberDashboardPage() {
           <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
             <div className="space-y-8 lg:col-span-2">
               <CardTable
-                titleCard="Próximos agendamentos (máx. 5)"
-                linkText="Ver agenda completa"
+                titleCard="Próximos agendamentos"
+                linkText="Ver agenda"
                 url="/barber/schedule"
                 tableTitles={["Cliente", "Serviço", "Data/Hora", "Status"]}
               >
@@ -138,7 +139,7 @@ export default async function BarberDashboardPage() {
                       </TableCell>
                       <TableCell className="px-6 py-4 text-sm">
                         <p className="font-semibold">
-                          {format(booking.date, "HH:mm")}
+                          {formatarHoraLocal(booking.date)}
                         </p>
                         <p className="font-semibold text-[10px] text-muted-foreground uppercase">
                           Hoje

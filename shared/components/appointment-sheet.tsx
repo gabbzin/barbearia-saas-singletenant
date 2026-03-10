@@ -7,7 +7,6 @@ import { useAction } from "next-safe-action/hooks";
 import { useState } from "react";
 import { toast } from "sonner";
 import { createBooking } from "@/features/booking/functions/create-booking";
-import { createBookingCheckoutSession } from "@/features/booking/functions/create-booking-checkout-session";
 import { useAvailableTimeSlots } from "@/features/booking/hooks/use-available-time-slots";
 import type { SubscriptionInfo } from "@/features/user/repository/user.repository";
 import { isPastTimeSlot } from "@/utils/isPastTimeSlot";
@@ -42,8 +41,8 @@ const AppointmentSheet = ({
 
   const { executeAsync, isPending: isBookingPending } =
     useAction(createBooking);
-  const { executeAsync: executeCheckoutAsync, isPending: isCheckoutPending } =
-    useAction(createBookingCheckoutSession);
+  // const { executeAsync: executeCheckoutAsync, isPending: isCheckoutPending } =
+  //   useAction(createBookingCheckoutSession);
 
   const { availableTimeSlots, isAvailableTimePending } = useAvailableTimeSlots(
     service.barberId,
@@ -55,7 +54,7 @@ const AppointmentSheet = ({
     setSelectedDate(date);
   };
 
-  const isPending = isBookingPending || isCheckoutPending;
+  const isPending = isBookingPending;
 
   const today = new Date();
   today.setHours(0, 0, 0, 0);
@@ -85,18 +84,18 @@ const AppointmentSheet = ({
 
     date.setHours(Number(hours), Number(minutes), 0, 0);
 
-    if (payMethod === "cartao" && !plan?.hasPlan) {
-      result = await executeCheckoutAsync({
-        serviceId: service.id,
-        date,
-      });
-    } else {
-      result = await executeAsync({
-        serviceId: service.id,
-        date,
-        paymentMethod: payMethod,
-      });
-    }
+    // if (payMethod === "cartao" && !plan?.hasPlan) {
+    //   result = await executeCheckoutAsync({
+    //     serviceId: service.id,
+    //     date,
+    //   });
+    // } else {
+    result = await executeAsync({
+      serviceId: service.id,
+      date,
+      paymentMethod: payMethod,
+    });
+    // }
 
     if (result.serverError || result.validationErrors) {
       toast.error(result.validationErrors?._errors?.[0]);
@@ -136,7 +135,7 @@ const AppointmentSheet = ({
   }
 
   return (
-    <SheetContent className="w-92.5 p-0">
+    <SheetContent className="w-92.5 overflow-y-auto p-0">
       <div className="flex h-full flex-col gap-6">
         <SheetHeader className="px-5 pt-6">
           <SheetTitle className="font-bold text-lg">Fazer Reserva</SheetTitle>
@@ -205,7 +204,9 @@ const AppointmentSheet = ({
                     {service.name}
                   </p>
                   <p className="font-bold text-card-foreground text-sm">
-                    {service.priceInCents === 0 ? "A combinar" : `R$${priceFree},00`}
+                    {service.priceInCents === 0
+                      ? "A combinar"
+                      : `R$${priceFree},00`}
                   </p>
                 </div>
 

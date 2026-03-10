@@ -3,6 +3,7 @@
 import { Avatar, AvatarImage } from "@/shared/components/ui/avatar";
 import { Badge } from "@/shared/components/ui/badge";
 import { Card } from "@/shared/components/ui/card";
+import { formatarHoraLocal } from "@/utils/date-formatters";
 
 interface BookingItemProps {
   serviceName: string;
@@ -52,12 +53,7 @@ const BookingItem = ({
         <p className="font-bold text-xl capitalize">
           {date.toLocaleDateString("pt-BR", { day: "2-digit" })}
         </p>
-        <p className="text-xs capitalize">
-          {date.toLocaleTimeString("pt-BR", {
-            hour: "2-digit",
-            minute: "2-digit",
-          })}
-        </p>
+        <p className="text-xs capitalize">{formatarHoraLocal(date)}</p>
       </div>
     </Card>
   );

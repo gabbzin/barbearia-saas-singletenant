@@ -8,3 +8,6 @@ export const baseUrl =
 export const GHOST_USER_ID = "ghost-user-id";
 
 export const featureSignatureActive = false;
+
+export const DEFAULT_TIMEZONE =
+  process.env.BARBERSHOP_DEFAULT_TIMEZONE ?? "America/Sao_Paulo";

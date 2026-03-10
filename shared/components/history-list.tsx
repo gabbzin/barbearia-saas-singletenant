@@ -1,7 +1,7 @@
-import { format } from "date-fns";
 import { ScissorsIcon } from "lucide-react";
 import type { getHistory } from "@/features/booking/actions/get-history";
 import { cn } from "@/lib/utils";
+import { formatarDataHoraLocal } from "@/utils/date-formatters";
 import { Badge } from "./ui/badge";
 import { Card, CardContent } from "./ui/card";
 
@@ -29,9 +29,9 @@ export function HistoryList({ history }: HistoryListProps) {
                 >
                   <ScissorsIcon size={24} strokeWidth={2.5} />
                 </div>
-                <div className="items-centertext-sm">
+                <div className="items-center text-sm">
                   <p className="font-bold">{booking.service.name}</p>
-                  <p>{format(booking.date, "dd MMM yyyy 'às' HH:mm")}</p>
+                  <p>{formatarDataHoraLocal(booking.date)}</p>
                 </div>
               </div>
               <div>

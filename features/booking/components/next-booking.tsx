@@ -27,6 +27,7 @@ import {
 } from "@/shared/components/ui/card";
 import { clientRoutes } from "@/shared/constants/routes";
 import { useBarbershopStore } from "@/stores/barbershop.store";
+import { formatarHoraLocal } from "@/utils/date-formatters";
 import AddEventCalendar from "../functions/download-ics";
 import type { getNextBookingClient } from "../functions/get-bookings";
 
@@ -75,7 +76,10 @@ export function NextBooking({
             </p>
           </div>
           <Button variant={"gold"}>
-            <Link href={clientRoutes.barberLucas} className="flex items-center gap-2">
+            <Link
+              href={clientRoutes.barberLucas}
+              className="flex items-center gap-2"
+            >
               <PlusIcon />
               Agendar Agora
             </Link>
@@ -141,7 +145,7 @@ export function NextBooking({
                   </p>
                   <p className="font-semibold text-sm">
                     {day} de {month} às{" "}
-                    {isMounted ? format(bookingDate, "HH:mm") : "--:--"}
+                    {isMounted ? formatarHoraLocal(bookingDate) : "--:--"}
                   </p>
                 </div>
               </div>
