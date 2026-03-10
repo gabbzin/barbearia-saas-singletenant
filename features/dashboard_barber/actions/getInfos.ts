@@ -206,8 +206,6 @@ export const getBarberDashboardInfos = actionClient.action(async () => {
       };
     });
 
-    console.log(nextBookings);
-
     /**
      * Porcentagem de crescimento ou queda no faturamento em relação ao dia anterior. Se o faturamento do dia anterior for 0, retorna null para evitar divisão por zero.
      */
@@ -218,8 +216,6 @@ export const getBarberDashboardInfos = actionClient.action(async () => {
       yesterdayTotal === 0
         ? todayTotal / 100
         : ((todayTotal - yesterdayTotal) / yesterdayTotal) * 100;
-
-    console.log(growthPercentage);
 
     return {
       barberId,
