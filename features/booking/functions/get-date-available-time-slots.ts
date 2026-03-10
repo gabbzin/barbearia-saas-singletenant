@@ -7,6 +7,7 @@ import z from "zod";
 import { verifySession } from "@/features/user/repository/user.repository";
 import { actionClient } from "@/lib/actionClient";
 // import { auth } from "@/lib/auth";
+import { DEFAULT_TIMEZONE } from "@/lib/consts";
 import { prisma } from "@/lib/prisma";
 
 const inputSchema = z.object({
@@ -115,7 +116,19 @@ export const getDateAvailableTimeSlots = actionClient
     // Lógica para bloquear horários que já passaram hoje
     const now = new Date();
     const isQueryingToday = isToday(date);
-    const currentMinutes = now.getHours() * 60 + now.getMinutes();
+
+    const currentTimeInTimezone = new Intl.DateTimeFormat("pt-BR", {
+      timeZone: DEFAULT_TIMEZONE,
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: false,
+    }).format(now);
+
+    const [currentHour, currentMinute] = currentTimeInTimezone
+      .split(":")
+      .map(Number);
+
+    const currentMinutes = currentHour * 60 + currentMinute;
 
     // Tempo de antecedência mínima para agendar (30 minutos)
     const bookingBuffer = 30;
@@ -134,12 +147,12 @@ export const getDateAvailableTimeSlots = actionClient
 
       const hasConflict = occupiedRanges.some(range => {
         return proposedStart < range.end && proposedEnd > range.start;
-      })
+      });
 
       if (!hasConflict) {
         dynamicSlots.push(minutesToTime(proposedStart));
       }
     }
-    
+
     return dynamicSlots;
   });

@@ -22,6 +22,7 @@ export const getBarberById = cache(async (barberId: string) => {
     include: {
       services: true,
       user: true,
+      socialMedia: true,
     },
   });
 });

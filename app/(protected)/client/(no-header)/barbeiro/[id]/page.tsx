@@ -1,8 +1,4 @@
-import {
-  RiFacebookFill,
-  RiInstagramFill,
-  RiTwitterXFill,
-} from "@remixicon/react";
+import { RiInstagramFill } from "@remixicon/react";
 import { ChevronLeft } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -22,11 +18,7 @@ import { Separator } from "@/shared/components/ui/separator";
 import { imagePaths } from "@/shared/constants/images";
 import { clientRoutes } from "@/shared/constants/routes";
 
-const BarberPage = async ({
-  params,
-}: {
-  params: Promise<{ id: string }>;
-}) => {
+const BarberPage = async ({ params }: { params: Promise<{ id: string }> }) => {
   const { id } = await params;
 
   const barber = await getBarberById(id);
@@ -91,14 +83,13 @@ const BarberPage = async ({
           <PageSection>
             <PageSectionTitle>Redes sociais</PageSectionTitle>
             <div className="mt-2 flex flex-wrap items-center gap-3">
-              <Button size="icon" variant="outline">
-                <RiInstagramFill className="size-4" />
-              </Button>
-              <Button size="icon" variant="outline">
-                <RiFacebookFill className="size-4" />
-              </Button>
-              <Button size="icon" variant="outline">
-                <RiTwitterXFill className="size-4" />
+              <Button size="icon" variant="outline" asChild>
+                <Link
+                  href={`${barber.socialMedia[0]?.url ?? ""}`}
+                  target="_blank"
+                >
+                  <RiInstagramFill className="size-4" />
+                </Link>
               </Button>
             </div>
           </PageSection>

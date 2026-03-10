@@ -23,6 +23,7 @@ import {
   SheetTrigger,
 } from "@/shared/components/ui/sheet";
 import { imagePaths } from "@/shared/constants/images";
+import { formatarHoraLocal } from "@/utils/date-formatters";
 
 interface CancelBookingProps {
   open: boolean;
@@ -91,11 +92,7 @@ export function CancelBooking({
     day: "2-digit",
     month: "long",
   });
-
-  const formattedTime = booking.date.toLocaleTimeString("pt-BR", {
-    hour: "2-digit",
-    minute: "2-digit",
-  });
+  const formattedTime = formatarHoraLocal(booking.date);
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>

@@ -28,6 +28,7 @@ import {
 } from "@/shared/components/ui/card";
 import { PageSection } from "@/shared/components/ui/page";
 import { TableCell, TableRow } from "@/shared/components/ui/table";
+import { formatarHoraLocal } from "@/utils/date-formatters";
 
 export default async function BarberDashboardPage() {
   const [info, defaultTimes] = await Promise.all([
@@ -138,7 +139,7 @@ export default async function BarberDashboardPage() {
                       </TableCell>
                       <TableCell className="px-6 py-4 text-sm">
                         <p className="font-semibold">
-                          {format(booking.date, "HH:mm")}
+                          {formatarHoraLocal(booking.date)}
                         </p>
                         <p className="font-semibold text-[10px] text-muted-foreground uppercase">
                           Hoje

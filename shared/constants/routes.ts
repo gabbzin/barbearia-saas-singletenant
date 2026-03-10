@@ -13,7 +13,7 @@ export const clientRoutes = {
   bookings: "/client/bookings",
   signature: "/client/signature",
   barberDetails: (id: string) => `/client/barbeiro/${id}`,
-  barberLucas: "/client/barbeiro/1d75280e-61a4-420b-8b7b-1a6f4718256d",
+  barberLucas: "/client/barbeiro/922e50cd-6c1a-4223-a7e0-5e2d0af99545",
   barberDetailsconst: "/client/barbeiro/[id]",
 } as const;
 
