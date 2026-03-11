@@ -51,6 +51,12 @@ export function FormBarberBreak({
   const isEditing = !!barberBreak;
 
   useEffect(() => {
+    if (isEditing && barberBreak) {
+      setSelectedDay(String(barberBreak.dayOfWeek));
+    }
+  }, [isEditing, barberBreak]);
+
+  useEffect(() => {
     if (!selectedDay) {
       setSlots([]);
       return;
