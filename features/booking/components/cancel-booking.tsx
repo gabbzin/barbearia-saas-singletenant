@@ -154,9 +154,7 @@ export function CancelBooking({
 
           {/* Telefones */}
           <div className="flex flex-col gap-3">
-            {booking.barber.phone.map((phone, index) => (
-              <PhoneItem key={String(index)} phone={phone} />
-            ))}
+              <PhoneItem phone={booking.barber.phone} />
           </div>
         </div>
 

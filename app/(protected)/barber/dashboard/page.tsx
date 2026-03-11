@@ -16,8 +16,10 @@ import { CardTable } from "@/features/dashboard_barber/components/card-table";
 import { BarChartGraph } from "@/features/dashboard_barber/components/charts/barchart-comp";
 import { NewBookingManualDialog } from "@/features/dashboard_barber/components/new-booking-manual-dialog";
 import { SpeedDial } from "@/features/dashboard_barber/components/SpeedDial";
+import { TableBarberBreak } from "@/features/dashboard_barber/components/table-barber-break";
 import { TableService } from "@/features/dashboard_barber/components/table-service";
 import { TableSettings } from "@/features/dashboard_barber/components/table-settings";
+import { prisma } from "@/lib/prisma";
 import { Alert, AlertTitle } from "@/shared/components/ui/alert";
 import { Badge } from "@/shared/components/ui/badge";
 import {
@@ -37,6 +39,12 @@ export default async function BarberDashboardPage() {
   ]);
 
   const barberId = info.data?.barberId ? info.data.barberId : null;
+
+  const disponibility = await prisma.disponibility.findMany({
+    where: {
+      barberId: info.data?.barberId,
+    },
+  });
 
   const horariosData = defaultTimes.data?.horariosData ?? null;
   const defaultTimesValues = defaultTimes.data?.defaultTimes ?? undefined;
@@ -217,12 +225,17 @@ export default async function BarberDashboardPage() {
             <div className="grid grid-cols-1 gap-2 md:grid-cols-2 lg:grid-cols-1 lg:space-y-8">
               <TableService barberId={barberId} />
               <TableSettings barberId={barberId} />
+              <TableBarberBreak barberId={barberId} />
             </div>
           </div>
         </div>
       </PageSection>
 
-      <SpeedDial barberId={barberId} defaultTimes={defaultTimesValues} />
+      <SpeedDial
+        barberId={barberId}
+        defaultTimes={defaultTimesValues}
+        disponibility={disponibility}
+      />
     </main>
   );
 }

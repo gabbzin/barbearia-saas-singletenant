@@ -18,6 +18,7 @@ const actions = [
   "@/features/booking/actions/get-next-booking-action",
   "@/features/booking/actions/get-last-booking-action",
   "@/features/rating/actions/rating-action",
+  "@/features/barber/actions/barber-break-actions",
 ];
 
 describe("Server actions smoke test", () => {

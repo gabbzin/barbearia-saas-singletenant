@@ -117,20 +117,7 @@ const BarberPage = async ({ params }: { params: Promise<{ id: string }> }) => {
           <PageSection>
             <PageSectionTitle>Contato</PageSectionTitle>
             <div className="space-y-3">
-              {barber.phone.length > 0 ? (
-                barber.phone.map(phone => (
-                  <div
-                    key={phone}
-                    className="flex w-full flex-col items-start justify-between"
-                  >
-                    <PhoneItem phone={phone} />
-                  </div>
-                ))
-              ) : (
-                <p className="text-muted-foreground text-sm">
-                  Telefone não disponível
-                </p>
-              )}
+              <PhoneItem phone={barber.phone || ""} />
             </div>
           </PageSection>
         </div>

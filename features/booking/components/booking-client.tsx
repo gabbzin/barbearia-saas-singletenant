@@ -29,7 +29,7 @@ export type BookingClient = {
   barber: {
     name: string;
     imageUrl: string;
-    phone: string[];
+    phone: string;
   };
 };
 

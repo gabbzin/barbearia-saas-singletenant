@@ -183,7 +183,7 @@ async function seedDatabase() {
 
       const barber = await prisma.barber.create({
         data: {
-          phone: ["(11) 99999-9999"],
+          phone: "(11) 99999-9999",
           userId: user.user.id,
         },
       });

@@ -1,18 +1,25 @@
 "use client";
 
+import type { Disponibility } from "@prisma/client";
 import { Plus } from "lucide-react";
 import { useState } from "react";
 import type { TimesSchemaData } from "@/features/booking/schema/timesSchema";
 import { Button } from "@/shared/components/ui/button";
+import { FormBarberBreak } from "./barber-break-form";
 import { FormService } from "./form-service";
 import FormTimesServices from "./form-times-services";
 
 interface SpeedDialProps {
   barberId: string;
   defaultTimes?: TimesSchemaData;
+  disponibility: Disponibility[];
 }
 
-export function SpeedDial({ barberId, defaultTimes }: SpeedDialProps) {
+export function SpeedDial({
+  barberId,
+  defaultTimes,
+  disponibility,
+}: SpeedDialProps) {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
@@ -22,6 +29,7 @@ export function SpeedDial({ barberId, defaultTimes }: SpeedDialProps) {
       >
         <FormTimesServices barberId={barberId} defaultValues={defaultTimes} />
         <FormService barberId={barberId} />
+        <FormBarberBreak barberId={barberId} disponibility={disponibility} />
       </div>
 
       {/* Botão Principal (FAB) */}

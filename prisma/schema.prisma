@@ -126,8 +126,8 @@ model Barbershop {
 }
 
 model Barber {
-  id    String   @id @default(uuid())
-  phone String[]
+  id    String @id @default(uuid())
+  phone String
 
   userId String? @unique
   user   User?   @relation("BarberAccount", fields: [userId], references: [id])
@@ -138,6 +138,7 @@ model Barber {
   exceptionDates ExceptionDate[]
   ratings        Rating[]
   socialMedia    SocialMedia[]
+  barberBreaks   BarberBreak[]
 
   @@index([userId])
 }
@@ -156,6 +157,18 @@ model BarberService {
   bookings Booking[]
 
   @@index([barberId])
+}
+
+model BarberBreak {
+  id       String @id @default(uuid())
+  barberId String
+  barber   Barber @relation(fields: [barberId], references: [id], onDelete: Cascade)
+
+  dayOfWeek Int // 0 = Sunday, 1 = Monday, ..., 6 = Saturday
+  startTime String
+  endTime   String
+
+  @@index([barberId, dayOfWeek])
 }
 
 // ========================================================
@@ -251,16 +264,6 @@ model Booking {
   @@index([customerName])
 }
 
-enum DiaSemana {
-  SUNDAY
-  MONDAY
-  TUESDAY
-  WEDNESDAY
-  THURSDAY
-  FRIDAY
-  SATURDAY
-}
-
 // ========================================================
 // BARBER AVAILABILITY MODELS
 // ========================================================
@@ -282,12 +285,12 @@ model ExceptionDate {
   barberId String
   barber   Barber @relation(fields: [barberId], references: [id], onDelete: Cascade)
 
-  date      String?
-  isClosed  Boolean @default(true)
-  startTime String?
-  endTime   String?
+  date             DateTime
+  isClosedFullTime Boolean  @default(true)
+  startTime        String?
+  endTime          String?
 
-  @@index([barberId])
+  @@index([barberId, date])
 }
 
 // ========================================================
