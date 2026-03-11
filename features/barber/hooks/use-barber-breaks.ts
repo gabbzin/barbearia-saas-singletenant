@@ -19,7 +19,14 @@ export function useBarberBreakCRUD(barberId: string) {
   function updateCache(
     updateFn: (old: BarberBreak[] | undefined) => BarberBreak[],
   ) {
-    queryClient.setQueryData(queryKey, updateFn);
+    queryClient.setQueryData(
+      queryKey,
+      (old: { barberBreaks: BarberBreak[] } | null | undefined) => {
+        const current = old?.barberBreaks;
+        const updated = updateFn(current);
+        return { barberBreaks: updated };
+      },
+    );
   }
 
   const { executeAsync: fetchBarberBreaks } = useAction(
@@ -29,24 +36,32 @@ export function useBarberBreakCRUD(barberId: string) {
     barberBreaks: BarberBreak[];
   }>(queryKey, () => fetchBarberBreaks({ barberId }));
 
-  const { executeAsync: execCreate, isPending: isCreating } =
-    useAction(createBarberBreakAction);
-  const { executeAsync: execUpdate, isPending: isUpdating } =
-    useAction(patchBarberBreakAction);
+  const { executeAsync: execCreate, isPending: isCreating } = useAction(
+    createBarberBreakAction,
+  );
+  const { executeAsync: execUpdate, isPending: isUpdating } = useAction(
+    patchBarberBreakAction,
+  );
   const { executeAsync: execDelete } = useAction(deleteBarberBreakAction);
 
-  const createBarberBreak = async (
-    input: { barberId: string; dayOfWeek: number; startTime: string; endTime: string },
-  ) => {
+  const createBarberBreak = async (input: {
+    barberId: string;
+    dayOfWeek: number;
+    startTime: string;
+    endTime: string;
+  }) => {
     const result = await execCreate(input);
     if (!result?.data?.barberBreak) return;
     toast.success("Intervalo criado com sucesso!");
     updateCache(old => [...(old ?? []), result.data!.barberBreak]);
   };
 
-  const updateBarberBreak = async (
-    input: { barberBreakId: string; dayOfWeek: number; startTime: string; endTime: string },
-  ) => {
+  const updateBarberBreak = async (input: {
+    barberBreakId: string;
+    dayOfWeek: number;
+    startTime: string;
+    endTime: string;
+  }) => {
     const result = await execUpdate(input);
     if (!result?.data?.barberBreak) return;
     toast.success("Intervalo atualizado com sucesso!");

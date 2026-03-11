@@ -2,7 +2,6 @@
 
 import type { BarberBreak, Disponibility } from "@prisma/client";
 import { DialogDescription, DialogTitle } from "@radix-ui/react-dialog";
-import { format } from "date-fns";
 import { PencilIcon, PlusIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useBarberBreakCRUD } from "@/features/barber/hooks/use-barber-breaks";
@@ -43,10 +42,8 @@ export function FormBarberBreak({
   disponibility,
 }: BarberBreakFormProps) {
   const [isOpen, setIsOpen] = useState(false);
-  const [day, setDay] = useState<string | null>(null);
-  const [startTime, setStartTime] = useState<string | null>(null);
-  const [endTime, setEndTime] = useState<string | null>(null);
-  const [slots, setSlots] = useState<{ value: string; label: string }[] | null>(null);
+  const [selectedDay, setSelectedDay] = useState<string | null>(null);
+  const [slots, setSlots] = useState<{ value: string; label: string }[]>([]);
 
   const { createBarberBreak, updateBarberBreak, isCreating, isUpdating } =
     useBarberBreakCRUD(barberId);
@@ -54,29 +51,39 @@ export function FormBarberBreak({
   const isEditing = !!barberBreak;
 
   useEffect(() => {
-    if (day) {
-      setStartTime(
-        disponibility.find(d => String(d.dayOfWeek) === day)?.startTime || null,
-      );
-      setEndTime(
-        disponibility.find(d => String(d.dayOfWeek) === day)?.endTime || null,
-      );
+    if (!selectedDay) {
+      setSlots([]);
+      return;
     }
 
-    if (startTime && endTime) {
-      const range = createRange(startTime, endTime);
+    const dayDisponibility = disponibility.find(
+      d => String(d.dayOfWeek) === selectedDay,
+    );
 
-      const generatedSlots = [];
-      const interval = 15;
-
-      for (let time = range.start; time + 30 <= range.end; time += interval) {
-        const date = format(new Date(0, 0, 0, 0, time), "HH:mm");
-        generatedSlots.push({ value: date, label: date });
-      }
-
-      setSlots(generatedSlots);
+    if (!dayDisponibility) {
+      setSlots([]);
+      return;
     }
-  });
+
+    const range = createRange(
+      dayDisponibility.startTime,
+      dayDisponibility.endTime,
+    );
+
+    const generatedSlots: { value: string; label: string }[] = [];
+    const interval = 15;
+
+    for (let time = range.start; time + 30 <= range.end; time += interval) {
+      const hours = Math.floor(time / 60)
+        .toString()
+        .padStart(2, "0");
+      const minutes = (time % 60).toString().padStart(2, "0");
+      const formatted = `${hours}:${minutes}`;
+      generatedSlots.push({ value: formatted, label: formatted });
+    }
+
+    setSlots(generatedSlots);
+  }, [selectedDay, disponibility]);
 
   const defaultValues: BarberBreakFormSchemaType | undefined = barberBreak
     ? {
@@ -153,23 +160,21 @@ export function FormBarberBreak({
               value: String(d.dayOfWeek),
               label: dias[d.dayOfWeek],
             }))}
-            onValueChange={setDay}
+            onValueChange={setSelectedDay}
           />
 
           <SelectForm<BarberBreakFormSchemaType>
             name="startTime"
             placeholder="Horário de início"
             groupLabels="Hora"
-            onValueChange={setStartTime}
-            items={slots ?? []}
+            items={slots}
           />
 
           <SelectForm<BarberBreakFormSchemaType>
             name="endTime"
             groupLabels="Hora"
             placeholder="Horário de término"
-            onValueChange={setEndTime}
-            items={slots ?? []}
+            items={slots}
           />
         </GenericForm>
       </DialogContent>
