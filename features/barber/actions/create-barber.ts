@@ -10,13 +10,14 @@ import { prisma } from "@/lib/prisma";
 // Schema de validação para criar um barbeiro
 const createBarberSchema = z.object({
   name: z.string().min(2, "Nome deve ter pelo menos 2 caracteres"),
-  email: z.string().email("Email inválido"),
+  email: z.email("Email inválido"),
   password: z.string().min(8, "Senha deve ter pelo menos 8 caracteres"),
+  phone: z.string(),
 });
 
 export const createBarber = actionClient
   .schema(createBarberSchema)
-  .action(async ({ parsedInput: { name, email, password } }) => {
+  .action(async ({ parsedInput: { name, email, password, phone } }) => {
     const user = await auth.api.signUpEmail({
       body: {
         name,
@@ -47,6 +48,7 @@ export const createBarber = actionClient
               })),
             },
           },
+          phone,
         },
       });
 

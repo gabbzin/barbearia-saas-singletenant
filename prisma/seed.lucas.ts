@@ -120,7 +120,8 @@ async function seedLucasBarbershop() {
     body: {
       name: "Lucas Alves",
       email: "lucasmatos47@gmail.com",
-      image: "https://9ddqvrucqgrr1dw7.public.blob.vercel-storage.com/logo-quadrada.png",
+      image:
+        "https://9ddqvrucqgrr1dw7.public.blob.vercel-storage.com/logo-quadrada.png",
       password: "Le362514.",
       role: "BARBER",
     },
@@ -128,7 +129,7 @@ async function seedLucasBarbershop() {
 
   const barber = await prisma.barber.create({
     data: {
-      phone: ["(61) 98338-2257"],
+      phone: "(61) 98338-2257",
       userId: barberUser.user.id,
     },
   });
