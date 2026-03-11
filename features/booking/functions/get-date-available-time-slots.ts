@@ -9,31 +9,17 @@ import { actionClient } from "@/lib/actionClient";
 // import { auth } from "@/lib/auth";
 import { DEFAULT_TIMEZONE } from "@/lib/consts";
 import { prisma } from "@/lib/prisma";
+import {
+  createRange,
+  minutesToTime,
+  timeToMinutes,
+} from "@/utils/convertTimes";
 
 const inputSchema = z.object({
   barberId: z.string(),
   serviceId: z.string(),
   date: z.date(),
   bookingBufferBool: z.boolean().default(true),
-});
-
-const timeToMinutes = (time: string) => {
-  const [hours, minutes] = time.split(":").map(Number);
-  return hours * 60 + minutes;
-};
-
-// Função para converter minutos de volta para "HH:mm"
-const minutesToTime = (minutes: number) => {
-  const h = Math.floor(minutes / 60)
-    .toString()
-    .padStart(2, "0");
-  const m = (minutes % 60).toString().padStart(2, "0");
-  return `${h}:${m}`;
-};
-
-const createRange = (start: string, end: string) => ({
-  start: timeToMinutes(start),
-  end: timeToMinutes(end),
 });
 
 export const getDateAvailableTimeSlots = actionClient

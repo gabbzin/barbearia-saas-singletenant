@@ -4,22 +4,16 @@ import { AlertTriangleIcon } from "lucide-react";
 import { useSettingsBarber } from "@/features/barber/settings/useSettingsBarber";
 import { Alert, AlertTitle } from "@/shared/components/ui/alert";
 import { TableCell, TableRow } from "@/shared/components/ui/table";
+import { dias } from "./barber-break-form";
 import { CardTable } from "./card-table";
-
-const daysMap = [
-  "Domingo",
-  "Segunda",
-  "Terça",
-  "Quarta",
-  "Quinta",
-  "Sexta",
-  "Sábado",
-];
+// import { DAYS_OF_WEEK_LABELS } from "./days-of-week";
 
 export function TableSettings({ barberId }: { barberId: string }) {
   const { settings, isLoading } = useSettingsBarber(barberId);
 
   const daysOfWeek = settings?.daysOfWeek ?? [];
+
+  const days = daysOfWeek.map(day => dias[day]);
 
   return (
     <CardTable
@@ -44,7 +38,7 @@ export function TableSettings({ barberId }: { barberId: string }) {
             }`}
             className="border-t"
           >
-            <TableCell className="px-6 py-4">{daysMap[day]}</TableCell>
+            <TableCell className="px-6 py-4">{days[index]}</TableCell>
             <TableCell className="px-6 py-4">
               {settings.startTime}-{settings.endTime}
             </TableCell>

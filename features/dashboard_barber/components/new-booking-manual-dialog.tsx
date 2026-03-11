@@ -72,6 +72,7 @@ export function NewBookingManualDialog({
     barberId,
     selectedServiceId,
     selectedDate,
+    false,
   );
 
   // Funções

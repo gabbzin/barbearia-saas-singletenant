@@ -24,7 +24,8 @@ interface FormServiceProps {
 
 export function FormService({ barberId, service }: FormServiceProps) {
   const [isOpen, setIsOpen] = useState(false);
-  const { createService, updateService, isCreating, isUpdating } = useServicesCRUD(barberId);
+  const { createService, updateService, isCreating, isUpdating } =
+    useServicesCRUD(barberId);
 
   const isEditing = !!service;
 

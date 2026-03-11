@@ -1,14 +1,17 @@
-import type { BarberBreak } from "@prisma/client";
+"use client";
+
+import type { BarberBreak, Disponibility } from "@prisma/client";
 import { DialogDescription, DialogTitle } from "@radix-ui/react-dialog";
+import { format } from "date-fns";
 import { PencilIcon, PlusIcon } from "lucide-react";
-import { useState } from "react";
-import { useServicesCRUD } from "@/features/service/hooks/useServices";
+import { useEffect, useState } from "react";
+import { useBarberBreakCRUD } from "@/features/barber/hooks/use-barber-breaks";
 import {
-  serviceSchema,
-  type serviceSchemaType,
-} from "@/features/service/schema/serviceSchema";
+  type BarberBreakFormSchemaType,
+  barberBreakFormSchema,
+} from "@/features/barber/schema/barber-break-schema";
 import GenericForm from "@/shared/components/form/generic-form";
-import InputForm from "@/shared/components/form/input-form";
+import { SelectForm } from "@/shared/components/form/select-form";
 import { Button } from "@/shared/components/ui/button";
 import {
   Dialog,
@@ -16,24 +19,87 @@ import {
   DialogHeader,
   DialogTrigger,
 } from "@/shared/components/ui/dialog";
+import { createRange } from "@/utils/convertTimes";
 
-interface FormServiceProps {
+export const dias = [
+  "Domingo",
+  "Segunda",
+  "Terça",
+  "Quarta",
+  "Quinta",
+  "Sexta",
+  "Sábado",
+];
+
+interface BarberBreakFormProps {
   barberId: string;
-  barberBreak: BarberBreak;
+  barberBreak?: BarberBreak;
+  disponibility: Disponibility[];
 }
 
-export function FormService({ barberId, barberBreak }: FormServiceProps) {
+export function FormBarberBreak({
+  barberId,
+  barberBreak,
+  disponibility,
+}: BarberBreakFormProps) {
   const [isOpen, setIsOpen] = useState(false);
-  const { createService, updateService, isCreating, isUpdating } =
-    useServicesCRUD(barberId);
+  const [day, setDay] = useState<string | null>(null);
+  const [startTime, setStartTime] = useState<string | null>(null);
+  const [endTime, setEndTime] = useState<string | null>(null);
+  const [slots, setSlots] = useState<{ value: string; label: string }[] | null>(null);
+
+  const { createBarberBreak, updateBarberBreak, isCreating, isUpdating } =
+    useBarberBreakCRUD(barberId);
 
   const isEditing = !!barberBreak;
 
-  const handleSubmit = async (data: serviceSchemaType) => {
+  useEffect(() => {
+    if (day) {
+      setStartTime(
+        disponibility.find(d => String(d.dayOfWeek) === day)?.startTime || null,
+      );
+      setEndTime(
+        disponibility.find(d => String(d.dayOfWeek) === day)?.endTime || null,
+      );
+    }
+
+    if (startTime && endTime) {
+      const range = createRange(startTime, endTime);
+
+      const generatedSlots = [];
+      const interval = 15;
+
+      for (let time = range.start; time + 30 <= range.end; time += interval) {
+        const date = format(new Date(0, 0, 0, 0, time), "HH:mm");
+        generatedSlots.push({ value: date, label: date });
+      }
+
+      setSlots(generatedSlots);
+    }
+  });
+
+  const defaultValues: BarberBreakFormSchemaType | undefined = barberBreak
+    ? {
+        dayOfWeek: String(
+          barberBreak.dayOfWeek,
+        ) as BarberBreakFormSchemaType["dayOfWeek"],
+        startTime: barberBreak.startTime,
+        endTime: barberBreak.endTime,
+      }
+    : undefined;
+
+  const handleSubmit = async (data: BarberBreakFormSchemaType) => {
+    console.log("Enviando aqui chefe");
+    const payload = {
+      dayOfWeek: Number(data.dayOfWeek),
+      startTime: data.startTime,
+      endTime: data.endTime,
+    };
+
     if (isEditing && barberBreak) {
-      await updateService({ serviceId: barberBreak.id, ...data });
+      await updateBarberBreak({ barberBreakId: barberBreak.id, ...payload });
     } else {
-      await createService({ barberId, ...data });
+      await createBarberBreak({ barberId, ...payload });
     }
     setIsOpen(false);
   };
@@ -73,27 +139,37 @@ export function FormService({ barberId, barberBreak }: FormServiceProps) {
               : "Preencha os detalhes do novo intervalo."}
           </DialogDescription>
         </DialogHeader>
-        <GenericForm
-          schema={serviceSchema}
+        <GenericForm<BarberBreakFormSchemaType>
+          schema={barberBreakFormSchema}
           onSubmit={handleSubmit}
+          defaultValues={defaultValues}
           submitText={isEditing ? "Salvar Alterações" : "Criar Intervalo"}
           disabled={isLoading}
         >
-          <InputForm
-            name="name"
-            label="Nome do Intervalo"
-            placeholder="Digite o nome do intervalo"
+          <SelectForm<BarberBreakFormSchemaType>
+            name="dayOfWeek"
+            placeholder="Selecione o dia da semana"
+            items={disponibility.map(d => ({
+              value: String(d.dayOfWeek),
+              label: dias[d.dayOfWeek],
+            }))}
+            onValueChange={setDay}
           />
-          <InputForm
-            name="price"
-            label="Preço do Intervalo"
-            placeholder="Digite o preço do intervalo"
-            mask="currency"
+
+          <SelectForm<BarberBreakFormSchemaType>
+            name="startTime"
+            placeholder="Horário de início"
+            groupLabels="Hora"
+            onValueChange={setStartTime}
+            items={slots ?? []}
           />
-          <InputForm
-            name="description"
-            label="Descrição do Intervalo"
-            placeholder="Digite a descrição do intervalo"
+
+          <SelectForm<BarberBreakFormSchemaType>
+            name="endTime"
+            groupLabels="Hora"
+            placeholder="Horário de término"
+            onValueChange={setEndTime}
+            items={slots ?? []}
           />
         </GenericForm>
       </DialogContent>

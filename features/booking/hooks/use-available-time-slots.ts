@@ -5,18 +5,29 @@ import { format } from "date-fns";
 import { toast } from "sonner";
 import { getDateAvailableTimeSlots } from "@/features/booking/functions/get-date-available-time-slots";
 
-export function useAvailableTimeSlots(barberId: string, serviceId: string, selectedDate?: Date) {
+export function useAvailableTimeSlots(
+  barberId: string,
+  serviceId: string,
+  selectedDate?: Date,
+  bookingBufferBool = true,
+) {
   const selectedDateKey = selectedDate
     ? format(selectedDate, "yyyy-MM-dd")
     : null;
 
   const { data: availableTimeSlots, isPending: isAvailableTimePending } =
     useQuery<string[]>({
-      queryKey: ["date-available-time-slots", barberId, serviceId, selectedDateKey],
+      queryKey: [
+        "date-available-time-slots",
+        barberId,
+        serviceId,
+        selectedDateKey,
+      ],
       queryFn: async () => {
         const result = await getDateAvailableTimeSlots({
           barberId,
           serviceId,
+          bookingBufferBool,
           // biome-ignore lint/style/noNonNullAssertion: <Sempre vai ter valor aqui>
           date: selectedDate!,
         });
