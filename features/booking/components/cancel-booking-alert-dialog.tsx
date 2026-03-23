@@ -18,6 +18,8 @@ interface CancelAlertDialogProps {
   title: string;
   description?: React.ReactNode;
   cancelButtonText?: string;
+  loadingText?: string;
+  confirmText?: string;
   children?: React.ReactNode;
 }
 
@@ -27,6 +29,8 @@ export default function CancelAlertDialog({
   title,
   description,
   cancelButtonText,
+  loadingText,
+  confirmText,
   children,
 }: CancelAlertDialogProps) {
   return (
@@ -57,7 +61,9 @@ export default function CancelAlertDialog({
             disabled={isLoading}
             className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
           >
-            {isLoading ? "Cancelando..." : "Sim, cancelar"}
+            {isLoading
+              ? loadingText || "Cancelando..."
+              : confirmText || "Sim, cancelar"}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

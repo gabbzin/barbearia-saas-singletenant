@@ -1,6 +1,7 @@
 "use client";
 
 import { AlertTriangleIcon } from "lucide-react";
+import { ServiceDialog } from "@/features/service/components/service-dialog";
 import { useServicesCRUD } from "@/features/service/hooks/useServices";
 import { Alert, AlertTitle } from "@/shared/components/ui/alert";
 import { TableCell, TableRow } from "@/shared/components/ui/table";
@@ -29,12 +30,23 @@ export function TableService({ barberId }: { barberId: string }) {
         </TableRow>
       ) : list.length > 0 ? (
         list.map(service => (
-          <TableRow key={service.id} className="w-full border-t">
-            <TableCell className="px-6 py-4">{service.name}</TableCell>
-            <TableCell className="px-6 py-4">
-              {convertBRL(service.priceInCents)}
-            </TableCell>
-          </TableRow>
+          <ServiceDialog
+            serviceId={service.id}
+            key={service.id}
+            title={service.name}
+            description={service.description}
+            price={convertBRL(service.priceInCents)}
+            barberId={barberId}
+          >
+            <TableRow className="w-full border-t">
+              <TableCell className="px-6 py-4">{service.name}</TableCell>
+              <TableCell className="px-6 py-4">
+                {service.priceInCents === 0
+                  ? "A combinar"
+                  : convertBRL(service.priceInCents)}
+              </TableCell>
+            </TableRow>
+          </ServiceDialog>
         ))
       ) : (
         <TableRow>

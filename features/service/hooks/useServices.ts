@@ -20,7 +20,14 @@ export function useServicesCRUD(barberId: string) {
   function updateCache(
     updateFn: (old: BarberService[] | undefined) => BarberService[],
   ) {
-    queryClient.setQueryData(queryKey, updateFn);
+    queryClient.setQueryData(
+      queryKey,
+      (old: { services: BarberService[] } | null | undefined) => {
+        const current = old?.services;
+        const updated = updateFn(current);
+        return { services: updated };
+      },
+    );
   }
 
   const { executeAsync: fetchServices } = useAction(

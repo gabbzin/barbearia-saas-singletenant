@@ -14,6 +14,9 @@ export const getServicesByBarberIdAction = actionClient
   .action(async ({ parsedInput: { barberId } }) => {
     const services = await prisma.barberService.findMany({
       where: { barberId },
+      orderBy: {
+        name: "asc",
+      },
     });
     return { services };
   });
@@ -66,4 +69,3 @@ export const deleteServiceAction = actionClient
     await prisma.barberService.delete({ where: { id: serviceId } });
     return { serviceId };
   });
-
