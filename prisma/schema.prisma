@@ -260,6 +260,7 @@ model Booking {
 
   @@index([userId])
   @@index([barberId, date])
+  @@unique([barberId, date]) // Impede agendamento duplo para o mesmo horário
   @@index([status])
   @@index([customerName])
 }

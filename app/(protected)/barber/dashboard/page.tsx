@@ -204,7 +204,7 @@ export default async function BarberDashboardPage() {
                       ) : (
                         <div className="flex items-center gap-2 text-red-500">
                           <TrendingDown className="h-5 w-5" />
-                          <span>{info.data?.growthPercentage ?? 0}%</span>
+                          <span>{info.data?.growthPercentage.toFixed(2) ?? 0}%</span>
                         </div>
                       )}
                     </div>

@@ -16,6 +16,7 @@ import {
   TabsList,
   TabsTrigger,
 } from "@/shared/components/ui/tabs";
+import { cancelBookingAction } from "@/features/booking/functions/cancel-booking";
 
 export function ScheduleCard() {
   const [selectedDate, setSelectedDate] = useState<Date>(() => {
@@ -40,6 +41,8 @@ export function ScheduleCard() {
       toast.error(message);
     },
   });
+
+  const {execute: cancelExecute, isPending: isCancelPending} = useAction(cancelBookingAction)
 
   const Skeleton = (
     <div className="flex flex-col gap-4">
@@ -122,7 +125,17 @@ export function ScheduleCard() {
                         }
                         execute({ bookingId: booking.id });
                       }}
-                      isLoading={isPending}
+                      otherAction={() => {
+                         if (booking.date > new Date()) {
+                          toast.error(
+                            "Não é possível confirmar um agendamento para uma data futura",
+                          );
+                          return;
+                        }
+                        cancelExecute({ bookingId: booking.id });
+                      }}
+                      otherActionText="Cancelar agendamento"
+                      isLoading={isPending || isCancelPending}
                       title="Confirmar Agendamento"
                       infos={
                         <span>

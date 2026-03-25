@@ -120,7 +120,7 @@ export function NewBookingManualDialog({
 
         <GenericForm<newBookingSchemaType>
           schema={newBookingSchema}
-          className="text-sm"
+          className="gap-1 text-sm"
           defaultValues={{
             ...defaultValues,
             date: today,
@@ -143,30 +143,44 @@ export function NewBookingManualDialog({
             minLength={10}
           />
 
-          <div className="space-y-2">
-            <Label htmlFor="manual-booking-service">Serviço</Label>
-            <SelectForm
-              name="service"
-              placeholder="Selecione o serviço"
-              onValueChange={setSelectedServiceId}
-              items={
-                services
-                  ? services.map(
-                      (service: {
-                        id: string;
-                        name: string;
-                        priceInCents: number;
-                      }) => ({
-                        value: service.id,
-                        label: `${service.name} - ${convertBRL(service.priceInCents)}`,
-                      }),
-                    )
-                  : []
-              }
-            />
+          <div className="grid gap-3 lg:grid-cols-2">
+            <div className="space-y-1.5">
+              <Label htmlFor="manual-booking-service">Serviço</Label>
+              <SelectForm
+                name="service"
+                placeholder="Selecione o serviço"
+                onValueChange={setSelectedServiceId}
+                items={
+                  services
+                    ? services.map(
+                        (service: {
+                          id: string;
+                          name: string;
+                          priceInCents: number;
+                        }) => ({
+                          value: service.id,
+                          label: `${service.name} - ${convertBRL(service.priceInCents)}`,
+                        }),
+                      )
+                    : []
+                }
+              />
+            </div>
+            <div className="space-y-1.5">
+              <Label htmlFor="manual-booking-payment">Forma de pagamento</Label>
+              <SelectForm<newBookingSchemaType>
+                name="paymentMethod"
+                placeholder="Método de pagamento"
+                items={[
+                  { value: "dinheiro", label: "Dinheiro" },
+                  { value: "pix", label: "Pix" },
+                  { value: "cartao", label: "Cartão" },
+                ]}
+              />
+            </div>
           </div>
 
-          <div className="grid gap-3 lg:grid-cols-2">
+          <div className="grid gap-3 sm:grid-cols-2">
             <div className="space-y-1.5">
               <Label htmlFor="manual-booking-date">Data</Label>
               <DatePickerForm
@@ -190,16 +204,7 @@ export function NewBookingManualDialog({
             </div>
           </div>
           <div className="space-y-1.5">
-            <Label htmlFor="manual-booking-payment">Forma de pagamento</Label>
-            <SelectForm<newBookingSchemaType>
-              name="paymentMethod"
-              placeholder="Método de pagamento"
-              items={[
-                { value: "dinheiro", label: "Dinheiro" },
-                { value: "pix", label: "Pix" },
-                { value: "cartao", label: "Cartão" },
-              ]}
-            />
+            
           </div>
         </GenericForm>
       </DialogContent>

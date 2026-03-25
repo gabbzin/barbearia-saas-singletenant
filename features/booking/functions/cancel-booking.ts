@@ -1,24 +1,22 @@
 "use server";
 
-import { headers } from "next/headers";
 import { returnValidationErrors } from "next-safe-action";
 import { z } from "zod";
 import { actionClient } from "@/lib/actionClient";
-import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { verifySession } from "@/features/user/repository/user.repository";
+import { revalidatePath } from "next/dist/server/web/spec-extension/revalidate";
 
 const inputSchema = z.object({
   bookingId: z.uuid(),
 });
 
-export const cancelBooking = actionClient
+export const cancelBookingAction = actionClient
   .inputSchema(inputSchema)
   .action(async ({ parsedInput: { bookingId } }) => {
-    const session = await auth.api.getSession({
-      headers: await headers(),
-    });
+    const user = await verifySession();
 
-    if (!session?.user) {
+    if (!user) {
       return returnValidationErrors(inputSchema, {
         _errors: ["Unauthorized"],
       });
@@ -35,8 +33,8 @@ export const cancelBooking = actionClient
         _errors: ["Booking not found"],
       });
     }
-
-    if (booking.userId !== session.user.id) {
+    // Serve tanto para o cliente quanto para o barbeiro, já que ambos podem cancelar um agendamento
+    if (booking.userId !== user.id || booking.barberId !== user.barberId) {
       return returnValidationErrors(inputSchema, {
         _errors: ["Unauthorized"],
       });
@@ -52,5 +50,6 @@ export const cancelBooking = actionClient
       },
     });
 
+    revalidatePath("/barber/schedule");
     return { success: true };
   });

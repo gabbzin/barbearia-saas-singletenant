@@ -17,6 +17,16 @@ interface DatePickerProps {
 export function DatePicker({ date, setDate, before, after }: DatePickerProps) {
   const [open, setOpen] = useState(false);
 
+  const disabledRules = [];
+
+  if (before) {
+    disabledRules.push({ before });
+  }
+  
+  if (after) {
+    disabledRules.push({ after });
+  }
+
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
@@ -40,14 +50,12 @@ export function DatePicker({ date, setDate, before, after }: DatePickerProps) {
           mode="single"
           selected={date}
           onSelect={date => {
-            setDate(date);
-            setOpen(false);
+            if (date) {
+              setDate(date);
+              setOpen(false);
+            }
           }}
-          // @ts-expect-error - Funciona isso aqui, mas o tipo do componente calendar tá estranho
-          disabled={{
-            before: before ? before : undefined,
-            after: after ? after : undefined,
-          }}
+          disabled={disabledRules}
         />
       </PopoverContent>
     </Popover>

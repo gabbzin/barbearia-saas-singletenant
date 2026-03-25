@@ -34,6 +34,7 @@ export function FormService({ barberId, service }: FormServiceProps) {
         name: service.name,
         price: Number(service.priceInCents) / 100,
         description: service.description,
+        durationInMinutes: service.durationInMinutes,
       }
     : undefined;
 
@@ -103,6 +104,11 @@ export function FormService({ barberId, service }: FormServiceProps) {
             name="description"
             label="Descrição do Serviço"
             placeholder="Digite a descrição do serviço"
+          />
+          <InputForm
+            name="durationInMinutes"
+            label="Duração do Serviço (minutos)"
+            placeholder="Digite a duração do serviço"
           />
         </GenericForm>
       </DialogContent>

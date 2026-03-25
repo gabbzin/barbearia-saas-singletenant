@@ -9,11 +9,13 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from "../../../shared/components/ui/alert-dialog";
-import { Button } from "../../../shared/components/ui/button";
+} from "@/shared/components/ui/alert-dialog";
+import { Button } from "@/shared/components/ui/button";
 
 interface ConfirmBookingAlertProps {
   handleConfirm: () => void;
+  otherAction?: () => void;
+  otherActionText?: string;
   isLoading: boolean;
   title: string;
   description?: React.ReactNode;
@@ -24,6 +26,8 @@ interface ConfirmBookingAlertProps {
 
 export default function ConfirmAlertDialog({
   handleConfirm,
+  otherAction,
+  otherActionText,
   isLoading,
   title,
   description,
@@ -53,20 +57,27 @@ export default function ConfirmAlertDialog({
             {infos && <span className="mt-4">{infos}</span>}
           </AlertDialogDescription>
         </AlertDialogHeader>
-        <AlertDialogFooter>
-          <AlertDialogCancel
+        <AlertDialogFooter className="grid">
+          <AlertDialogAction
+            onClick={otherAction}
             disabled={isLoading}
-            className="bg-destructive/80 hover:bg-destructive/90"
+            className="bg-secondary text-secondary-foreground hover:bg-secondary/90"
           >
-            {cancelButtonText || "Não, cancelar"}
-          </AlertDialogCancel>
+            {isLoading ? "Executando..." : otherActionText || "Outra ação"}
+          </AlertDialogAction>
           <AlertDialogAction
             onClick={handleConfirm}
             disabled={isLoading}
             className="bg-primary text-primary-foreground hover:bg-primary/90"
           >
-            {isLoading ? "Executando..." : "Sim, executar"}
+            {isLoading ? "Executando..." : "Sim, executar ação"}
           </AlertDialogAction>
+          <AlertDialogCancel
+            disabled={isLoading}
+            className="bg-destructive/80 hover:bg-destructive/90"
+          >
+            {cancelButtonText || "Não, fechar ação"}
+          </AlertDialogCancel>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>

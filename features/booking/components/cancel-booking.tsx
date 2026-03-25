@@ -8,7 +8,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 import type { BookingClient } from "@/features/booking/components/booking-client";
 import CancelAlertDialog from "@/features/booking/components/cancel-booking-alert-dialog";
-import { cancelBooking } from "@/features/booking/functions/cancel-booking";
+import { cancelBookingAction } from "@/features/booking/functions/cancel-booking";
 import { cancelBookingCheckoutSession } from "@/features/booking/functions/cancel-booking-checkout-session";
 import { PhoneItem } from "@/shared/components/phone-item";
 import { Avatar, AvatarImage } from "@/shared/components/ui/avatar";
@@ -41,7 +41,7 @@ export function CancelBooking({
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
-  const { execute: executeCancelBooking } = useAction(cancelBooking, {
+  const { execute: executeCancelBooking } = useAction(cancelBookingAction, {
     onSuccess: () => {
       toast.success("Reserva cancelada com sucesso!");
       onOpenChange(false);
