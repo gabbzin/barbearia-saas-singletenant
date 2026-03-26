@@ -44,7 +44,7 @@ export function HowItWork() {
           {/* Linha conectora desktop */}
           <div className="absolute top-1/2 right-[15%] left-[15%] z-0 hidden h-px -translate-y-1/2 bg-linear-to-r from-zinc-800 via-amber-500/50 to-zinc-800 md:block"></div>
 
-          {steps.map((item, _idx) => (
+          {steps.map((item) => (
             <div
               key={item.step}
               className="relative z-10 rounded-3xl border border-zinc-800 bg-zinc-900/80 p-8 text-center backdrop-blur-sm transition-transform duration-300 hover:-translate-y-2"

@@ -45,6 +45,7 @@ export function BarChartGraph({ chartConfig, data }: BarChartGraphProps) {
                   ${item}
                 `
               }
+              // eslint-disable-next-line @typescript-eslint/no-unused-vars
               formatter={(value, _name, _item) => {
                 return (
                   <div className="flex w-full items-center justify-between">

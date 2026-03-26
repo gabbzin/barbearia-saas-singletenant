@@ -72,9 +72,8 @@ export const SidebarMenu = ({ isSubscriber, role }: SidebarMenuProps) => {
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <Relaxa chefe>
   useEffect(() => {
-    if (open) {
-      setOpen(false);
-    }
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- intentional: close sidebar on navigation
+    setOpen(false);
   }, [pathname]);
 
   const handleLogout = async () => {

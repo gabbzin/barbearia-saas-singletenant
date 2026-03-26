@@ -14,7 +14,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { IconBadge } from "@/shared/components/icon-badge";
 import { Badge } from "@/shared/components/ui/badge";
 import { Button } from "@/shared/components/ui/button";
@@ -42,8 +42,17 @@ export function NextBooking({
 }: NextBookingProps) {
   const [isMounted, setIsMounted] = useState(false);
   const barbershop = useBarbershopStore(s => s.barbershop);
+  // eslint-disable-next-line react-hooks/purity -- capturing mount time is intentional
+  const nowRef = useRef(Date.now());
 
   const { push } = useRouter();
+
+  const daysSinceLastBooking = useMemo(() => {
+    if (!lastBookingDate) return null;
+    return Math.floor(
+      (nowRef.current - lastBookingDate.getTime()) / (1000 * 60 * 60 * 24),
+    );
+  }, [lastBookingDate]);
 
   useEffect(() => {
     setIsMounted(true);
@@ -63,12 +72,7 @@ export function NextBooking({
             <p className="text-muted-foreground text-sm">
               {lastBookingDate ? (
                 <span>
-                  Seu último corte foi há{" "}
-                  {Math.floor(
-                    (Date.now() - lastBookingDate.getTime()) /
-                      (1000 * 60 * 60 * 24),
-                  )}
-                  dias. Que tal dar um trato no visual essa semana?
+                  Seu último corte foi há {daysSinceLastBooking} dias. Que tal dar um trato no visual essa semana?
                 </span>
               ) : (
                 "Você nunca marcou um horário. Vamos agendar um!"

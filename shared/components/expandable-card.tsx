@@ -13,6 +13,8 @@ import { imagePaths } from "@/shared/constants/images";
 import { Button } from "./ui/button";
 import { Separator } from "./ui/separator";
 
+const MotionButton = motion(Button);
+
 interface ExpandableCardProps {
   plans: {
     name: string;
@@ -31,8 +33,6 @@ interface ExpandableCardProps {
 
 export default function ExpandableCard({ plans, myPlan }: ExpandableCardProps) {
   const { executeAsync, isPending } = useAction(createSignature);
-
-  const MotionButton = motion(Button);
 
   const [active, setActive] = useState<(typeof plans)[number] | boolean | null>(
     null,
@@ -221,7 +221,7 @@ export default function ExpandableCard({ plans, myPlan }: ExpandableCardProps) {
       </AnimatePresence>
       {/* Lista de assinaturas (Card não expandido) */}
       <ul className="mx-auto grid w-full max-w-2xl gap-4">
-        {plans.map((card, _index) => (
+        {plans.map((card) => (
           <motion.div
             layoutId={`card-${card.name}-${id}`}
             key={`card-${card.name}-${id}`}

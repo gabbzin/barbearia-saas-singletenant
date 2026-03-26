@@ -30,9 +30,8 @@ describe("Server actions smoke test", () => {
         expect(mod).toBeDefined();
         const keys = Object.keys(mod);
         expect(keys.length).toBeGreaterThan(0);
-        // biome-ignore lint/suspicious/noExplicitAny: <Hoje pode>
-      } catch (err: any) {
-        const msg = String(err?.message || err);
+      } catch (err: unknown) {
+        const msg = String(err instanceof Error ? err.message : err);
         // Some Next.js runtime constructs cannot be imported in Jest (headers(), revalidatePath, etc.)
         const allowed = [
           "Cannot use import statement outside a module",
@@ -45,7 +44,6 @@ describe("Server actions smoke test", () => {
         const isAllowed = allowed.some(a => msg.includes(a));
         if (isAllowed) {
           // log and continue — environment-specific limitation
-          // eslint-disable-next-line no-console
           console.warn(`Skipped import ${path}: ${msg}`);
           continue;
         }

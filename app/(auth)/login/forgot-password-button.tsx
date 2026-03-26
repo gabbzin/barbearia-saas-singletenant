@@ -3,7 +3,7 @@ import { toast } from "sonner";
 import { authClient } from "@/lib/auth-client";
 
 export function ForgotPasswordButton() {
-  const { watch, trigger, getValues } = useFormContext();
+  const { trigger, getValues } = useFormContext();
 
   const handleRecover = async () => {
     const isValid = await trigger("email");

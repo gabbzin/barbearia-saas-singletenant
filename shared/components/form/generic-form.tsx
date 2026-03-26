@@ -12,8 +12,7 @@ import { cn } from "@/lib/utils";
 import { Button } from "../ui/button";
 
 interface GenericFormProps<T extends FieldValues> extends UseFormProps<T> {
-  // biome-ignore lint/suspicious/noExplicitAny: <Confia>
-  schema: ZodType<T, any, any>;
+  schema: ZodType<T, FieldValues>;
   onSubmit: (data: T) => Promise<void> | void;
   children: React.ReactNode;
   submitText: string;
@@ -31,7 +30,8 @@ export default function GenericForm<T extends FieldValues>({
   ...hookProps
 }: GenericFormProps<T>) {
   const methods = useForm({
-    resolver: zodResolver(schema),
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    resolver: zodResolver(schema) as any,
     ...hookProps,
   });
 
