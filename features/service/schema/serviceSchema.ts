@@ -10,7 +10,7 @@ export const serviceSchema = z.object({
   description: z
     .string("Descrição é obrigatória")
     .min(5, "A descrição deve ter no mínimo 5 caracteres"),
-  durationInMinutes: z
+  durationInMinutes: z.coerce
     .number({ error: "A duração do serviço é obrigatória" })
     .min(1, "A duração deve ser de no mínimo 1 minuto"),
   imageUrl: z.url("URL da imagem inválida").optional().or(z.literal("")),
