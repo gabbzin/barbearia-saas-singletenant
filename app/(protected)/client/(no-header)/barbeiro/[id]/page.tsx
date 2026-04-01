@@ -35,7 +35,7 @@ const BarberPage = async ({ params }: { params: Promise<{ id: string }> }) => {
             src={imagePaths.barberBanner}
             alt={"Banner da barbearia"}
             fill
-            className="bg-black object-center"
+            className="bg-black object-cover object-center"
             priority
           />
 
