@@ -1,9 +1,3 @@
-// ========================================================
-// PRISMA SCHEMA
-// ========================================================
-
-// Learn more about Prisma: https://pris.ly/d/prisma-schema
-
 generator client {
   provider   = "prisma-client-js"
   engineType = "library"
@@ -11,52 +5,25 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  // url      = env("DATABASE_URL")
-  // directUrl = env("DIRECT_URL")
 }
-
-// ========================================================
-// ENUMS
-// ========================================================
-
-enum SubscriptionStatus {
-  ACTIVE
-  CANCELLED
-  EXPIRED
-  INCOMPLETE
-}
-
-enum userRole {
-  USER
-  ADMIN
-  BARBER
-}
-
-// ========================================================
-// AUTHENTICATION & USER MODELS
-// ========================================================
 
 model User {
-  id               String   @id @default(uuid())
+  id               String        @id @default(uuid())
   name             String
-  email            String   @unique
-  emailVerified    Boolean  @default(false)
-  role             userRole @default(USER)
-  stripeCustomerId String?
+  email            String        @unique
+  emailVerified    Boolean       @default(false)
+  role             userRole      @default(USER)
   passwordHash     String?
-
-  image     String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now()) @updatedAt
-
-  // Relations
-  sessions      Session[]
-  accounts      Account[]
-  bookings      Booking[]
-  barberProfile Barber?   @relation("BarberAccount")
-
-  subscription Subscription?
-  ratings      Rating[]
+  image            String?
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @default(now()) @updatedAt
+  stripeCustomerId String?
+  barberProfile    Barber?       @relation("BarberAccount")
+  bookings         Booking[]
+  ratings          Rating[]
+  accounts         Account[]
+  sessions         Session[]
+  subscription     Subscription?
 
   @@map("user")
 }
@@ -69,9 +36,8 @@ model Session {
   updatedAt DateTime @updatedAt
   ipAddress String?
   userAgent String?
-
-  userId String
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
   @@map("session")
@@ -91,8 +57,7 @@ model Account {
   password              String?
   createdAt             DateTime  @default(now())
   updatedAt             DateTime  @updatedAt
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
   @@map("account")
@@ -110,78 +75,63 @@ model Verification {
   @@map("verification")
 }
 
-// ========================================================
-// BARBERSHOP MODELS
-// ========================================================}
-
 model Barbershop {
-  id         String @id @default("default")
+  id         String   @id @default("default")
   name       String
-  imageUrl   String @default("https://3tlh7aktl6.ufs.sh/f/tcFRjMXVSkQ0Asb1IxZDwZ30bIph8P2qjXfOcVJmTvFtnMxi")
+  imageUrl   String   @default("https://3tlh7aktl6.ufs.sh/f/tcFRjMXVSkQ0Asb1IxZDwZ30bIph8P2qjXfOcVJmTvFtnMxi")
   address    String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @default(now()) @updatedAt
   storageUrl String
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now()) @updatedAt
 }
 
 model Barber {
-  id    String @id @default(uuid())
-  phone String
-
-  userId String? @unique
-  user   User?   @relation("BarberAccount", fields: [userId], references: [id])
-
+  id             String          @id @default(uuid())
+  phone          String
+  userId         String?         @unique
+  user           User?           @relation("BarberAccount", fields: [userId], references: [id])
+  barberBreaks   BarberBreak[]
   services       BarberService[]
   bookings       Booking[]
   disponibility  Disponibility[]
   exceptionDates ExceptionDate[]
   ratings        Rating[]
   socialMedia    SocialMedia[]
-  barberBreaks   BarberBreak[]
 
   @@index([userId])
 }
 
 model BarberService {
-  id                String @id @default(uuid())
+  id                String    @id @default(uuid())
   name              String
   description       String
   imageUrl          String
   priceInCents      Int
-  durationInMinutes Int    @default(30)
-
-  barberId String
-  barber   Barber @relation(fields: [barberId], references: [id])
-
-  bookings Booking[]
+  barberId          String
+  durationInMinutes Int       @default(30)
+  barber            Barber    @relation(fields: [barberId], references: [id])
+  bookings          Booking[]
 
   @@index([barberId])
 }
 
 model BarberBreak {
-  id       String @id @default(uuid())
-  barberId String
-  barber   Barber @relation(fields: [barberId], references: [id], onDelete: Cascade)
-
-  dayOfWeek Int // 0 = Sunday, 1 = Monday, ..., 6 = Saturday
+  id        String @id @default(uuid())
+  barberId  String
+  dayOfWeek Int
   startTime String
   endTime   String
+  barber    Barber @relation(fields: [barberId], references: [id], onDelete: Cascade)
 
   @@index([barberId, dayOfWeek])
+  // Evita que o barbeiro tenha mais de um intervalo no mesmo dia e horário, o que não faria sentido
+  @@unique([barberId, dayOfWeek, startTime, endTime])
 }
-
-// ========================================================
-// SUBSCRIPTION & PLAN MODELS
-// ========================================================
 
 model Subscription {
   id                   String              @id @default(uuid())
-  plan                 Plan?               @relation(fields: [planId], references: [id])
-  planId               String?
   stripeCustomerId     String?
   stripeSubscriptionId String?             @unique
-  status               SubscriptionStatus? @default(INCOMPLETE)
   periodStart          DateTime?
   periodEnd            DateTime?
   trialStart           DateTime?
@@ -189,6 +139,9 @@ model Subscription {
   cancelAtPeriodEnd    Boolean?            @default(false)
   seats                Int?
   userId               String              @unique
+  planId               String?
+  status               SubscriptionStatus? @default(INCOMPLETE)
+  plan                 Plan?               @relation(fields: [planId], references: [id])
   user                 User                @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
@@ -196,134 +149,109 @@ model Subscription {
 }
 
 model Plan {
-  id            String   @id
+  id            String         @id
   name          String
   description   String
+  priceInCents  Int
+  stripePriceId String?        @unique
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
   benefits      String[]
   imageUrl      String?
-  priceInCents  Int
-  stripePriceId String?  @unique
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
   subscriptions Subscription[]
 }
 
-// ========================================================
-// BOOKING MODEL
-// ========================================================
-
-enum BookingStatus {
-  SCHEDULED // Agendado
-  // PENDING // Pendente (ex: Aguardando confirmação do barbeiro)
-  COMPLETED // Finalizado
-  CANCELLED // Cancelado
-}
-
 model Booking {
-  id   String   @id @default(uuid())
-  date DateTime @db.Timestamptz
-
-  status       BookingStatus @default(SCHEDULED)
-  priceInCents Int
-  // Service
-  serviceId    String
-  service      BarberService @relation(fields: [serviceId], references: [id])
-
-  // User & Barber
-  userId   String
-  user     User   @relation(fields: [userId], references: [id])
-  barberId String
-  barber   Barber @relation(fields: [barberId], references: [id])
-
-  // Ghost User
-  customerName  String?
-  customerPhone String?
-
-  // Rating (optional)
-  rating Rating?
-
-  // Subscription (optional)
+  id                   String        @id @default(uuid())
+  date                 DateTime      @db.Timestamptz(6)
+  serviceId            String
+  userId               String
+  barberId             String
   userSubscriptionId   String?
-  paidWithSubscription Boolean @default(false)
-
-  // Payment
-  stripeChargeId String? @unique
-  stripeEventId  String? @unique
-  paymentMethod  String?
-
-  // Timestamps
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-  cancelledAt DateTime? @db.Timestamptz
+  paidWithSubscription Boolean       @default(false)
+  stripeChargeId       String?       @unique
+  stripeEventId        String?       @unique
+  cancelledAt          DateTime?     @db.Timestamptz(6)
+  createdAt            DateTime      @default(now())
+  status               BookingStatus @default(SCHEDULED)
+  updatedAt            DateTime      @updatedAt
+  priceInCents         Int
+  customerName         String?
+  customerPhone        String?
+  paymentMethod        String?
+  barber               Barber        @relation(fields: [barberId], references: [id])
+  service              BarberService @relation(fields: [serviceId], references: [id])
+  user                 User          @relation(fields: [userId], references: [id])
+  rating               Rating?
 
   @@index([userId])
   @@index([barberId, date])
-  @@unique([barberId, date]) // Impede agendamento duplo para o mesmo horário
   @@index([status])
   @@index([customerName])
 }
 
-// ========================================================
-// BARBER AVAILABILITY MODELS
-// ========================================================
-
 model Disponibility {
-  id       String @id @default(uuid())
-  barberId String
-  barber   Barber @relation(fields: [barberId], references: [id], onDelete: Cascade)
-
-  dayOfWeek Int // 0 = Sunday, 1 = Monday, ..., 6 = Saturday
+  id        String @id @default(uuid())
+  barberId  String
   startTime String
   endTime   String
+  dayOfWeek Int
+  barber    Barber @relation(fields: [barberId], references: [id], onDelete: Cascade)
 
-  @@unique([barberId, dayOfWeek])
+  @@unique([barberId, dayOfWeek, startTime, endTime])
 }
 
 model ExceptionDate {
-  id       String @id @default(uuid())
-  barberId String
-  barber   Barber @relation(fields: [barberId], references: [id], onDelete: Cascade)
-
-  date             DateTime
-  isClosedFullTime Boolean  @default(true)
+  id               String   @id @default(uuid())
+  barberId         String
   startTime        String?
   endTime          String?
+  isClosedFullTime Boolean  @default(true)
+  date             DateTime
+  barber           Barber   @relation(fields: [barberId], references: [id], onDelete: Cascade)
 
   @@index([barberId, date])
 }
 
-// ========================================================
-// RATING MODEL
-// ========================================================
-
 model Rating {
-  id          String  @id @default(uuid())
-  ratingValue Int     @default(0) // Rating from 0 to 5
+  id          String   @id @default(uuid())
+  ratingValue Int      @default(0)
   comment     String?
-
-  bookingId String  @unique
-  booking   Booking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
-
-  // Mantendo isso apenas para busca rápida
-  barberId String
-  barber   Barber @relation(fields: [barberId], references: [id])
-  userId   String
-  user     User   @relation(fields: [userId], references: [id])
-
-  asked Boolean @default(false) // Se o sistema já perguntou ao usuário para avaliar
-
-  createdAt DateTime @default(now())
+  bookingId   String   @unique
+  barberId    String
+  userId      String
+  createdAt   DateTime @default(now())
+  asked       Boolean  @default(false)
+  barber      Barber   @relation(fields: [barberId], references: [id])
+  booking     Booking  @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  user        User     @relation(fields: [userId], references: [id])
 }
 
 model SocialMedia {
   id       String @id @default(uuid())
   barberId String
+  platform String
+  url      String
   barber   Barber @relation(fields: [barberId], references: [id], onDelete: Cascade)
 
-  platform String // e.g., "Instagram", "Facebook"
-  url      String // Link para o perfil de mídia social
-
   @@index([barberId])
+}
+
+enum SubscriptionStatus {
+  ACTIVE
+  CANCELLED
+  EXPIRED
+  INCOMPLETE
+}
+
+enum userRole {
+  USER
+  ADMIN
+  BARBER
+}
+
+enum BookingStatus {
+  SCHEDULED
+  COMPLETED
+  CANCELLED
 }

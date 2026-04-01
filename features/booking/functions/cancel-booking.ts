@@ -33,13 +33,29 @@ export const cancelBookingAction = actionClient
         _errors: ["Booking not found"],
       });
     }
-    // Serve tanto para o cliente quanto para o barbeiro, já que ambos podem cancelar um agendamento
-    if (booking.userId !== user.id || booking.barberId !== user.barberId) {
+    if (booking.status === "CANCELLED") {
       return returnValidationErrors(inputSchema, {
-        _errors: ["Unauthorized"],
+        _errors: ["Booking is already cancelled"],
       });
     }
 
+    if (user.role === "BARBER") {
+      // Se o usuário for um barbeiro, ele só pode cancelar agendamentos relacionados ao seu ID
+      if (booking.barberId !== user.barberId) {
+        return returnValidationErrors(inputSchema, {
+          _errors: ["Unauthorized"],
+        });
+      }
+    } else {
+      // Se o usuário for um cliente, ele só pode cancelar seus próprios agendamentos
+      if (booking.userId !== user.id) {
+        return returnValidationErrors(inputSchema, {
+          _errors: ["Unauthorized"],
+        });
+      }
+    }
+
+    // Aplicando a lógica de cancelamento
     await prisma.booking.update({
       where: {
         id: bookingId,

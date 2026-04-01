@@ -1,77 +1,246 @@
 # Resumo da Arquitetura - barbeariaSaaS (Single-Tenant)
 
-Este documento descreve a estrutura, tecnologias, modelo de dados e decisões arquiteturais do projeto de SaaS para Barbearia. Use este texto como contexto inicial ao conversar com Inteligências Artificiais (como ChatGPT, Claude, Gemini Web, Google AI Studio) para obter ajuda com desenvolvimento, refatoração ou novas features.
+Este documento descreve a arquitetura, a organização do código, o modelo de dados e o estado atual das funcionalidades do SaaS de barbearia.
+
+Objetivos principais deste material:
+- Servir como referência técnica para manutenção e evolução do sistema.
+- Padronizar entendimento de domínios, fluxos e decisões arquiteturais.
+- Facilitar onboarding de desenvolvedores e colaboração com IA para tarefas técnicas.
+
+## 🧱 Visão Geral da Arquitetura
+
+O projeto adota uma arquitetura modular com foco em domínio, combinando:
+- App Router do Next.js para roteamento e rendering.
+- Organização por features para encapsular regras de negócio.
+- Camadas compartilhadas para utilitários, infraestrutura e UI reutilizável.
+
+Modelo operacional:
+- Single-tenant: 1 barbearia com múltiplos barbeiros e múltiplos clientes.
+- Controle de acesso por papéis: ADMIN, BARBER e USER.
+- Server Actions tipadas para mutações com validação e segurança.
 
 ## 🛠️ Stack Tecnológica
 
-- **Framework**: Next.js 16 (App Router) construído sobre React 19.
-- **Linguagem**: TypeScript.
-- **Banco de Dados**: PostgreSQL.
-- **ORM**: Prisma (`@prisma/client`).
-- **Autenticação e Sessões**: Better Auth (`@better-auth/stripe` integrado).
-- **Gerenciamento de Estado Global**: Zustand.
-- **Data Fetching e Cache**: TanStack React Query (`@tanstack/react-query`).
-- **Server Actions Type-Safe**: `next-safe-action`.
-- **UI e Estilização**: Tailwind CSS (v4/PostCSS) + shadcn/ui.
-- **Componentes Base**: Radix UI.
-- **Animações**: Framer Motion / UI Dinâmica com `tw-animate-css`.
-- **Pagamentos / Assinaturas**: Stripe (`stripe` e `@stripe/stripe-js`).
-- **Envio de E-mails**: Resend + React Email + Nodemailer.
-- **Storage**: Vercel Blob para imagens.
-- **Validação de Dados**: Zod e React Hook Form.
+- Framework: Next.js 16 (App Router) sobre React 19.
+- Linguagem: TypeScript.
+- Banco de dados: PostgreSQL.
+- ORM: Prisma (cliente Prisma oficial).
+- Autenticação e sessões: Better Auth com integração Stripe.
+- Estado global: Zustand.
+- Data fetching e cache: TanStack React Query.
+- Server Actions type-safe: next-safe-action.
+- UI e estilização: Tailwind CSS (v4/PostCSS) + shadcn/ui.
+- Componentes base: Radix UI.
+- Animações: Framer Motion e tw-animate-css.
+- Pagamentos e assinaturas: Stripe (SDK server e client).
+- E-mails transacionais: Resend + React Email + Nodemailer.
+- Storage de imagens: Vercel Blob.
+- Validação de dados e formulários: Zod + React Hook Form.
 
-## 📁 Estrutura de Diretórios (Design Orientado a Funcionalidades)
+## 📁 Estrutura de Diretórios
 
-A aplicação segue uma abordagem modular focada no modelo **Feature-Sliced Design (parcial) / Domain-Driven**, o que facilita escalabilidade:
+### App Router
 
-- **`/app`**: Regras de roteamento (Next.js App Router).
-  - `/(auth)`: Rotas de autenticação, login e registro.
-  - `/(protected)`: Rotas protegidas divididas por contexto de usuário:
-    - `/admin`: Dashboard e configurações do dono da barbearia.
-    - `/barber`: Painel, visão de agenda e histórico restrito ao barbeiro.
-    - `/client`: Agendamentos e controle da própria assinatura.
-    - `/profile`: Edição de perfil e configurações de conta.
-  - `/api`: Endpoints REST e Webhooks (ex: Stripe, autenticação).
+- /app: definição de rotas e layout principal.
+- /(auth): autenticação (login, cadastro, recuperação e verificação).
+- /(protected): áreas autenticadas por contexto.
+- /admin: visão administrativa da barbearia.
+- /barber: painel operacional do barbeiro.
+- /client: área do cliente (agendamentos e assinatura).
+- /profile: perfil e configurações da conta.
+- /api: endpoints e webhooks (exemplo: autenticação e Stripe).
 
-- **`/features`**: Aqui reside o "coração" da regra de negócios. Cada pasta encapsula componentes, hooks, ações e lógicas de um domínio específico:
-  - `barber`: Lida com gerência de barbeiros, disponibilidades e exceções.
-  - `booking`: Sistema de agendamentos, verificação de horários, conflitos e workflow de marcação.
-  - `dashboard_barber`: Métricas e visualização diária do profissional.
-  - `landing_page`: Componentes visuais para captação de clientes.
-  - `rating`: Avaliações e feedback de cortes concluídos.
-  - `service`: CRUD de serviços oferecidos (ex: Corte, Barba, Pigmentação).
-  - `signature`: Lógica de planos de assinatura (Stripe, Tiers).
-  - `user`: Gerenciamento de clientes e perfis.
+### Domínios de negócio
 
-- **`/shared` e `/components`**: Blocos de construção genéricos (UI). Os componentes do shadcn ficam organizados sob `@/shared/components/ui`.
-- **`/lib`**: Configurações compartilhadas dos clientes (ex: inicialização do Prisma, configuração do Better Auth, instâncias do Stripe).
-- **`/prisma`**: Schemas do banco de dados e migrações.
+- /features/barber: gestão de barbeiros, disponibilidade e exceções.
+- /features/booking: fluxo de agendamento e validações de agenda.
+- /features/dashboard_barber: métricas e operação diária do barbeiro.
+- /features/landing_page: páginas públicas de aquisição.
+- /features/rating: avaliações de atendimentos concluídos.
+- /features/service: cadastro e gestão de serviços.
+- /features/signature: assinaturas e integração de planos.
+- /features/user: gestão de perfis e clientes.
 
-## 🗄️ Modelo de Dados (Prisma Schema)
+### Camadas compartilhadas
 
-O banco é modelado para um ambiente **Single-Tenant** (1 barbearia gerenciando N barbeiros e M clientes).
+- /shared e /components: componentes reutilizáveis de UI e blocos comuns.
+- /lib: infraestrutura compartilhada (Prisma, Auth, Stripe, utilitários de integração).
+- /queries: leituras centralizadas para consumo em telas e hooks.
+- /prisma: schema, seeds e histórico de migrações.
 
-### Entidades de Usuário e Permissões
-- **User**: Conta base com `role` (`USER`, `ADMIN`, `BARBER`), email, senha e integração com Stripe (`stripeCustomerId`). Pode ter uma Assinatura (`Subscription`).
-- **Session / Account**: Entidades padrão do Better Auth para gerenciar OAuth, tokens e dispositivos logados.
+## 🗄️ Modelo de Dados (Prisma)
 
-### Entidades do Negócio (Barbearia)
-- **Barbershop**: Configurações globais do estabelecimento (nome, endereço, banners). Em single-tenant, geralmente operamos com um único registro default.
-- **Barber**: Perfil estendido para profissionais. Linkado a um usuário. Possui métricas próprias.
-- **BarberService**: Os serviços ofertados pelo barbeiro. Define preço (em centavos) e duração estimada em minutos.
-- **Disponibility**: Horários regulares de expediente por dia da semana (`dayOfWeek`).
-- **BarberBreak**: Pausas recorrentes dentro de um dia (ex: horário de almoço).
-- **ExceptionDate**: Férias, feriados ou bloqueios específicos de agenda do profissional.
+O schema é orientado ao cenário single-tenant com separação clara entre identidade, operação e cobrança.
 
-### Entidades de Fluxo
-- **Booking**: O agendamento. Conecta `User`, `Barber`, `Service`. Trabalha com status de máquina de estado: (`SCHEDULED`, `COMPLETED`, `CANCELLED`). Suporta "Ghost Users" (clientes sem conta, cujos dados vão em `customerName/Phone`). Registra também como foi pago (Cobranca Stripe, Assinatura, Físico).
-- **Rating**: Nota e avaliação do cliente para um Booking `COMPLETED`.
-- **Plan / Subscription**: Estrutura robusta de pagamentos recorrentes espelhando o painel do Stripe (`planId`, `stripeSubscriptionId`, `status: ACTIVE | CANCELED`).
+### Identidade e permissões
 
-## ⚙️ Padrões Importantes e Fluxos de Dados
+- User: entidade base com role, credenciais e vínculo opcional com cliente Stripe.
+- Session e Account: entidades de sessão e provedores da autenticação.
 
-1. **Autenticação**: Roles são centrais. O fluxo redireciona conforme a role após o login (Admin -> Dashboard Admin, Barbeiro -> Agenda, User -> Meus Agendamentos).
-2. **Data Mutations**: O projeto usa pesadamente Server Actions via `next-safe-action` para validar payload com Zod antes de tocar no Prisma, garantindo segurança contra tampering do cliente.
-3. **Ghost Users**: O banco permite cadastrar agendamentos sem atrelar a um `UserId` estrito (quando a própria barbearia marca por telefone). Para isso a tabela `Booking` possui meta-fields de clientes avulsos.
-4. **Resoluções de Conflito de Agenda (Booking)**: O fluxo de agendamento precisa cruzar dados de `Disponibility`, subtrair `BarberBreak`, verificar `ExceptionDate` e conferir sobreposição com outros `Booking` na data/hora desejada, considerando o campo `durationInMinutes` do `BarberService`.
-5. **Integração Financeira**: Os webhooks da Vercel batem num endpoint que sincroniza o status de assinaturas e faturas automáticas de volta para o Supabase/Neon PostgreSQL de produção.
+### Operação da barbearia
+
+- Barbershop: configuração global do estabelecimento.
+- Barber: perfil profissional vinculado a usuário.
+- BarberService: catálogo de serviços por barbeiro, com preço e duração.
+- Disponibility: janelas regulares por dia da semana.
+- BarberBreak: pausas recorrentes no expediente.
+- ExceptionDate: bloqueios pontuais, folgas, férias e feriados.
+
+### Fluxo de atendimento
+
+- Booking: agendamento com estados SCHEDULED, COMPLETED e CANCELLED.
+- Rating: avaliação de booking concluído.
+- Plan e Subscription: espelho de planos e assinaturas recorrentes no Stripe.
+
+### Observação relevante
+
+- Ghost users são suportados no Booking para marcações sem conta formal, usando campos como nome e telefone do cliente.
+
+## ⚙️ Padrões Arquiteturais e Fluxos
+
+1. Autenticação e autorização por role
+- Redirecionamento pós-login orientado por papel (Admin, Barber, User).
+
+2. Mutações seguras
+- Server Actions com validação de payload por Zod antes de operações no banco.
+
+3. Agenda e conflito de horários
+- Cálculo de disponibilidade cruza janelas regulares, pausas, exceções e sobreposição de bookings.
+
+4. Integração financeira
+- Webhooks sincronizam assinaturas e eventos de cobrança com o banco principal.
+
+5. Fronteira de domínio
+- Regras de negócio vivem nas features e não em componentes de interface.
+
+## 🚦 Feature Flags / System Status
+
+Status consolidado por domínio com base na arquitetura e na estrutura atual do projeto.
+
+### Booking
+
+- ✅ Criar agendamento
+  Fluxo base de criação está implementado para operação normal de marcações.
+
+- ✅ Cancelar agendamento
+  O domínio possui rotina dedicada de cancelamento e controle de estado.
+
+- ✅ Suporte a ghost user
+  O sistema aceita agendamento sem conta vinculada para atendimento por telefone/balcão.
+
+- 🚧 Validação avançada de conflito
+  Regras principais existem, mas cenários de borda de sobreposição e exceção ainda pedem refinamento contínuo.
+
+- ❌ Reagendamento completo com trilha de histórico
+  Não há fluxo consolidado com histórico formal de mudanças de horário.
+
+### Barber
+
+- ✅ Gestão de barbeiros
+  Estrutura de domínio para cadastro e manutenção de profissionais está presente.
+
+- ✅ Disponibilidade e pausas recorrentes
+  Regras de agenda por dia da semana e intervalos de pausa fazem parte do modelo.
+
+- 🚧 Exceções avançadas de agenda
+  Exceções existem, porém dependem de evolução para casos complexos de operação.
+
+- ❌ Gestão de capacidade dinâmica por slot
+  Não há mecanismo consolidado para múltiplas capacidades por faixa de horário.
+
+### Dashboard
+
+- ✅ Dashboard administrativo e do barbeiro
+  Rotas e módulos de dashboard estão estruturados para os contextos principais.
+
+- 🚧 Métricas históricas avançadas
+  Métricas operacionais existem, mas análises de longo prazo e comparativos ainda podem evoluir.
+
+- ❌ Exportação de relatórios
+  Não há fluxo formalizado de exportação em formatos como CSV/PDF.
+
+### Payments / Subscriptions
+
+- ✅ Integração com Stripe
+  O projeto possui módulos de assinatura, cliente Stripe e webhook de sincronização.
+
+- ✅ Modelo de planos e assinaturas
+  Entidades de plano e assinatura suportam controle de status recorrente.
+
+- 🚧 Tratamento avançado de falhas de cobrança
+  Há base de cobrança, mas automações de recuperação e dunning podem ser ampliadas.
+
+- ❌ Gestão self-service completa de billing
+  Não há evidência de portal completo no produto para todas as operações de billing pelo usuário final.
+
+### Authentication
+
+- ✅ Login, cadastro e sessão
+  Fluxos fundamentais de autenticação e sessão estão presentes.
+
+- ✅ Controle de acesso por role
+  A navegação protegida por contexto de usuário está definida na arquitetura.
+
+- ✅ Verificação de conta e recuperação de senha
+  Rotas e templates de e-mail para esses fluxos estão disponíveis.
+
+- 🚧 Hardening adicional de segurança
+  Itens como políticas avançadas de sessão e trilhas de auditoria podem ser aprofundados.
+
+### Services
+
+- ✅ CRUD de serviços
+  O domínio de serviços está separado e com estrutura para manutenção de catálogo.
+
+- ✅ Preço e duração por serviço
+  A modelagem contempla preço e duração para cálculo da agenda.
+
+- 🚧 Regras avançadas de precificação
+  Cenários como preço dinâmico por horário/período ainda não aparecem como fluxo consolidado.
+
+- ❌ Pacotes de serviços combinados
+  Não há evidência de produto composto (combo) nativo no fluxo padrão.
+
+### Ratings
+
+- ✅ Avaliação de atendimento concluído
+  O domínio de rating existe e está ligado ao ciclo de bookings.
+
+- 🚧 Moderação e governança de avaliações
+  Fluxos de revisão/moderação não aparecem como camada formal do domínio.
+
+- ❌ Resposta pública a avaliações
+  Não há recurso consolidado para resposta oficial da barbearia dentro da plataforma.
+
+### Notifications (email, etc.)
+
+- ✅ E-mails transacionais principais
+  Projeto possui templates e utilitários para recuperação de senha e verificação de conta.
+
+- 🚧 Notificações de ciclo operacional
+  Notificações de confirmação, lembrete e alteração de booking ainda podem expandir cobertura.
+
+- ❌ Central multicanal de notificações
+  Não há módulo consolidado para orquestração unificada de e-mail, push e SMS.
+
+## 📌 Current Limitations
+
+- Algumas capacidades aparecem parcialmente no domínio, mas sem camada completa de produto (UX, automações e observabilidade).
+- Fluxos avançados de agenda e billing ainda exigem evolução para cenários de borda em produção.
+- O documento reflete o estado arquitetural atual e deve ser revisado periodicamente conforme novas releases.
+
+## 🧭 Next Steps / Roadmap
+
+1. Consolidar matriz de status por feature com versionamento por release.
+2. Fechar lacunas de reagendamento e trilha de histórico de booking.
+3. Evoluir billing self-service e automações de recuperação de pagamento.
+4. Expandir notificações operacionais (confirmação, lembrete e pós-atendimento).
+5. Ampliar observabilidade funcional por domínio (métricas, eventos e auditoria).
+
+## 📚 Glossário de Termos
+
+- Booking: agendamento de atendimento.
+- Ghost user: cliente sem conta formal, registrado apenas para a operação de agendamento.
+- Single-tenant: modelo com uma única barbearia operando múltiplos usuários e profissionais.
+- Role: papel de acesso do usuário (Admin, Barber, User).
+- Server Action: mutação no servidor com validação e tipagem fim a fim.

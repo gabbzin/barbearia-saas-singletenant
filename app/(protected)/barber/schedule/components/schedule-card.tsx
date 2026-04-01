@@ -42,7 +42,8 @@ export function ScheduleCard() {
     },
   });
 
-  const {execute: cancelExecute, isPending: isCancelPending} = useAction(cancelBookingAction)
+  const { execute: cancelExecute, isPending: isCancelPending } =
+    useAction(cancelBookingAction);
 
   const Skeleton = (
     <div className="flex flex-col gap-4">
@@ -126,12 +127,6 @@ export function ScheduleCard() {
                         execute({ bookingId: booking.id });
                       }}
                       otherAction={() => {
-                         if (booking.date > new Date()) {
-                          toast.error(
-                            "Não é possível confirmar um agendamento para uma data futura",
-                          );
-                          return;
-                        }
                         cancelExecute({ bookingId: booking.id });
                       }}
                       otherActionText="Cancelar agendamento"

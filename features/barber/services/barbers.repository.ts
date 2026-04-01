@@ -20,7 +20,11 @@ export const getBarberById = cache(async (barberId: string) => {
       id: barberId,
     },
     include: {
-      services: true,
+      services: {
+        orderBy: {
+          name: "asc",
+        },
+      },
       user: true,
       socialMedia: true,
     },
