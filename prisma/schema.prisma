@@ -198,7 +198,7 @@ model Disponibility {
   dayOfWeek Int
   barber    Barber @relation(fields: [barberId], references: [id], onDelete: Cascade)
 
-  @@unique([barberId, dayOfWeek, startTime, endTime])
+  @@unique([barberId, dayOfWeek])
 }
 
 model ExceptionDate {
