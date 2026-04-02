@@ -136,9 +136,11 @@ export const getDateAvailableTimeSlots = actionClient
 
       const exceptionRanges = exceptions
         .filter(e => e.startTime && e.endTime)
-        .map(exception =>
-          createRange(exception.startTime!, exception.endTime!),
-        );
+        .map(exception => {
+          const startTime = exception.startTime!.toISOString().slice(11, 16);
+          const endTime = exception.endTime!.toISOString().slice(11, 16);
+          return createRange(startTime, endTime);
+        });
 
       const blockedRanges = [
         ...bookingRanges,
