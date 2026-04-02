@@ -4,6 +4,7 @@ import {
   AlertCircleIcon,
   Banknote,
   Calendar,
+  PiggyBankIcon,
   Scissors,
   TrendingDown,
   TrendingUp,
@@ -31,6 +32,7 @@ import {
 import { PageSection } from "@/shared/components/ui/page";
 import { TableCell, TableRow } from "@/shared/components/ui/table";
 import { formatarHoraLocal } from "@/utils/date-formatters";
+import MainCardDashboard from "@/features/dashboard_barber/components/main-dashboard-card";
 
 export default async function BarberDashboardPage() {
   const [info, defaultTimes] = await Promise.all([
@@ -84,6 +86,13 @@ export default async function BarberDashboardPage() {
             <NewBookingManualDialog barberId={barberId} />
           </div>
 
+          <MainCardDashboard
+            Icon={PiggyBankIcon}
+            title="Faturamento de hoje"
+            value={info.data?.todayBilling}
+            growthPercentage={-10}
+          />
+
           <section className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-5">
             <CardInfo
               Icon={Scissors}
@@ -102,6 +111,7 @@ export default async function BarberDashboardPage() {
               title="Faturamento"
               value={info.data?.todayBilling}
               variant="green"
+              classNameCard="hidden md:block"
             />
             <CardInfo
               Icon={AlertCircleIcon}

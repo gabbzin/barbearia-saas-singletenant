@@ -11,6 +11,7 @@ type CardInfoProps = {
   title: string;
   value: React.ReactNode;
   variant?: "default" | "green" | "blue" | "yellow" | "red" | null;
+  classNameCard?: string;
   details?: React.ReactNode;
 };
 
@@ -18,11 +19,12 @@ export default function CardInfo({
   Icon,
   title,
   value,
+  classNameCard,
   variant,
   details,
 }: CardInfoProps) {
   return (
-    <Card variant={variant} className="relative py-6">
+    <Card variant={variant} className={`relative py-6 ${classNameCard ?? ""}`}>
       <CardHeader className="px-4">
         <CardTitle className="flex items-center justify-between font-semibold text-sm">
           {title}
@@ -31,11 +33,7 @@ export default function CardInfo({
       </CardHeader>
       <CardContent className="px-4">
         <p className="font-bold font-geist text-xl">{value}</p>
-        {details && (
-          <div>
-            {details}
-          </div>
-        )}
+        {details && <div>{details}</div>}
       </CardContent>
     </Card>
   );
