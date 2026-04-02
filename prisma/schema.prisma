@@ -123,9 +123,8 @@ model BarberBreak {
   endTime   String
   barber    Barber @relation(fields: [barberId], references: [id], onDelete: Cascade)
 
-  @@index([barberId, dayOfWeek])
-  // Evita que o barbeiro tenha mais de um intervalo no mesmo dia e horário, o que não faria sentido
   @@unique([barberId, dayOfWeek, startTime, endTime])
+  @@index([barberId, dayOfWeek])
 }
 
 model Subscription {
@@ -198,14 +197,14 @@ model Disponibility {
   dayOfWeek Int
   barber    Barber @relation(fields: [barberId], references: [id], onDelete: Cascade)
 
-  @@unique([barberId, dayOfWeek, startTime, endTime])
+  @@unique([barberId, dayOfWeek])
 }
 
 model ExceptionDate {
   id               String   @id @default(uuid())
   barberId         String
-  startTime        String?
-  endTime          String?
+  startTime        DateTime? @db.Time()
+  endTime          DateTime? @db.Time()
   isClosedFullTime Boolean  @default(true)
   date             DateTime
   barber           Barber   @relation(fields: [barberId], references: [id], onDelete: Cascade)

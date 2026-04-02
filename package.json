@@ -6,7 +6,7 @@
     "dev": "next dev",
     "test": "jest",
     "test:watch": "jest --watch",
-    "build": "next build",
+    "build": "prisma migrate deploy && next build",
     "start": "next start",
     "lint": "eslint",
     "postinstall": "prisma generate",
