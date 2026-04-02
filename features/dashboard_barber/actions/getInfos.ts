@@ -25,7 +25,7 @@ export const getBarberDashboardInfos = actionClient.action(async () => {
 
     const requests = Promise.allSettled([
       // Próximos agendamentos - 0
-      getBookingsBarber(barberId, now, 5),
+      getBookingsBarber(barberId, now, 5, true),
 
       // Faturamento e atendimentos realizados hoje - 1
       prisma.booking.aggregate({

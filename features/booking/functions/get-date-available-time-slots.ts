@@ -19,7 +19,7 @@ const inputSchema = z.object({
   barberId: z.string(),
   serviceId: z.string(),
   date: z.date(),
-  bookingBufferBool: z.boolean().default(true),
+  bookingBufferBool: z.boolean().default(true), // Serve para dar permissão de agendar encima da hora
 });
 
 export const getDateAvailableTimeSlots = actionClient

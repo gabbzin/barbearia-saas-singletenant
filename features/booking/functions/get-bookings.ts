@@ -8,6 +8,7 @@ export async function getBookingsBarber(
   barberId: string,
   targetDate?: Date,
   take?: number,
+  untilNow: boolean = false,
 ) {
   const baseDate = targetDate ?? new Date();
   const startDay = startOfDay(baseDate);
@@ -17,7 +18,7 @@ export async function getBookingsBarber(
     where: {
       barberId: barberId,
       date: {
-        gte: startDay,
+        gte: untilNow ? new Date() : startDay,
         lte: endDay,
       },
     },
