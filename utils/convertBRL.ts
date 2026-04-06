@@ -3,5 +3,6 @@ export function convertBRL(amountInCents: number): string {
   return amountInReais.toLocaleString("pt-BR", {
     style: "currency",
     currency: "BRL",
+    
   });
 }

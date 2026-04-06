@@ -16,7 +16,7 @@ import { NewBookingManualDialog } from "@/features/dashboard_barber/components/n
 import { NextBookingsSection } from "@/features/dashboard_barber/components/next-bookings-section";
 import { SpeedDial } from "@/features/dashboard_barber/components/SpeedDial";
 import { TableBarberBreak } from "@/features/dashboard_barber/components/table-barber-break";
-import { TableService } from "@/features/dashboard_barber/components/table-service";
+import { ServiceList } from "@/features/dashboard_barber/components/table-service";
 import { TableSettings } from "@/features/dashboard_barber/components/table-settings";
 import { prisma } from "@/lib/prisma";
 import { Alert, AlertTitle } from "@/shared/components/ui/alert";
@@ -153,14 +153,18 @@ export default async function BarberDashboardPage() {
               />
             </div>
           </div>
-
-          <div className="grid grid-cols-1 gap-2 md:grid-cols-2 xl:grid-cols-1 xl:gap-6">
-            <TableService barberId={barberId} />
-            <TableSettings barberId={barberId} />
-            <TableBarberBreak barberId={barberId} />
-          </div>
         </div>
       </PageSection>
+      
+      <PageSection>
+        <PageSectionTitle>Serviços cadastrados</PageSectionTitle>
+        <ServiceList barberId={barberId} />
+      </PageSection>
+
+      <div className="grid grid-cols-1 gap-2 md:grid-cols-2 xl:grid-cols-1 xl:gap-6">
+        <TableSettings barberId={barberId} />
+        <TableBarberBreak barberId={barberId} />
+      </div>
 
       <SpeedDial
         barberId={barberId}
