@@ -23,173 +23,136 @@ export const getBarberDashboardInfos = actionClient.action(async () => {
     const yesterday = subDays(now, 1);
     const endOfDayDate = endOfDay(now);
 
-    const requests = Promise.allSettled([
-      // Próximos agendamentos - 0
-      getBookingsBarber(barberId, now, 5, true),
+    const [nextBookings, bookings, graphBookings, disponibility] =
+      await Promise.all([
+        // Próximos agendamentos
+        getBookingsBarber(barberId, now, 5, true),
 
-      // Faturamento e atendimentos realizados hoje - 1
-      prisma.booking.aggregate({
-        _sum: {
-          priceInCents: true,
-        },
-        _count: {
-          id: true,
-        },
-        where: {
-          barberId: barberId,
-          date: {
-            gte: startOfDayDate,
-            lte: endOfDayDate,
+        // Faturamento e atendimentos realizados ONTEM e HOJE
+        prisma.booking.findMany({
+          where: {
+            barberId: barberId,
+            date: {
+              gte: startOfDay(yesterday),
+              lte: endOfDayDate,
+            },
           },
-          status: "COMPLETED",
-        },
-      }),
+        }),
 
-      // Faturamento total do dia anterior e atendimentos realizados - 2
-      prisma.booking.aggregate({
-        _sum: {
-          priceInCents: true,
-        },
-        _count: {
-          id: true,
-        },
-        where: {
-          barberId: barberId,
-          date: {
-            gte: startOfDay(yesterday),
-            lte: endOfDay(yesterday),
+        // Dados de faturamento semanal
+        prisma.booking.findMany({
+          where: {
+            barberId,
+            status: "COMPLETED",
+            date: {
+              gte: subDays(now, 6),
+              lte: endOfDayDate,
+            },
           },
-          status: "COMPLETED",
-        },
-      }),
-
-      // Agendamentos para hoje - 3
-      prisma.booking.count({
-        where: {
-          barberId: barberId,
-          date: {
-            gte: startOfDayDate,
+          select: {
+            date: true,
+            priceInCents: true,
           },
-          status: "SCHEDULED",
-        },
-      }),
+        }),
 
-      // Agendamentos não confirmados de hoje - 4
-      prisma.booking.count({
-        where: {
-          barberId: barberId,
-          date: {
-            gte: startOfDayDate,
-            lte: now,
-          },
-          status: "SCHEDULED",
-        },
-      }),
+        prisma.disponibility.findMany({
+          where: { barberId },
+          select: { dayOfWeek: true },
+        }) ?? [],
+      ]);
 
-      // Dados de faturamento semanal - 5 (Com exceção dos dias que não tem disponibilidade cadastrada, para evitar erros na consulta)
-      prisma.$queryRaw`
-        WITH current_day AS (
-          SELECT EXTRACT(DOW FROM NOW())::int AS today
-        )
+    const todayBookings = bookings.filter(booking => {
+      return booking.date >= startOfDayDate && booking.date <= endOfDayDate;
+    });
 
-        SELECT 
-          CASE 
-            WHEN d.dayOfWeek = cd.today 
-            THEN CONCAT('Dia ', d.dayOfWeek, ' (Hoje)')
-            ELSE CONCAT('Dia ', d.dayOfWeek)
-          END AS day,
-          
-          COALESCE(SUM(b."priceInCents"), 0) AS saldo
+    const todayCompleted = todayBookings.filter(b => b.status === "COMPLETED");
+    const todayScheduled = todayBookings.filter(b => b.status === "SCHEDULED");
 
-        FROM 
-          (VALUES (0), (1), (2), (3), (4), (5), (6)) AS d(dayOfWeek)
-
-        CROSS JOIN current_day cd
-
-        INNER JOIN 
-          "Disponibility" dis 
-            ON dis."dayOfWeek" = d.dayOfWeek 
-            AND dis."barberId" = ${barberId}
-
-        LEFT JOIN 
-          "Booking" b 
-            ON b."barberId" = ${barberId}
-            AND EXTRACT(DOW FROM b."date") = d.dayOfWeek
-            AND b."status" = 'COMPLETED'
-            AND b."date" >= ${subDays(now, 6)}
-            AND b."date" <= ${endOfDayDate}
-
-        GROUP BY 
-          d.dayOfWeek, cd.today
-
-        ORDER BY 
-          (d.dayOfWeek - cd.today + 6) % 7;
-      `,
-    ]);
-
-    const results = await requests;
-
-    /**
-     * Próximo agendamento para o dia atual. Se houver um erro na consulta, retorna null.
-     */
-    const nextBookings =
-      results[0].status === "fulfilled" ? results[0].value : null;
+    const yesterdayBookings = bookings.filter(booking => {
+      return (
+        booking.date >= startOfDay(yesterday) &&
+        booking.date <= endOfDay(yesterday)
+      );
+    });
 
     /**
      * Faturamento total do dia atual e quantidade de serviços realizados. Se houver um erro na consulta, retorna 0 para ambos os valores.
      */
-    const billing =
-      results[1].status === "fulfilled"
-        ? results[1].value
-        : { _sum: { priceInCents: 0 }, _count: { id: 0 } };
+    const todayBillingAgg = todayBookings.reduce(
+      (acc, booking) => {
+        return {
+          priceInCents: acc.priceInCents + (booking.priceInCents ?? 0),
+        };
+      },
+      { priceInCents: 0 },
+    );
 
     /**
-     * Total de agendamentos para o dia anterior. Se houver um erro na consulta, retorna 0.
+     * Faturamento total do dia anterior e quantidade de serviços realizados. Se houver um erro na consulta, retorna 0 para ambos os valores.
      */
-    const yesterdayBillingAgg =
-      results[2].status === "fulfilled"
-        ? results[2].value
-        : { _sum: { priceInCents: 0 }, _count: { id: 0 } };
+    const yesterdayBillingAgg = yesterdayBookings.reduce(
+      (acc, booking) => {
+        return {
+          priceInCents: acc.priceInCents + (booking.priceInCents ?? 0),
+        };
+      },
+      { priceInCents: 0 },
+    );
 
     /**
-     * Total de agendamentos para o dia atual. Se houver um erro na consulta, retorna 0.
+     * Total de agendamentos para o dia atual, independentemente do status. Se houver um erro na consulta, retorna 0.
      */
-    const totalSchedules =
-      results[3].status === "fulfilled" ? results[3].value : 0;
+    const totalSchedulesToday = todayBookings.length;
 
     /**
      * Total do faturamento do dia atual, convertido para BRL. Se houver um erro na consulta, retorna "R$ 0,00".
      */
-    const todayBilling = convertBRL(billing._sum.priceInCents ?? 0);
+    const todayBilling = convertBRL(todayBillingAgg.priceInCents ?? 0);
 
     /**
      * Total do faturamento do dia anterior, convertido para BRL. Se houver um erro na consulta, retorna "R$ 0,00".
      */
-    const yesterdayBilling = convertBRL(
-      yesterdayBillingAgg._sum.priceInCents ?? 0,
-    );
+    const yesterdayBilling = convertBRL(yesterdayBillingAgg.priceInCents ?? 0);
 
     /**
      * Total de serviços realizados no dia atual. Se houver um erro na consulta, retorna 0.
      */
-    const servicesPerformed = billing._count.id ?? 0;
+    const servicesPerformed = todayCompleted.length;
 
     /**
      * Total de serviços realizados no dia anterior. Se houver um erro na consulta, retorna 0.
      */
-    const yesterdayServicesPerformed = yesterdayBillingAgg._count.id ?? 0;
+    const yesterdayServicesPerformed = yesterdayBookings.filter(
+      booking => booking.status === "COMPLETED",
+    ).length;
 
     /**
      * Total de agendamentos para o dia atual que ainda não foram confirmados (status "SCHEDULED" e data menor ou igual à data atual). Se houver um erro na consulta, retorna 0.
      */
-    const bookingsNotConfirmedToday =
-      results[4].status === "fulfilled" ? results[4].value : 0;
+    const bookingsNotConfirmedToday = todayScheduled.length;
 
-    const weeklyBillingBrut = (
-      results[5].status === "fulfilled" ? results[5].value : []
-    ) as [{ day: string; saldo: bigint }];
+    const weekMap = new Map<number, number>();
 
-    const daysOfWeekMap: Record<number, string> = {
+    // inicia com 0
+    for (let i = 0; i < 7; i++) {
+      weekMap.set(i, 0);
+    }
+
+    const availableDays = new Set(disponibility.map(d => d.dayOfWeek));
+
+    graphBookings.forEach(b => {
+      const day = b.date.getDay();
+      // biome-ignore lint/style/noNonNullAssertion: <Tá dboa>
+      weekMap.set(day, weekMap.get(day)! + b.priceInCents);
+    });
+
+    const today = new Date().getDay();
+
+    const ordered = Array.from(weekMap.entries()).sort(
+      ([a], [b]) => (a === today ? 7 : a) - (b === today ? 7 : b),
+    );
+
+    const daysOfWeekMap = {
       0: "Domingo",
       1: "Segunda-feira",
       2: "Terça-feira",
@@ -199,35 +162,43 @@ export const getBarberDashboardInfos = actionClient.action(async () => {
       6: "Sábado",
     };
 
-    const weeklyBillingData = weeklyBillingBrut.map(item => {
-      return {
-        day: daysOfWeekMap[Number(item.day.split(" ")[1])],
-        saldoEmReais: Number(item.saldo) / 100,
-      };
-    });
+    const weeklyBillingData = ordered
+      .filter(([day]) => availableDays.has(day))
+      .map(([day, value]) => {
+        const dayMap = daysOfWeekMap[day as keyof typeof daysOfWeekMap];
+        return {
+          day: day === today ? `${dayMap} (Hoje)` : dayMap,
+          saldoEmReais: value / 100,
+        };
+      });
 
     /**
      * Porcentagem de crescimento ou queda no faturamento em relação ao dia anterior. Se o faturamento do dia anterior for 0, retorna null para evitar divisão por zero.
      */
-    const todayTotal = billing._sum.priceInCents ?? 0;
-    const yesterdayTotal = yesterdayBillingAgg._sum.priceInCents ?? 0;
+    const todayTotal = todayBillingAgg.priceInCents ?? 0;
+    const yesterdayTotal = yesterdayBillingAgg.priceInCents ?? 0;
 
     const growthPercentage =
       yesterdayTotal === 0
-        ? todayTotal / 100
+        ? 0
         : ((todayTotal - yesterdayTotal) / yesterdayTotal) * 100;
 
-    const progressBookings = bookingsNotConfirmedToday - billing._count.id;
+    const progressBookings =
+      totalSchedulesToday === 0
+        ? 0
+        : ((totalSchedulesToday - bookingsNotConfirmedToday) /
+            totalSchedulesToday) *
+          100;
 
     /** Informações consolidadas sobre agendamentos do dia atual */
     const bookingsData = {
       /** Próximos 5 agendamentos programados para o barbeiro a partir do momento atual */
       next: nextBookings,
-      /** Total de agendamentos marcados para hoje com status "SCHEDULED" */
-      totalScheduledToday: totalSchedules,
+      /** Total de agendamentos marcados para hoje */
+      totalScheduledToday: totalSchedulesToday,
       /** Quantidade de agendamentos não confirmados até o horário atual */
       pendingConfirmationToday: bookingsNotConfirmedToday,
-      /** Diferença entre pendentes e já realizados para visualizar progresso */
+      /** Diferença entre pendentes e já realizados para visualizar progresso em porcentagem */
       progressToday: progressBookings,
     };
 
@@ -238,8 +209,6 @@ export const getBarberDashboardInfos = actionClient.action(async () => {
         formatted: todayBilling,
         /** Valor bruto em centavos para cálculos mais precisos */
         rawInCents: todayTotal,
-        /** Agregação completa do Prisma com soma e contagem de serviços */
-        aggregate: billing,
       },
       /** Total de serviços/atendimentos completados hoje */
       servicesPerformed,

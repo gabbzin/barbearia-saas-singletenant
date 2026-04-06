@@ -134,8 +134,13 @@ async function seedLucasBarbershop() {
     },
   });
 
+  const createdServices = [] as {
+    id: string;
+    priceInCents: number;
+  }[];
+
   for (const service of lucasServices) {
-    await prisma.barberService.create({
+    const createdService = await prisma.barberService.create({
       data: {
         name: service.name,
         description: service.description,
@@ -148,6 +153,11 @@ async function seedLucasBarbershop() {
           },
         },
       },
+    });
+
+    createdServices.push({
+      id: createdService.id,
+      priceInCents: createdService.priceInCents,
     });
   }
 
