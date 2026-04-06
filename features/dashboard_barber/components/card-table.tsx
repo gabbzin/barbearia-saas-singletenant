@@ -20,12 +20,15 @@ interface CardTableProps {
   linkText?: string;
   url?: string;
   tableTitles: string[];
+  classNameCard?: string;
   children: ReactNode;
 }
 
 export function CardTable(props: CardTableProps) {
   return (
-    <Card className="w-full overflow-hidden rounded-3xl border bg-card shadow-sm">
+    <Card
+      className={`w-full overflow-hidden rounded-3xl border bg-card shadow-sm ${props.classNameCard}`}
+    >
       <CardHeader className="flex flex-row items-center justify-between border-b px-6 py-4">
         <CardTitle className="font-bold text-lg">{props.titleCard}</CardTitle>
         {props.url && props.linkText ? (

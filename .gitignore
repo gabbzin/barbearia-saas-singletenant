@@ -52,3 +52,6 @@ gemini/
 
 # package-lock.json (projeto usa pnpm)
 package-lock.json
+
+# documento privado para controle de features
+doc.feat.md

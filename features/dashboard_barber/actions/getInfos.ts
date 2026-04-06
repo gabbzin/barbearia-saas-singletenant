@@ -217,19 +217,68 @@ export const getBarberDashboardInfos = actionClient.action(async () => {
         ? todayTotal / 100
         : ((todayTotal - yesterdayTotal) / yesterdayTotal) * 100;
 
-    return {
-      barberId,
-      nextBookings,
-      billing,
-      todayBilling,
-      totalSchedules,
+    const progressBookings = bookingsNotConfirmedToday - billing._count.id;
+
+    /** Informações consolidadas sobre agendamentos do dia atual */
+    const bookingsData = {
+      /** Próximos 5 agendamentos programados para o barbeiro a partir do momento atual */
+      next: nextBookings,
+      /** Total de agendamentos marcados para hoje com status "SCHEDULED" */
+      totalScheduledToday: totalSchedules,
+      /** Quantidade de agendamentos não confirmados até o horário atual */
+      pendingConfirmationToday: bookingsNotConfirmedToday,
+      /** Diferença entre pendentes e já realizados para visualizar progresso */
+      progressToday: progressBookings,
+    };
+
+    /** Dados financeiros e operacionais do dia atual */
+    const todayData = {
+      billing: {
+        /** Valor formatado em BRL (ex: "R$ 1.250,00") */
+        formatted: todayBilling,
+        /** Valor bruto em centavos para cálculos mais precisos */
+        rawInCents: todayTotal,
+        /** Agregação completa do Prisma com soma e contagem de serviços */
+        aggregate: billing,
+      },
+      /** Total de serviços/atendimentos completados hoje */
       servicesPerformed,
-      yesterdayBillingAgg,
-      yesterdayBilling,
-      yesterdayServicesPerformed,
-      growthPercentage,
-      bookingsNotConfirmedToday,
+    };
+
+    /** Dados do dia anterior para comparação */
+    const yesterdayData = {
+      billing: {
+        /** Valor formatado em BRL do dia anterior */
+        formatted: yesterdayBilling,
+        /** Valor bruto em centavos do dia anterior */
+        rawInCents: yesterdayTotal,
+        /** Agregação completa do Prisma do dia anterior */
+        aggregate: yesterdayBillingAgg,
+      },
+      /** Total de serviços completados no dia anterior */
+      servicesPerformed: yesterdayServicesPerformed,
+    };
+
+    /** Métricas de crescimento e variação entre períodos */
+    const comparisonsData = {
+      /** Percentual de crescimento/queda no faturamento em relação ao dia anterior. Positivo = crescimento, negativo = redução */
+      billingGrowthPercentage: growthPercentage,
+    };
+
+    /** Dados agregados para análises e gráficos */
+    const analyticsData = {
+      /** Array com faturamento por dia da semana para visualização em gráficos */
       weeklyBillingData,
+    };
+
+    return {
+      /** ID único do barbeiro */
+      barberId,
+      bookingsData,
+      todayData,
+      yesterdayData,
+      comparisonsData,
+      analyticsData,
     };
   } catch (error) {
     console.error("Error fetching barber dashboard infos:", error);

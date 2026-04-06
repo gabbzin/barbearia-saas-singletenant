@@ -11,7 +11,6 @@ type CardInfoProps = {
   Icon?: LucideIcon;
   title: string;
   value: React.ReactNode;
-  details?: React.ReactNode;
   growthPercentage?: number;
 };
 
@@ -19,14 +18,13 @@ export default function MainCardDashboard({
   Icon,
   title,
   value,
-  details,
   growthPercentage = 0,
 }: CardInfoProps) {
-  const variant =
-    growthPercentage > 0 ? "green" : growthPercentage < 0 ? "red" : "default";
+  const footerText =
+    growthPercentage >= 0 ? "à mais do que ontem" : "à menos do que ontem";
 
   return (
-    <Card variant={variant} className="relative rounded-4xl py-6 md:hidden">
+    <Card className="relative rounded-4xl bg-indigo-600 py-6 text-white md:hidden">
       <CardHeader className="px-4">
         <CardTitle className="flex items-center justify-between font-semibold text-sm">
           {title}
@@ -34,20 +32,19 @@ export default function MainCardDashboard({
         </CardTitle>
       </CardHeader>
       <CardContent className="px-4 py-2">
-        <p className="font-bold font-geist text-3xl">{value}</p>
-        {details && <div>{details}</div>}
+        <p className="font-bold font-geist text-3xl">{value?.toString()}</p>
       </CardContent>
       <CardFooter className="px-4 text-xs">
-        {growthPercentage && (
-          <div className="flex items-center gap-2">
-            {growthPercentage >= 0 ? (
-              <TrendingUp className="size-4" />
-            ) : (
-              <TrendingDown className="size-4" />
-            )}
-            <span>{Math.round(growthPercentage)}%</span>
-          </div>
-        )}
+        <div className="flex items-center gap-2">
+          {growthPercentage >= 0 ? (
+            <TrendingUp className="size-4 text-green-500" />
+          ) : (
+            <TrendingDown className="size-4 text-red-500" />
+          )}
+          <p>
+            {Math.round(growthPercentage)}% {footerText}
+          </p>
+        </div>
       </CardFooter>
     </Card>
   );

@@ -2,6 +2,7 @@ import type { LucideIcon } from "lucide-react";
 import {
   Card,
   CardContent,
+  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/shared/components/ui/card";
@@ -10,7 +11,7 @@ type CardInfoProps = {
   Icon?: LucideIcon;
   title: string;
   value: React.ReactNode;
-  variant?: "default" | "green" | "blue" | "yellow" | "red" | null;
+  variant?: "default" | "green" | "blue" | "yellow" | "red" | "basic" | null;
   classNameCard?: string;
   details?: React.ReactNode;
 };
@@ -23,18 +24,21 @@ export default function CardInfo({
   variant,
   details,
 }: CardInfoProps) {
+  const pxCard = "px-4";
   return (
     <Card variant={variant} className={`relative py-6 ${classNameCard ?? ""}`}>
-      <CardHeader className="px-4">
-        <CardTitle className="flex items-center justify-between font-semibold text-sm">
+      <CardHeader className={`${pxCard}`}>
+        <CardTitle className="flex items-center justify-between font-semibold text-primary/60 text-xs uppercase">
           {title}
-          {Icon && <Icon className="h-5 w-5 opacity-50" />}
+          {Icon && <Icon className="size-5 text-primary/50" />}
         </CardTitle>
       </CardHeader>
-      <CardContent className="px-4">
+      <CardContent className={`${pxCard}`}>
         <p className="font-bold font-geist text-xl">{value}</p>
-        {details && <div>{details}</div>}
       </CardContent>
+      <CardFooter className={`${pxCard}`}>
+        {details && <>{details}</>}
+      </CardFooter>
     </Card>
   );
 }
