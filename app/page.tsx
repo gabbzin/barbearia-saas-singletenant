@@ -5,12 +5,17 @@ import { Hero } from "@/features/landing_page/hero";
 import { HowItWork } from "@/features/landing_page/how-it-work";
 import { Navbar } from "@/features/landing_page/navbar";
 import { ServicesAndPrices } from "@/features/landing_page/services-and-prices";
-import { Testimonials } from "@/features/landing_page/testimonials";
+import { OurTeam } from "@/features/landing_page/our-team";
 import { prisma } from "@/lib/prisma";
 
 export default async function Page() {
   const services = await prisma.barberService.findMany({
     distinct: ["name"],
+    where: {
+      priceInCents: {
+        gt: 0.01,
+      },
+    },
   });
 
   return (
@@ -21,7 +26,7 @@ export default async function Page() {
         <HowItWork />
         <ServicesAndPrices services={services} />
         <Benefits />
-        <Testimonials />
+        <OurTeam />
         <Footer />
       </main>
     </div>
