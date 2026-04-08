@@ -1,6 +1,6 @@
 "use server";
 
-import { endOfDay, format, isToday, startOfDay } from "date-fns";
+import { formatInTimeZone, fromZonedTime } from "date-fns-tz";
 import { returnValidationErrors } from "next-safe-action";
 // import { returnValidationErrors } from "next-safe-action";
 import z from "zod";
@@ -19,7 +19,7 @@ const inputSchema = z.object({
   barberId: z.string(),
   serviceId: z.string(),
   date: z.date(),
-  bookingBufferBool: z.boolean().default(true),
+  bookingBufferBool: z.boolean().default(true), // Serve para dar permissão de agendar encima da hora
 });
 
 export const getDateAvailableTimeSlots = actionClient
@@ -53,14 +53,29 @@ export const getDateAvailableTimeSlots = actionClient
 
       const serviceDuration = service.durationInMinutes;
 
+      const targetDateKey = formatInTimeZone(
+        date,
+        DEFAULT_TIMEZONE,
+        "yyyy-MM-dd",
+      );
+      const day = Number(formatInTimeZone(date, DEFAULT_TIMEZONE, "i")) % 7;
+      const startOfTargetDay = fromZonedTime(
+        `${targetDateKey}T00:00:00.000`,
+        DEFAULT_TIMEZONE,
+      );
+      const endOfTargetDay = fromZonedTime(
+        `${targetDateKey}T23:59:59.999`,
+        DEFAULT_TIMEZONE,
+      );
+
       const bookings = await prisma.booking.findMany({
         where: {
           service: {
             barberId: barberId,
           },
           date: {
-            gte: startOfDay(date),
-            lte: endOfDay(date),
+            gte: startOfTargetDay,
+            lte: endOfTargetDay,
           },
           status: { not: "CANCELLED" },
         },
@@ -73,8 +88,6 @@ export const getDateAvailableTimeSlots = actionClient
           },
         },
       });
-
-      const day = date.getDay(); // 0 (Domingo) a 6 (Sábado)
 
       const availability = await prisma.disponibility.findFirst({
         where: {
@@ -106,8 +119,8 @@ export const getDateAvailableTimeSlots = actionClient
         where: {
           barberId,
           date: {
-            gte: startOfDay(date),
-            lte: endOfDay(date),
+            gte: startOfTargetDay,
+            lte: endOfTargetDay,
           },
         },
         select: {
@@ -124,7 +137,9 @@ export const getDateAvailableTimeSlots = actionClient
       }
 
       const bookingRanges = bookings.map(booking => {
-        const start = timeToMinutes(format(booking.date, "HH:mm"));
+        const start = timeToMinutes(
+          formatInTimeZone(booking.date, DEFAULT_TIMEZONE, "HH:mm"),
+        );
         const end = start + booking.service.durationInMinutes;
 
         return { start, end };
@@ -137,8 +152,16 @@ export const getDateAvailableTimeSlots = actionClient
       const exceptionRanges = exceptions
         .filter(e => e.startTime && e.endTime)
         .map(exception => {
-          const startTime = exception.startTime!.toISOString().slice(11, 16);
-          const endTime = exception.endTime!.toISOString().slice(11, 16);
+          const startTime = formatInTimeZone(
+            exception.startTime!,
+            DEFAULT_TIMEZONE,
+            "HH:mm",
+          );
+          const endTime = formatInTimeZone(
+            exception.endTime!,
+            DEFAULT_TIMEZONE,
+            "HH:mm",
+          );
           return createRange(startTime, endTime);
         });
 
@@ -155,7 +178,12 @@ export const getDateAvailableTimeSlots = actionClient
       const interval = 15;
       // Lógica para bloquear horários que já passaram hoje
       const now = new Date();
-      const isQueryingToday = isToday(date);
+      const currentDateKey = formatInTimeZone(
+        now,
+        DEFAULT_TIMEZONE,
+        "yyyy-MM-dd",
+      );
+      const isQueryingToday = targetDateKey === currentDateKey;
 
       const currentTimeInTimezone = new Intl.DateTimeFormat("pt-BR", {
         timeZone: DEFAULT_TIMEZONE,
