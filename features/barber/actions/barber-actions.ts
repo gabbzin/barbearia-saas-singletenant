@@ -12,6 +12,7 @@ export const getSettingsByBarberIdAction = actionClient
   .action(async ({ parsedInput: { barberId } }) => {
     const disponibilities = await prisma.disponibility.findMany({
       where: { barberId },
+      orderBy: { dayOfWeek: "asc" },
     });
 
     if (!disponibilities || disponibilities.length === 0) {
@@ -21,9 +22,11 @@ export const getSettingsByBarberIdAction = actionClient
     return {
       settings: {
         barberId,
-        daysOfWeek: disponibilities.map(d => d.dayOfWeek),
-        startTime: disponibilities[0].startTime,
-        endTime: disponibilities[0].endTime,
+        availabilities: disponibilities.map(d => ({
+          day: d.dayOfWeek,
+          startTime: d.startTime,
+          endTime: d.endTime,
+        })),
       },
     };
   });
@@ -31,32 +34,26 @@ export const getSettingsByBarberIdAction = actionClient
 export const createDisponibilityAction = actionClient
   .inputSchema(timesSchema.safeExtend({ barberId: z.string() }))
   .action(async ({ parsedInput }) => {
-    const { barberId, horario_abertura, horario_fechamento, ...days } =
-      parsedInput;
-    const selectedDates = Object.entries(days)
-      .filter(([, val]) => val === true)
-      .map(([key]) => Number(key));
+    const { barberId, day, horario_abertura, horario_fechamento } = parsedInput;
 
-    await prisma.$transaction(async tx => {
-      await tx.disponibility.deleteMany({ where: { barberId } });
-      if (selectedDates.length > 0) {
-        await tx.disponibility.createMany({
-          data: selectedDates.map(day => ({
-            barberId,
-            dayOfWeek: day,
-            startTime: horario_abertura,
-            endTime: horario_fechamento,
-          })),
-        });
-      }
-    });
-
-    return {
-      settings: {
-        daysOfWeek: selectedDates,
+    await prisma.disponibility.upsert({
+      where: {
+        barberId_dayOfWeek: {
+          barberId,
+          dayOfWeek: day,
+        },
+      },
+      update: {
         startTime: horario_abertura,
         endTime: horario_fechamento,
-        barberId,
       },
-    };
+      create: {
+        barberId,
+        dayOfWeek: day,
+        startTime: horario_abertura,
+        endTime: horario_fechamento,
+      },
+    });
+
+    return { success: true };
   });

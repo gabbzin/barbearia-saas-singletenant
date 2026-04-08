@@ -12,9 +12,11 @@ import { useSafeQuery } from "@/hooks/use-safe-query";
 
 type SettingsData = {
   barberId: string;
-  daysOfWeek: number[];
-  startTime: string;
-  endTime: string;
+  availabilities: Array<{
+    day: number;
+    startTime: string;
+    endTime: string;
+  }>;
 };
 
 export function useSettingsBarber(barberId: string) {
@@ -39,12 +41,7 @@ export function useSettingsBarber(barberId: string) {
       return;
     }
     toast.success("Horários salvos com sucesso!");
-
-    if (result?.data?.settings) {
-      queryClient.setQueryData(queryKey, result.data);
-    } else {
-      queryClient.invalidateQueries({ queryKey });
-    }
+    queryClient.invalidateQueries({ queryKey });
   };
 
   return {

@@ -3,7 +3,9 @@
 import type { TimesSchemaData } from "@/features/booking/schema/timesSchema";
 import { verifySession } from "@/features/user/repository/user.repository";
 import { actionClient } from "@/lib/actionClient";
+import { DEFAULT_TIMEZONE } from "@/lib/consts";
 import { prisma } from "@/lib/prisma";
+import { formatInTimeZone } from "date-fns-tz";
 
 export const getBarberDefaultTimes = actionClient.action(async () => {
   const session = await verifySession();
@@ -13,35 +15,34 @@ export const getBarberDefaultTimes = actionClient.action(async () => {
   }
 
   const barberId = session.barberId;
-  const dayOfWeek = new Date().getDay();
 
-  const horariosData = await prisma.disponibility.findUnique({
+  const horariosData = await prisma.disponibility.findMany({
     where: {
-      barberId_dayOfWeek: {
-        barberId,
-        dayOfWeek,
-      },
+      barberId,
     },
   });
+
+  const today = new Date();
+  const todayDay = new Date(
+    formatInTimeZone(today, DEFAULT_TIMEZONE, "yyyy-MM-dd"),
+  ).getDay();
+
+  const todayDisponibility = horariosData.find(
+    disponibility => disponibility.dayOfWeek === todayDay,
+  );
 
   if (!horariosData) {
     return {
       horariosData: null,
-      defaultTimes: null as TimesSchemaData | null,
+      defaultTimes: [],
     };
   }
 
-  const defaultTimes: TimesSchemaData = {
-    horario_abertura: horariosData.startTime,
-    horario_fechamento: horariosData.endTime,
-    0: horariosData.dayOfWeek === 0,
-    1: horariosData.dayOfWeek === 1,
-    2: horariosData.dayOfWeek === 2,
-    3: horariosData.dayOfWeek === 3,
-    4: horariosData.dayOfWeek === 4,
-    5: horariosData.dayOfWeek === 5,
-    6: horariosData.dayOfWeek === 6,
-  };
+  const defaultTimes: TimesSchemaData[] = horariosData.map(disponibility => ({
+    day: disponibility.dayOfWeek,
+    horario_abertura: disponibility.startTime,
+    horario_fechamento: disponibility.endTime,
+  }));
 
-  return { horariosData, defaultTimes };
+  return { horariosData: todayDisponibility, defaultTimes };
 });

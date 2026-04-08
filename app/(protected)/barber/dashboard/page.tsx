@@ -155,7 +155,7 @@ export default async function BarberDashboardPage() {
           </div>
         </div>
       </PageSection>
-      
+
       <PageSection>
         <PageSectionTitle>Serviços cadastrados</PageSectionTitle>
         <ServiceList barberId={barberId} />

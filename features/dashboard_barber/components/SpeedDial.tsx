@@ -11,7 +11,7 @@ import FormTimesServices from "./form-times-services";
 
 interface SpeedDialProps {
   barberId: string;
-  defaultTimes?: TimesSchemaData;
+  defaultTimes?: TimesSchemaData[];
   disponibility: Disponibility[];
 }
 

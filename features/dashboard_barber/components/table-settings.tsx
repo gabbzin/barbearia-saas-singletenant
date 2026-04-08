@@ -11,9 +11,7 @@ import { CardTable } from "./card-table";
 export function TableSettings({ barberId }: { barberId: string }) {
   const { settings, isLoading } = useSettingsBarber(barberId);
 
-  const daysOfWeek = settings?.daysOfWeek ?? [];
-
-  const days = daysOfWeek.map(day => dias[day]);
+  const availabilities = settings?.availabilities ?? [];
 
   return (
     <CardTable
@@ -29,18 +27,14 @@ export function TableSettings({ barberId }: { barberId: string }) {
             Carregando horários padrão...
           </TableCell>
         </TableRow>
-      ) : settings && daysOfWeek.length > 0 ? (
-        daysOfWeek.map((day, index) => (
-          <TableRow
-            key={`${day}-${
-              // biome-ignore lint/suspicious/noArrayIndexKey: <>
-              index
-            }`}
-            className="border-t"
-          >
-            <TableCell className="px-6 py-4">{days[index]}</TableCell>
+      ) : settings && availabilities.length > 0 ? (
+        availabilities.map(availability => (
+          <TableRow key={`${availability.day}`} className="border-t">
             <TableCell className="px-6 py-4">
-              {settings.startTime}-{settings.endTime}
+              {dias[availability.day]}
+            </TableCell>
+            <TableCell className="px-6 py-4">
+              {availability.startTime}-{availability.endTime}
             </TableCell>
           </TableRow>
         ))
