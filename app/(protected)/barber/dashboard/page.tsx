@@ -15,14 +15,20 @@ import MainCardDashboard from "@/features/dashboard_barber/components/main-dashb
 import { NewBookingManualDialog } from "@/features/dashboard_barber/components/new-booking-manual-dialog";
 import { NextBookingsSection } from "@/features/dashboard_barber/components/next-bookings-section";
 import { SpeedDial } from "@/features/dashboard_barber/components/SpeedDial";
-import { TableBarberBreak } from "@/features/dashboard_barber/components/table-barber-break";
-import { ServiceList } from "@/features/dashboard_barber/components/table-service";
-import { TableSettings } from "@/features/dashboard_barber/components/table-settings";
+import { TableBarberBreak } from "@/features/dashboard_barber/components/tables/table-barber-break";
+import { ServiceList } from "@/features/dashboard_barber/components/tables/table-service";
+import { TableSettings } from "@/features/dashboard_barber/components/tables/table-settings";
 import { prisma } from "@/lib/prisma";
 import { Alert, AlertTitle } from "@/shared/components/ui/alert";
 import { PageSection, PageSectionTitle } from "@/shared/components/ui/page";
 import { Progress } from "@/shared/components/ui/progress";
 import { BarChartGraph } from "@/features/dashboard_barber/components/charts/barchart-comp";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/shared/components/ui/card";
 
 export default async function BarberDashboardPage() {
   const [{ data: dash }, defaultTimes] = await Promise.all([
@@ -87,7 +93,7 @@ export default async function BarberDashboardPage() {
       </PageSection>
 
       <PageSection>
-        <section className="grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-5">
+        <section className="grid grid-cols-2 gap-3 md:grid-cols-2 lg:grid-cols-5">
           <CardInfo
             Icon={Scissors}
             title="Realizados"
@@ -110,8 +116,8 @@ export default async function BarberDashboardPage() {
             Icon={Banknote}
             title="Faturamento"
             value={dash?.todayData.billing.formatted}
-            variant="basic"
-            classNameCard="hidden md:block"
+            variant="green"
+            classNameCard="hidden lg:block"
           />
           <CardInfo
             Icon={AlertCircleIcon}
@@ -133,25 +139,36 @@ export default async function BarberDashboardPage() {
       </PageSection>
 
       <PageSection>
-        <div className="grid grid-cols-1 gap-6 xl:grid-cols-3">
-          <div className="space-y-6 xl:col-span-2">
-            <div className="grid gap-2">
-              <PageSectionTitle>Próximos agendamentos</PageSectionTitle>
-              <NextBookingsSection bookings={dash?.bookingsData.next} />
-            </div>
+        <div className="grid grid-cols-1 gap-6 xl:grid-cols-2">
+          <div className="grid gap-2">
+            <PageSectionTitle className="md:hidden">
+              Próximos agendamentos
+            </PageSectionTitle>
+            <NextBookingsSection bookings={dash?.bookingsData.next} />
+          </div>
 
-            <div className="grid gap-2">
-              <PageSectionTitle>Faturamento Semanal</PageSectionTitle>
-              <BarChartGraph
-                chartConfig={{
-                  saldoEmReais: {
-                    label: "Saldo",
-                    color: "#6366F1",
-                  },
-                }}
-                data={dash?.analyticsData.weeklyBillingData ?? []}
-              />
-            </div>
+          <div className="grid gap-2">
+            <PageSectionTitle className="md:hidden">
+              Faturamento Semenal
+            </PageSectionTitle>
+            <Card variant={"basic"}>
+              <CardHeader className="hidden border-b px-6 py-2 md:block">
+                <CardTitle className="font-bold text-lg">
+                  Faturamento Semanal
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <BarChartGraph
+                  chartConfig={{
+                    saldoEmReais: {
+                      label: "Saldo",
+                      color: "#6366F1",
+                    },
+                  }}
+                  data={dash?.analyticsData.weeklyBillingData ?? []}
+                />
+              </CardContent>
+            </Card>
           </div>
         </div>
       </PageSection>
@@ -161,10 +178,12 @@ export default async function BarberDashboardPage() {
         <ServiceList barberId={barberId} />
       </PageSection>
 
-      <div className="grid grid-cols-1 gap-2 md:grid-cols-2 xl:grid-cols-1 xl:gap-6">
-        <TableSettings barberId={barberId} />
-        <TableBarberBreak barberId={barberId} />
-      </div>
+      <PageSection>
+        <div className="grid grid-cols-1 gap-2 md:grid-cols-2 xl:gap-6">
+          <TableBarberBreak barberId={barberId} />
+          <TableSettings barberId={barberId} />
+        </div>
+      </PageSection>
 
       <SpeedDial
         barberId={barberId}

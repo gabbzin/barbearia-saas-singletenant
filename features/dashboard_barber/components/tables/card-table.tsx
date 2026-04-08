@@ -22,14 +22,20 @@ interface CardTableProps {
   tableTitles: string[];
   classNameCard?: string;
   children: ReactNode;
+  variant?: "basic" | "default";
 }
 
 export function CardTable(props: CardTableProps) {
   return (
     <Card
-      className={`w-full overflow-hidden rounded-3xl border bg-card shadow-sm ${props.classNameCard}`}
+      className={
+        props.variant === "basic"
+          ? `w-full overflow-hidden rounded-3xl border bg-card shadow-sm ${props.classNameCard}`
+          : undefined
+      }
+      variant={props.variant}
     >
-      <CardHeader className="flex flex-row items-center justify-between border-b px-6 py-4">
+      <CardHeader className="flex flex-row items-center justify-between border-b px-6 py-2">
         <CardTitle className="font-bold text-lg">{props.titleCard}</CardTitle>
         {props.url && props.linkText ? (
           <Button variant="outline" size="sm" asChild>

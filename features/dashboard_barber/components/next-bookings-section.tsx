@@ -1,5 +1,5 @@
 import type { getBookingsBarber } from "@/features/booking/functions/get-bookings";
-import { CardTable } from "@/features/dashboard_barber/components/card-table";
+import { CardTable } from "@/features/dashboard_barber/components/tables/card-table";
 import { NextBookingsCard } from "@/features/dashboard_barber/components/next-bookings-card";
 import { Badge } from "@/shared/components/ui/badge";
 import { TableCell, TableRow } from "@/shared/components/ui/table";
@@ -20,6 +20,7 @@ export function NextBookingsSection({ bookings }: NextBookingsSectionProps) {
         url="/barber/schedule"
         tableTitles={["Cliente", "Serviço", "Data/Hora", "Status"]}
         classNameCard="hidden md:block"
+        variant="basic"
       >
         {bookings && bookings.length > 0 ? (
           bookings.map(booking => (

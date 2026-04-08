@@ -4,11 +4,15 @@ export const PageContainer = ({ children }: { children: React.ReactNode }) => {
 
 export const PageSectionTitle = ({
   children,
+  className,
 }: {
   children: React.ReactNode;
+  className?: string;
 }) => {
   return (
-    <h2 className="font-semibold text-foreground text-sm uppercase">
+    <h2
+      className={`font-semibold text-foreground text-sm uppercase ${className || ""}`}
+    >
       {children}
     </h2>
   );

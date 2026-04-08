@@ -16,6 +16,7 @@ import {
   DialogHeader,
   DialogTrigger,
 } from "@/shared/components/ui/dialog";
+import { SpeedDialFormTrigger } from "./triggers/speed-dial-form-trigger";
 
 interface FormServiceProps {
   barberId: string;
@@ -57,18 +58,7 @@ export function FormService({ barberId, service }: FormServiceProps) {
             <PencilIcon />
           </Button>
         ) : (
-          <div className="flex items-center justify-end gap-3">
-            <span className="rounded bg-primary/90 px-2 py-1 text-background">
-              Adicionar Serviço
-            </span>
-            <Button
-              size="icon"
-              variant="secondary"
-              className="h-14 w-14 rounded-full shadow-lg"
-            >
-              <PlusIcon className="size-4" />
-            </Button>
-          </div>
+          <SpeedDialFormTrigger label="Adicionar Serviço" icon={PlusIcon} />
         )}
       </DialogTrigger>
       <DialogContent>

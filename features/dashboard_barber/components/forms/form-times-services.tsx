@@ -10,7 +10,6 @@ import {
 } from "@/features/booking/schema/timesSchema";
 import GenericForm from "@/shared/components/form/generic-form";
 import InputForm from "@/shared/components/form/input-form";
-import { Button } from "@/shared/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -26,6 +25,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/shared/components/ui/select";
+import { SpeedDialFormTrigger } from "./triggers/speed-dial-form-trigger";
 
 type DayRange = {
   horario_abertura: string;
@@ -148,18 +148,7 @@ export default function FormTimesServices({
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <div className="flex items-center justify-end gap-3">
-          <span className="rounded bg-primary/90 px-2 py-1 text-background">
-            {"Configurar horários"}
-          </span>
-          <Button
-            size="icon"
-            variant="secondary"
-            className="h-14 w-14 rounded-full shadow-lg"
-          >
-            <ScissorsIcon className="size-4" />
-          </Button>
-        </div>
+        <SpeedDialFormTrigger label="Configurar horários" icon={ScissorsIcon} />
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>

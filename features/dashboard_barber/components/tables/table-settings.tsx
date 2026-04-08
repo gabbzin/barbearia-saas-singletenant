@@ -4,7 +4,7 @@ import { AlertTriangleIcon } from "lucide-react";
 import { useSettingsBarber } from "@/features/barber/settings/useSettingsBarber";
 import { Alert, AlertTitle } from "@/shared/components/ui/alert";
 import { TableCell, TableRow } from "@/shared/components/ui/table";
-import { dias } from "./barber-break-form";
+import { dias } from "../forms/form-barber-break";
 import { CardTable } from "./card-table";
 // import { DAYS_OF_WEEK_LABELS } from "./days-of-week";
 
