@@ -53,18 +53,18 @@ export const getDateAvailableTimeSlots = actionClient
 
       const serviceDuration = service.durationInMinutes;
 
-      const targetDateKey = formatInTimeZone(
+      const queryDateInTimezone = formatInTimeZone(
         date,
         DEFAULT_TIMEZONE,
         "yyyy-MM-dd",
       );
-      const day = Number(formatInTimeZone(date, DEFAULT_TIMEZONE, "i")) % 7;
-      const startOfTargetDay = fromZonedTime(
-        `${targetDateKey}T00:00:00.000`,
+
+      const dayRangeStart = fromZonedTime(
+        `${queryDateInTimezone}T00:00:00.000`,
         DEFAULT_TIMEZONE,
       );
-      const endOfTargetDay = fromZonedTime(
-        `${targetDateKey}T23:59:59.999`,
+      const dayRangeEnd = fromZonedTime(
+        `${queryDateInTimezone}T23:59:59.999`,
         DEFAULT_TIMEZONE,
       );
 
@@ -74,8 +74,8 @@ export const getDateAvailableTimeSlots = actionClient
             barberId: barberId,
           },
           date: {
-            gte: startOfTargetDay,
-            lte: endOfTargetDay,
+            gte: dayRangeStart,
+            lte: dayRangeEnd,
           },
           status: { not: "CANCELLED" },
         },
@@ -88,6 +88,9 @@ export const getDateAvailableTimeSlots = actionClient
           },
         },
       });
+
+      const isoDay = Number(formatInTimeZone(date, DEFAULT_TIMEZONE, "i"));
+      const day = isoDay % 7; // 0 (Domingo) a 6 (Sábado)
 
       const availability = await prisma.disponibility.findFirst({
         where: {
@@ -119,8 +122,8 @@ export const getDateAvailableTimeSlots = actionClient
         where: {
           barberId,
           date: {
-            gte: startOfTargetDay,
-            lte: endOfTargetDay,
+            gte: dayRangeStart,
+            lte: dayRangeEnd,
           },
         },
         select: {
@@ -152,16 +155,8 @@ export const getDateAvailableTimeSlots = actionClient
       const exceptionRanges = exceptions
         .filter(e => e.startTime && e.endTime)
         .map(exception => {
-          const startTime = formatInTimeZone(
-            exception.startTime!,
-            DEFAULT_TIMEZONE,
-            "HH:mm",
-          );
-          const endTime = formatInTimeZone(
-            exception.endTime!,
-            DEFAULT_TIMEZONE,
-            "HH:mm",
-          );
+          const startTime = exception.startTime!.toISOString().slice(11, 16);
+          const endTime = exception.endTime!.toISOString().slice(11, 16);
           return createRange(startTime, endTime);
         });
 
@@ -178,12 +173,12 @@ export const getDateAvailableTimeSlots = actionClient
       const interval = 15;
       // Lógica para bloquear horários que já passaram hoje
       const now = new Date();
-      const currentDateKey = formatInTimeZone(
+      const todayInTimezone = formatInTimeZone(
         now,
         DEFAULT_TIMEZONE,
         "yyyy-MM-dd",
       );
-      const isQueryingToday = targetDateKey === currentDateKey;
+      const isQueryingToday = queryDateInTimezone === todayInTimezone;
 
       const currentTimeInTimezone = new Intl.DateTimeFormat("pt-BR", {
         timeZone: DEFAULT_TIMEZONE,
