@@ -10,15 +10,15 @@ export function ServicesAndPrices({ services }: ServicesAndPricesProps) {
     <section id="services" className="bg-zinc-900 py-24 sm:py-32">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mb-16 flex flex-wrap items-end gap-6">
-          <div className="max-w-2xl">
+          <div className="max-w-3xl">
             <span className="mb-4 block font-manrope font-semibold text-amber-300 text-xs uppercase tracking-[0.22em] sm:text-sm">
-              Nossos servicos
+              Nossos serviços
             </span>
             <h2 className="font-poppins font-semibold text-4xl text-zinc-100 sm:text-5xl lg:text-6xl">
-              A precision suite
+              Uma suite de precisão
             </h2>
           </div>
-          <div className="hidden h-px flex-1 bg-zinc-700/70 lg:block" />
+          <div className="hidden h-px flex-1 bg-zinc-700/70 lg:block lg:-translate-y-6" />
         </div>
 
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
@@ -34,7 +34,7 @@ export function ServicesAndPrices({ services }: ServicesAndPricesProps) {
               </h3>
 
               <p className="mt-4 max-w-sm font-manrope text-sm text-zinc-400 leading-relaxed">
-                Atendimento de alta precisao, focado no seu visagismo e rotina.
+                Atendimento de alta precisão, focado no seu visagismo e rotina.
               </p>
 
               <div className="mt-8 flex items-center justify-between">
@@ -56,7 +56,7 @@ export function ServicesAndPrices({ services }: ServicesAndPricesProps) {
         {services.length === 0 && (
           <div className="rounded-2xl border border-zinc-700/70 bg-zinc-950 p-8 text-center">
             <p className="font-manrope text-zinc-300">
-              Nenhum servico disponivel no momento.
+              Nenhum serviço disponível no momento.
             </p>
           </div>
         )}

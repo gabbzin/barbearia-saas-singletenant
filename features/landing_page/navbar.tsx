@@ -25,7 +25,7 @@ export function Navbar() {
             <a
               key={item.href}
               href={item.href}
-              className="font-manrope font-medium text-sm text-zinc-300 tracking-wide transition-colors hover:text-amber-300"
+              className="font-manrope font-medium text-sm text-zinc-300 tracking-wide transition-colors hover:border-amber-300 hover:border-b hover:text-amber-300"
             >
               {item.label}
             </a>

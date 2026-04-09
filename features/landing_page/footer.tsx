@@ -1,5 +1,5 @@
 import { RiWhatsappFill } from "@remixicon/react";
-import { Clock3, MapPin, Phone } from "lucide-react";
+import { Clock3, MapPin, MousePointerClickIcon, Phone } from "lucide-react";
 import Link from "next/link";
 import { LogoLink } from "@/shared/components/logo-link";
 import { AuroraText } from "@/shared/components/ui/aurora-text";
@@ -11,7 +11,28 @@ const LINKS = [
   { href: "#location", label: "Localizacao" },
 ];
 
-export function Footer() {
+interface FooterProps {
+  barberInfos: {
+    phone: string;
+    disponibility: {
+      dayOfWeek: number;
+      startTime: string;
+      endTime: string;
+    }[];
+  } | null;
+}
+
+const diasDaSemana = [
+  "Domingo",
+  "Segunda-feira",
+  "Terça-feira",
+  "Quarta-feira",
+  "Quinta-feira",
+  "Sexta-feira",
+  "Sábado",
+];
+
+export function Footer({ barberInfos }: FooterProps) {
   return (
     <section id="location" className="bg-zinc-950 py-20 sm:py-32">
       <div className="mx-auto grid max-w-7xl items-start gap-12 px-4 sm:px-6 md:grid-cols-2 lg:px-8">
@@ -33,7 +54,8 @@ export function Footer() {
               <div className="font-manrope">
                 <p className="font-semibold text-zinc-100">Endereco</p>
                 <p className="text-sm">
-                  Av. Central, Bloco 123 - Nucleo Bandeirante, Brasilia - DF
+                  3ª avenida, Área Especial 12, Lote 1 - Nucleo Bandeirante,
+                  Brasília - DF
                 </p>
               </div>
             </div>
@@ -42,7 +64,14 @@ export function Footer() {
               <Clock3 size={18} className="mt-0.5 text-amber-300" />
               <div className="font-manrope">
                 <p className="font-semibold text-zinc-100">Funcionamento</p>
-                <p className="text-sm">Segunda a Sabado: 09h as 20h</p>
+                <div className="grid grid-cols-1 justify-between gap-x-6 gap-y-1 lg:grid-cols-2">
+                  {barberInfos?.disponibility.map(day => (
+                    // biome-ignore format: Manter estrutura assim
+                    <p key={day.dayOfWeek} className="text-sm">
+                      {diasDaSemana[day.dayOfWeek]}: {day.startTime}-{day.endTime}
+                    </p>
+                  ))}
+                </div>
               </div>
             </div>
 
@@ -50,18 +79,29 @@ export function Footer() {
               <Phone size={18} className="mt-0.5 text-amber-300" />
               <div className="font-manrope">
                 <p className="font-semibold text-zinc-100">Contato</p>
-                <p className="text-sm">+55 (61) 98765-4321</p>
+                <p className="text-sm">{barberInfos?.phone ?? "----"}</p>
               </div>
             </div>
           </div>
 
-          <a
-            href="https://wa.me/5561987654321"
-            className="mt-8 inline-flex items-center gap-2 rounded-lg bg-green-500 px-6 py-3 font-bold font-manrope text-sm text-white transition hover:brightness-110"
-          >
-            <RiWhatsappFill size={18} />
-            Contatar via WhatsApp
-          </a>
+          <div className="flex items-center gap-2">
+            {barberInfos?.phone && (
+              <a
+                href={`https://wa.me/+55${barberInfos.phone}`}
+                className="mt-8 inline-flex items-center gap-2 rounded-lg bg-green-500 px-6 py-3 font-bold font-manrope text-sm text-white transition hover:brightness-110"
+              >
+                <RiWhatsappFill size={18} />
+                Contatar via WhatsApp
+              </a>
+            )}
+            <Link
+              href="/login"
+              className="mt-8 inline-flex items-center gap-2 rounded-lg bg-amber-500 px-6 py-3 font-bold font-manrope text-sm text-zinc-950 transition hover:brightness-110"
+            >
+              <MousePointerClickIcon />
+              Acessar sistema
+            </Link>
+          </div>
           <p className="mt-4 text-muted/50 text-xs">
             Agendamentos feitos apenas via sistema!
           </p>
