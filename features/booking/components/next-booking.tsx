@@ -8,6 +8,7 @@ import {
   CalendarIcon,
   CalendarX2Icon,
   EllipsisIcon,
+  FrownIcon,
   MapPinIcon,
   PlusIcon,
   ScissorsIcon,
@@ -52,14 +53,14 @@ export function NextBooking({
   if (!nextBooking) {
     return (
       <Card>
-        <CardContent className="mx-auto flex w-3/5 flex-col items-center gap-4 py-6 text-center">
+        <CardContent className="mx-auto flex w-full flex-col items-center gap-4 py-6 text-center">
           <IconBadge
-            icon={<CalendarX2Icon size={24} />}
+            icon={lastBookingDate ? <CalendarX2Icon /> : <FrownIcon />}
             variant="mutedSoft"
             size="lg"
           />
           <div>
-            <p className="mt-2 font-bold">Você ainda não tem horário marcado</p>
+            <p className="font-bold">Você ainda não tem horário marcado</p>
             <p className="text-muted-foreground text-sm">
               {lastBookingDate ? (
                 <span>
@@ -67,8 +68,10 @@ export function NextBooking({
                   {Math.floor(
                     (Date.now() - lastBookingDate.getTime()) /
                       (1000 * 60 * 60 * 24),
-                  )}
-                  dias. Que tal dar um trato no visual essa semana?
+                  )}{" "}
+                  dias.
+                  <br />
+                  Que tal dar um trato no visual?
                 </span>
               ) : (
                 "Você nunca marcou um horário. Vamos agendar um!"
