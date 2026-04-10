@@ -63,7 +63,7 @@ export function useExceptionDates(barberId: string) {
     }
 
     toast.success("Exceção de data criada com sucesso!");
-    updateCache(old => [...(old ?? []), result.data.exceptionDate]);
+    updateCache(old => [...(old ?? []), result.data!.exceptionDate]);
     await syncAvailableSlots();
   };
 
