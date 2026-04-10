@@ -9,20 +9,17 @@ export function LogoLink() {
     redirect("/");
   };
 
-  const pixels = 70;
+  const pixels = 50;
 
   return (
     <Image
       src={imagePaths.logoRedonda}
-      alt="Logo da Barbearia 2W"
+      alt="Logo da Barbearia"
       // fill
       width={pixels}
       height={pixels}
       className="fill cursor-pointer rounded-full object-center"
       onClick={handleLogoClick}
     />
-    // <h1 onClick={handleLogoClick} className="cursor-pointer font-bold text-2xl">
-    //   Barbearia X
-    // </h1>
   );
 }

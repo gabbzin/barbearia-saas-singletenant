@@ -4,7 +4,7 @@ import { AlertTriangleIcon } from "lucide-react";
 import { useBarberBreakCRUD } from "@/features/barber/hooks/use-barber-breaks";
 import { Alert, AlertTitle } from "@/shared/components/ui/alert";
 import { TableCell, TableRow } from "@/shared/components/ui/table";
-import { dias } from "./barber-break-form";
+import { dias } from "../forms/form-barber-break";
 import { CardTable } from "./card-table";
 
 interface TableBarberBreakProps {

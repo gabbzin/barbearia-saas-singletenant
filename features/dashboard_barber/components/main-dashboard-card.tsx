@@ -24,7 +24,7 @@ export default function MainCardDashboard({
     growthPercentage >= 0 ? "à mais do que ontem" : "à menos do que ontem";
 
   return (
-    <Card className="relative rounded-4xl bg-indigo-600 py-6 text-white md:hidden">
+    <Card className="relative rounded-4xl bg-indigo-600 py-6 text-white lg:hidden">
       <CardHeader className="px-4">
         <CardTitle className="flex items-center justify-between font-semibold text-sm">
           {title}
