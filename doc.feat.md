@@ -1,94 +1,59 @@
-# Features a desenvolver na versão 1.7
+# Roadmap de Features (v1.8)
 
-## Direção da versão
+## Status atualizado
 
-- Objetivo principal: transformar o agendamento em fluxo de carrinho (estilo e-commerce), com cálculo automático de duração total e preço total.
-- Escopo do pagamento: somente presencial no estabelecimento (sem Stripe neste repositório).
-- Estratégia: MVP estruturado (rápido de entregar, sem criar dívida técnica desnecessária).
+- v1.7 foi antecipada.
+- Refatoração parcial do dashboard do barbeiro foi entregue.
+- Landing page foi atualizada.
+- Pendente identificado: linha do tempo do dia atual no dashboard do barbeiro.
 
-## Funcionalidades prioritárias
+## Objetivo da v1.8
 
-- Reconstruir tela do dashboard para ficar responsiva e bonita (em andamento).
-- Adicionar cache nos bookings.
-- Recriar formulário de criar agendamento com botão "Adicionar" para montar carrinho.
-- Permitir montar combo de serviços no carrinho antes de confirmar horário.
-- Calcular horário disponível com base na duração total do combo selecionado.
-- Criar agendamento com múltiplos itens de serviço (em vez de fluxo unitário por serviço).
+Finalizar a refatoração do dashboard do barbeiro com foco na experiência operacional do dia, implementando a linha do tempo de hoje com dados confiáveis, leitura rápida e boa responsividade.
 
-## Mudanças técnicas previstas (MVP estruturado)
+## Escopo da v1.8
 
-### Banco de dados
+- Implementar linha do tempo do dia de hoje no dashboard do barbeiro.
+- Exibir os agendamentos do dia em ordem cronológica.
+- Destacar visualmente horário atual, próximos atendimentos e concluídos/cancelados.
+- Garantir comportamento responsivo para desktop e mobile.
+- Manter consistência visual com a nova landing e com os padrões atuais do sistema.
 
-- Evoluir modelagem para suportar itens de agendamento (ex.: `BookingItem`).
-- Manter `Booking` como entidade principal (data, barbeiro, cliente, status, forma de pagamento, totais).
-- Ajustar consultas/listagens para exibir resumo de múltiplos serviços por agendamento.
+## Critérios de aceite
 
-### Backend (Next fullstack)
+- O barbeiro consegue visualizar todos os agendamentos do dia atual em uma linha do tempo única.
+- A ordenação por horário está correta e estável.
+- Estados relevantes do agendamento ficam claros na interface.
+- Em telas menores, a linha do tempo continua legível e utilizável.
+- A tela carrega sem regressões no restante do dashboard.
 
-- Atualizar cálculo de disponibilidade para receber lista de serviços (ou duração total consolidada).
-- Atualizar criação de agendamento do cliente para persistir múltiplos itens em transação.
-- Atualizar criação manual de agendamento (barbeiro) para seguir o mesmo padrão.
+## Checklist de execução
 
-### Frontend
+### Fase 1 - Estrutura da timeline
 
-- Trocar ação de "Reservar" por "Adicionar" no card de serviço.
-- Adaptar o `appointment-sheet` para exibir carrinho, total e duração total.
-- Permitir remover item do carrinho antes da confirmação.
-- Confirmar um único horário para o combo completo.
+- [ ] Definir estrutura visual e componentes reutilizáveis da linha do tempo.
+- [ ] Integrar seção da timeline na página principal do dashboard do barbeiro.
 
-## Fora de escopo da 1.7
+### Fase 2 - Dados do dia atual
 
-- Checkout Stripe, webhooks e reembolso neste repo.
-- Integração com backend NestJS (será tratada em etapa futura).
+- [ ] Garantir query/ação para buscar agendamentos do dia atual do barbeiro logado.
+- [ ] Validar timezone e corte correto de início/fim do dia.
+- [ ] Ordenar dados por horário de forma determinística.
 
-## Critérios de aceite da feature de carrinho
+### Fase 3 - Regras visuais e estados
 
-- Usuário consegue adicionar e remover serviços antes de agendar.
-- Sistema calcula duração total e só oferece horários válidos para o combo.
-- Agendamento final é salvo corretamente com todos os itens do combo.
-- Tela de agendamentos mostra resumo coerente do serviço/combinação.
+- [ ] Destacar slot atual e próximos horários.
+- [ ] Exibir status do agendamento com variações visuais consistentes.
+- [ ] Tratar estado vazio (sem agendamentos hoje).
 
-## Checklist de execução (ordem sugerida)
+### Fase 4 - Qualidade e validação
 
-### Fase 1 - Modelagem e base de domínio
+- [ ] Validar responsividade da timeline em mobile e desktop.
+- [ ] Revisar consistência com o restante do dashboard.
+- [ ] Executar testes manuais do fluxo diário do barbeiro.
 
-- [ ] Definir estrutura final de agendamento com itens (`Booking` + `BookingItem`).
-- [ ] Atualizar `prisma/schema.prisma` com nova modelagem e relacionamentos.
-- [ ] Rodar migração e validar seed/dados locais.
-- [ ] Revisar consultas impactadas por `booking.service` unico.
+## Fora de escopo da v1.8
 
-### Fase 2 - Disponibilidade por combo
-
-- [ ] Atualizar contrato de disponibilidade para aceitar lista de servicos (ou duracao total).
-- [ ] Refatorar `features/booking/functions/get-date-available-time-slots.ts` para calcular conflito usando duracao consolidada.
-- [ ] Ajustar `features/booking/hooks/use-available-time-slots.ts` para novo payload.
-- [ ] Validar cenarios: sem conflito, com conflito parcial, com intervalo, com excecao.
-
-### Fase 3 - Criacao de agendamento com multiplos itens
-
-- [ ] Atualizar `features/booking/functions/create-booking.ts` para criar 1 agendamento com N itens (transacao).
-- [ ] Atualizar `features/booking/functions/create-booking-without-session.ts` no mesmo padrao.
-- [ ] Garantir calculo de `priceInCents` total no agendamento.
-- [ ] Garantir validacoes (servicos repetidos, servico inexistente, data passada).
-
-### Fase 4 - Frontend do carrinho (cliente)
-
-- [ ] Trocar acao principal em `features/service/components/service-item.tsx` para "Adicionar".
-- [ ] Subir estado de carrinho em `app/(protected)/client/(no-header)/barbeiro/[id]/page.tsx` (ou contexto local da tela).
-- [ ] Adaptar `shared/components/appointment-sheet.tsx` para listar itens, total e duracao total.
-- [ ] Permitir remover item e limpar carrinho antes de confirmar.
-- [ ] Confirmar horario unico para o combo completo.
-
-### Fase 5 - Listagem e pos-agendamento
-
-- [ ] Ajustar `features/booking/functions/get-bookings.ts` para retornar resumo dos itens.
-- [ ] Ajustar `features/booking/components/booking-client.tsx` e `features/booking/components/booking-item.tsx` para exibicao de combo.
-- [ ] Ajustar `features/booking/components/cancel-booking.tsx` para valor/resumo corretos.
-- [ ] Revisar dashboard/barbeiro para manter consistencia dos dados.
-
-### Fase 6 - Validacao final
-
-- [ ] Testar fluxo completo cliente: adicionar -> escolher data/horario -> confirmar.
-- [ ] Testar fluxo completo barbeiro: criacao manual com combo.
-- [ ] Testar conflitos de agenda com diferentes combinacoes de servicos.
-- [ ] Revisar performance basica das consultas mais usadas.
+- Novas mudanças estruturais de banco para agendamento.
+- Alterações de escopo em checkout/pagamentos.
+- Nova refatoração ampla da landing page.
