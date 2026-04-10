@@ -23,9 +23,11 @@ import {
 } from "@/shared/components/ui/dialog";
 import { Label } from "@/shared/components/ui/label";
 import { convertBRL } from "@/utils/convertBRL";
+import { SpeedDialFormTrigger } from "./forms/triggers/speed-dial-form-trigger";
 
 interface NewBookingManualDialogProps {
   barberId: string;
+  speedDial?: boolean;
 }
 
 const newBookingSchema = z.object({
@@ -54,6 +56,7 @@ type newBookingSchemaType = z.infer<typeof newBookingSchema>;
 
 export function NewBookingManualDialog({
   barberId,
+  speedDial = false,
 }: NewBookingManualDialogProps) {
   // Constante de tempo
   const today = new Date();
@@ -106,10 +109,14 @@ export function NewBookingManualDialog({
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="default" className="flex items-center gap-2">
-          <PlusIcon />
-          Novo agendamento
-        </Button>
+        {speedDial ? (
+          <SpeedDialFormTrigger icon={PlusIcon} label="Novo agendamento" />
+        ) : (
+          <Button variant="default" className="flex items-center gap-2">
+            <PlusIcon />
+            Novo agendamento
+          </Button>
+        )}
       </DialogTrigger>
       <DialogContent className="space-y-4">
         <DialogHeader>
@@ -204,9 +211,7 @@ export function NewBookingManualDialog({
               />
             </div>
           </div>
-          <div className="space-y-1.5">
-            
-          </div>
+          <div className="space-y-1.5"></div>
         </GenericForm>
       </DialogContent>
     </Dialog>

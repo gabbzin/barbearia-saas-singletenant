@@ -78,7 +78,7 @@ export const getBarberDashboardInfos = actionClient.action(async () => {
     /**
      * Faturamento total do dia atual e quantidade de serviços realizados. Se houver um erro na consulta, retorna 0 para ambos os valores.
      */
-    const todayBillingAgg = todayBookings.reduce(
+    const todayBillingAgg = todayCompleted.reduce(
       (acc, booking) => {
         return {
           priceInCents: acc.priceInCents + (booking.priceInCents ?? 0),

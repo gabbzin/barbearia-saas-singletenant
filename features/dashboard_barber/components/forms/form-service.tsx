@@ -58,13 +58,13 @@ export function FormService({ barberId, service }: FormServiceProps) {
             <PencilIcon />
           </Button>
         ) : (
-          <SpeedDialFormTrigger label="Adicionar Serviço" icon={PlusIcon} />
+          <SpeedDialFormTrigger label="Adicionar serviço" icon={PlusIcon} />
         )}
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
           <DialogTitle className="font-bold text-xl">
-            {isEditing ? "Editar Serviço" : "Adicionar Serviço"}
+            {isEditing ? "Editar serviço" : "Adicionar serviço"}
           </DialogTitle>
           <DialogDescription className="text-muted-foreground text-sm">
             {isEditing

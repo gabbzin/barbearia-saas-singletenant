@@ -9,6 +9,7 @@ import { FormBarberBreak } from "./forms/form-barber-break";
 import { FormExceptionDate } from "./forms/form-exception-date";
 import { FormService } from "./forms/form-service";
 import FormTimesServices from "./forms/form-times-services";
+import { NewBookingManualDialog } from "./new-booking-manual-dialog";
 
 interface SpeedDialProps {
   barberId: string;
@@ -24,24 +25,37 @@ export function SpeedDial({
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <div className="fixed right-6 bottom-6 z-50 flex flex-col items-end gap-3">
-      <div
-        className={`flex flex-col gap-3 transition-all duration-300 ${isOpen ? "translate-y-0 opacity-100" : "pointer-events-none translate-y-10 opacity-0"}`}
-      >
-        <FormTimesServices barberId={barberId} defaultValues={defaultTimes} />
-        <FormService barberId={barberId} />
-        <FormBarberBreak barberId={barberId} disponibility={disponibility} />
-        <FormExceptionDate barberId={barberId} />
-      </div>
+    <>
+      <button
+        type="button"
+        aria-label="Fechar menu rápido"
+        className={`fixed inset-0 z-60 bg-foreground/50 transition-all duration-300 ${
+          isOpen
+            ? "pointer-events-auto opacity-100"
+            : "pointer-events-none opacity-0"
+        }`}
+        onClick={() => setIsOpen(false)}
+      />
+      <div className="fixed right-6 bottom-6 z-61 flex flex-col items-end gap-3">
+        <div
+          className={`flex flex-col gap-3 transition-all duration-300 ${isOpen ? "translate-y-0 opacity-100" : "pointer-events-none translate-y-10 opacity-0"}`}
+        >
+          <NewBookingManualDialog barberId={barberId} speedDial={true} />
+          <FormExceptionDate barberId={barberId} />
+          <FormTimesServices barberId={barberId} defaultValues={defaultTimes} />
+          <FormService barberId={barberId} />
+          <FormBarberBreak barberId={barberId} disponibility={disponibility} />
+        </div>
 
-      {/* Botão Principal (FAB) */}
-      <Button
-        size="icon"
-        className={`h-14 w-14 rounded-full shadow-xl transition-transform duration-300 ${isOpen ? "rotate-45" : "rotate-0"}`}
-        onClick={() => setIsOpen(!isOpen)}
-      >
-        <Plus className="size-6" />
-      </Button>
-    </div>
+        {/* Botão Principal (FAB) */}
+        <Button
+          size="icon"
+          className={`h-14 w-14 rounded-full shadow-xl transition-transform duration-300 ${isOpen ? "rotate-45" : "rotate-0"}`}
+          onClick={() => setIsOpen(!isOpen)}
+        >
+          <Plus className="size-6" />
+        </Button>
+      </div>
+    </>
   );
 }

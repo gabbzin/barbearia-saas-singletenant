@@ -128,7 +128,7 @@ export function FormBarberBreak({
             <PencilIcon />
           </Button>
         ) : (
-          <SpeedDialFormTrigger label="Adicionar Intervalo" icon={PlusIcon} />
+          <SpeedDialFormTrigger label="Adicionar intervalo" icon={PlusIcon} />
         )}
       </DialogTrigger>
       <DialogContent>
