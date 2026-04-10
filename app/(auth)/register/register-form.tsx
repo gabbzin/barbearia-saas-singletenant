@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import {
   registerSchema,
@@ -14,7 +14,8 @@ import { Card, CardContent, CardHeader } from "@/shared/components/ui/card";
 import { PasswordStrength } from "../reset-password/passwordStrength";
 
 const RegisterForm = () => {
-  const [emailSend, setEmailSend] = useState(false);
+  const { push } = useRouter();
+  // const [emailSend, setEmailSend] = useState(false);
 
   const handleRegister = async (data: registerSchemaType) => {
     try {
@@ -24,9 +25,9 @@ const RegisterForm = () => {
         password: data.senha,
       });
 
-      toast.success("Conta criada com sucesso! Verifique seu email.");
-      setEmailSend(true);
-      return;
+      toast.success("Conta criada com sucesso! Redirecionando...");
+      // setEmailSend(true);
+      return push("/");
     } catch (error) {
       toast.error(
         error instanceof Error
@@ -36,22 +37,22 @@ const RegisterForm = () => {
     }
   };
 
-  if (emailSend) {
-    return (
-      <Card className="w-full max-w-md">
-        <CardHeader className="text-center font-bold text-3xl">
-          Verifique seu email
-        </CardHeader>
-        <CardContent className="px-8">
-          <p>
-            Um email de verificação foi enviado para o endereço fornecido
-            durante o cadastro. Por favor, verifique sua caixa de entrada e
-            siga as instruções para ativar sua conta.
-          </p>
-        </CardContent>
-      </Card>
-    );
-  }
+  // if (emailSend) {
+  //   return (
+  //     <Card className="w-full max-w-md">
+  //       <CardHeader className="text-center font-bold text-3xl">
+  //         Verifique seu email
+  //       </CardHeader>
+  //       <CardContent className="px-8">
+  //         <p>
+  //           Um email de verificação foi enviado para o endereço fornecido
+  //           durante o cadastro. Por favor, verifique sua caixa de entrada e
+  //           siga as instruções para ativar sua conta.
+  //         </p>
+  //       </CardContent>
+  //     </Card>
+  //   );
+  // }
 
   return (
     <Card className="w-full max-w-md">
