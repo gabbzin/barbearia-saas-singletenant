@@ -8,6 +8,7 @@ interface PhotoAndNameProps {
   mutedPhrase?: string;
   sizePhoto?: number;
   enabledGoldEffect?: boolean;
+  reverseText?: boolean;
 }
 
 export function PhotoAndName({
@@ -17,6 +18,7 @@ export function PhotoAndName({
   mutedPhrase,
   sizePhoto,
   enabledGoldEffect,
+  reverseText = false,
 }: PhotoAndNameProps) {
   return (
     <div className="flex items-center gap-2">
@@ -26,13 +28,15 @@ export function PhotoAndName({
         size={sizePhoto}
         enabledGoldEffect={enabledGoldEffect}
       />
-      <div className="flex flex-col leading-none">
+      <div
+        className={`flex leading-none ${reverseText ? "flex-col-reverse" : "flex-col"}`}
+      >
         {mutedPhrase && (
           <p className="text-muted-foreground text-xs">{mutedPhrase}</p>
         )}
-        <h2 className="font-sans font-semibold text-md">
+        <h4 className="overflow-hidden text-ellipsis whitespace-nowrap font-sans font-semibold text-md max-[400px]:w-20 md:w-full">
           {name} {emoji && <span className="font-sans">{emoji}</span>}
-        </h2>
+        </h4>
       </div>
     </div>
   );

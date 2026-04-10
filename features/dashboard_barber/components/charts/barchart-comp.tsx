@@ -61,7 +61,7 @@ export function BarChartGraph({ chartConfig, data }: BarChartGraphProps) {
             />
           }
         />
-        <Bar dataKey="saldoEmReais" fill="var(--chart-2)" radius={4} />
+        <Bar dataKey="saldoEmReais" fill="var(--chart-6)" radius={4} />
       </BarChart>
     </ChartContainer>
   );

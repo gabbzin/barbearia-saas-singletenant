@@ -5,13 +5,14 @@ import { Plus } from "lucide-react";
 import { useState } from "react";
 import type { TimesSchemaData } from "@/features/booking/schema/timesSchema";
 import { Button } from "@/shared/components/ui/button";
-import { FormBarberBreak } from "./barber-break-form";
-import { FormService } from "./form-service";
-import FormTimesServices from "./form-times-services";
+import { FormBarberBreak } from "./forms/form-barber-break";
+import { FormExceptionDate } from "./forms/form-exception-date";
+import { FormService } from "./forms/form-service";
+import FormTimesServices from "./forms/form-times-services";
 
 interface SpeedDialProps {
   barberId: string;
-  defaultTimes?: TimesSchemaData;
+  defaultTimes?: TimesSchemaData[];
   disponibility: Disponibility[];
 }
 
@@ -30,6 +31,7 @@ export function SpeedDial({
         <FormTimesServices barberId={barberId} defaultValues={defaultTimes} />
         <FormService barberId={barberId} />
         <FormBarberBreak barberId={barberId} disponibility={disponibility} />
+        <FormExceptionDate barberId={barberId} />
       </div>
 
       {/* Botão Principal (FAB) */}

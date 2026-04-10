@@ -9,6 +9,7 @@
     "build": "prisma migrate deploy && next build",
     "start": "next start",
     "lint": "eslint",
+    "seed:bookings": "tsx prisma/seed.bookings.ts",
     "postinstall": "prisma generate",
     "email:dev": "email dev"
   },

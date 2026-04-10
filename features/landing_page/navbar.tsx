@@ -1,59 +1,40 @@
-import { ScissorsIcon } from "lucide-react";
+import Link from "next/link";
+import { LogoLink } from "@/shared/components/logo-link";
 import { Button } from "@/shared/components/ui/button";
 
-const Link = ({
-  href,
-  children,
-}: {
-  href: string;
-  children: React.ReactNode;
-}) => {
-  return <a href={href}>{children}</a>;
-};
-
-const Links: string[] = [
-  "Como Funciona",
-  "Serviços",
-  "Benefícios",
-  "Depoimentos",
+const navItems = [
+  { label: "Serviços", href: "#services" },
+  { label: "Galeria", href: "#gallery" },
+  { label: "Equipe", href: "#team" },
+  { label: "Localização", href: "#location" },
 ];
 
 export function Navbar() {
   return (
-    <nav
-      className={`fixed z-50 w-full bg-foreground py-6 transition-all duration-300`}
-    >
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between">
-          <div className="flex cursor-pointer items-center gap-2">
-            <div className="rounded-xl bg-amber-500 p-2 text-zinc-950">
-              <ScissorsIcon size={24} strokeWidth={2.5} />
-            </div>
-            <span className="font-bold text-white text-xl tracking-tight">
-              Barbearia<span className="text-amber-500">SaaS</span>
-            </span>
-          </div>
-          <div className="hidden items-center space-x-8 md:flex">
-            {Links.map(link => (
-              <Link
-                key={link}
-                href={`#${link.toLowerCase().replace(/\s/g, "-")}`}
-              >
-                <span className="text-sm text-zinc-300 transition-colors hover:text-white">
-                  {link}
-                </span>
-              </Link>
-            ))}
-          </div>
-          <div className="flex items-center gap-4">
-            <Button variant={"gold"} className="font-bold">
-              <Link href="/login">Fazer Login</Link>
-            </Button>
-            <Button variant={"default"} className="hidden font-bold md:block">
-              <Link href="/login">Agendar Agora</Link>
-            </Button>
-          </div>
+    <nav className="fixed top-0 z-50 w-full border-zinc-800/60 border-b bg-neutral-950/80 py-4 backdrop-blur-xl">
+      <div className="mx-auto flex max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
+        <a href="#top" className="flex items-center gap-3">
+          <LogoLink />
+          <span className="font-poppins font-semibold text-2xl text-zinc-100 tracking-tight">
+            Lucas Alves
+          </span>
+        </a>
+
+        <div className="hidden items-center gap-10 md:flex">
+          {navItems.map(item => (
+            <a
+              key={item.href}
+              href={item.href}
+              className="font-manrope font-medium text-sm text-zinc-300 tracking-wide transition-colors hover:border-amber-300 hover:border-b hover:text-amber-300"
+            >
+              {item.label}
+            </a>
+          ))}
         </div>
+
+        <Button variant="gold" asChild className="px-6 font-semibold text-sm">
+          <Link href="/login">Agendar Agora</Link>
+        </Button>
       </div>
     </nav>
   );

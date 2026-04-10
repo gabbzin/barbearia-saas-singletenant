@@ -1,68 +1,51 @@
-import { CalendarClockIcon, CreditCardIcon, UserCheckIcon } from "lucide-react";
-
-const steps = [
-  {
-    step: "01",
-    icon: UserCheckIcon,
-    title: "Escolha o Profissional",
-    desc: "Navegue pelos nossos barbeiros, veja avaliações e serviços oferecidos.",
-  },
-  {
-    step: "02",
-    icon: CalendarClockIcon,
-    title: "Selecione o Horário",
-    desc: "Acesse a agenda em tempo real e clique no horário que melhor encaixa no seu dia.",
-  },
-  {
-    step: "03",
-    icon: CreditCardIcon,
-    title: "Confirme e Pague",
-    desc: "Garanta sua vaga pagando online com segurança. Depois é só aparecer!",
-  },
-];
+import Image from "next/image";
 
 export function HowItWork() {
   return (
-    <section
-      id="como-funciona"
-      className="relative border-zinc-900 border-t bg-foreground py-24"
-    >
-      <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="mx-auto mb-16 max-w-2xl text-center">
-          <h2 className="mb-3 font-bold text-amber-500 text-sm uppercase tracking-wide">
-            O Processo
-          </h2>
-          <h3 className="mb-6 font-bold text-3xl text-white md:text-5xl">
-            Três passos para o seu novo visual.
-          </h3>
-          <p className="text-lg text-zinc-400">
-            Criamos um fluxo focado em você. Sem perda de tempo, sem burocracia.
-          </p>
+    <section className="bg-zinc-950 py-24 sm:py-32">
+      <div className="mx-auto grid max-w-7xl items-center gap-14 px-4 sm:px-6 md:grid-cols-12 lg:px-8">
+        <div className="relative md:col-span-5">
+          <div className="relative aspect-4/5 overflow-hidden rounded-2xl border border-zinc-700/60 bg-zinc-900">
+            <Image
+              fill
+              src="https://lh3.googleusercontent.com/aida-public/AB6AXuAl0X8vOeh2W2YLcuyfCKvcH9PA4AOjin5Rbfw5bttgjS1UW_u1QiMed8RNGut6NZwpSqbU-Datr6ew_RTELfCruXqKfY_UbzVCS6WBKNLqcirrgCHnL3bsdn2XxkfUQ-Dli-pEu8N-zwbYxaatiVTh7p07NTpIJxb2FgDkT4PU57GOwwn0DX9UIlZw1lkl85-TOqbHEk0uckeOLf0PaJe6n1syeR47zY8FdxphkyievIAypvEp6dE7FS4Aoh-NsIgNp2lTDmbxy_o"
+              alt="Profissional modelando barba"
+              className="h-full w-full object-cover"
+            />
+          </div>
+          <div className="absolute -right-6 -bottom-6 h-36 w-36 rounded-full bg-amber-600/20 blur-3xl" />
         </div>
 
-        <div className="relative grid gap-8 md:grid-cols-3">
-          {/* Linha conectora desktop */}
-          <div className="absolute top-1/2 right-[15%] left-[15%] z-0 hidden h-px -translate-y-1/2 bg-linear-to-r from-zinc-800 via-amber-500/50 to-zinc-800 md:block"></div>
+        <div className="md:col-span-7">
+          <h2 className="font-poppins font-semibold text-4xl text-zinc-100 leading-tight sm:text-5xl lg:text-6xl">
+            O atelier da
+            <br />
+            <span className="text-amber-300">masculinidade moderna</span>
+          </h2>
+          <p className="mt-7 max-w-2xl font-manrope text-lg text-zinc-300 leading-relaxed">
+            Nascido da paixao pela precisao e pela arte da barbearia classica, o
+            Lucas Alves Salao e Barbearia une tecnica contemporanea,
+            exclusividade e experiencia premium em cada atendimento.
+          </p>
 
-          {steps.map((item, _idx) => (
-            <div
-              key={item.step}
-              className="relative z-10 rounded-3xl border border-zinc-800 bg-zinc-900/80 p-8 text-center backdrop-blur-sm transition-transform duration-300 hover:-translate-y-2"
-            >
-              <div className="pointer-events-none absolute -top-8 -left-4 select-none font-black text-6xl text-white">
-                {item.step}
-              </div>
-              <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-2xl border border-amber-500/20 bg-amber-500/10 text-amber-500">
-                <item.icon size={32} />
-              </div>
-              <h4 className="mb-3 font-bold text-white text-xl">
-                {item.title}
-              </h4>
-              <p className="text-sm text-zinc-400 leading-relaxed">
-                {item.desc}
+          <div className="mt-10 grid gap-6 border-zinc-700/60 border-t pt-8 sm:grid-cols-2">
+            <div>
+              <h3 className="font-poppins font-semibold text-2xl text-amber-300">
+                Exclusividade
+              </h3>
+              <p className="mt-2 font-manrope text-sm text-zinc-400 leading-relaxed">
+                Atendimento personalizado com hora marcada e foco no seu estilo.
               </p>
             </div>
-          ))}
+            <div>
+              <h3 className="font-poppins font-semibold text-2xl text-amber-300">
+                Conforto Noir
+              </h3>
+              <p className="mt-2 font-manrope text-sm text-zinc-400 leading-relaxed">
+                Ambiente climatizado, cafe premium e trilha sonora selecionada.
+              </p>
+            </div>
+          </div>
         </div>
       </div>
     </section>

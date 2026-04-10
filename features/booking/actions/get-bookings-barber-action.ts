@@ -8,6 +8,8 @@ import { actionClient } from "@/lib/actionClient";
 
 const inputSchema = z.object({
   date: z.string().optional(),
+  take: z.number().optional(),
+  untilNow: z.boolean().optional(),
 });
 
 /**
@@ -16,7 +18,7 @@ const inputSchema = z.object({
  */
 export const getBookingsBarberAction = actionClient
   .inputSchema(inputSchema)
-  .action(async ({ parsedInput: { date } }) => {
+  .action(async ({ parsedInput: { date, take, untilNow } }) => {
     const session = await verifySession();
 
     if (!session || session.role !== "BARBER" || !session.barberId) {
@@ -34,7 +36,12 @@ export const getBookingsBarberAction = actionClient
         })()
       : undefined;
 
-    const bookings = await getBookingsBarber(barberId, targetDate);
+    const bookings = await getBookingsBarber(
+      barberId,
+      targetDate,
+      take,
+      untilNow,
+    );
 
     return { bookings };
   });
