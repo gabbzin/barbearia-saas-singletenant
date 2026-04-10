@@ -1,5 +1,5 @@
-import { forwardRef, type HTMLAttributes } from "react";
 import type { LucideIcon } from "lucide-react";
+import { forwardRef, type HTMLAttributes } from "react";
 import { Button } from "@/shared/components/ui/button";
 
 interface SpeedDialFormTriggerProps extends HTMLAttributes<HTMLDivElement> {
@@ -12,11 +12,7 @@ export const SpeedDialFormTrigger = forwardRef<
   SpeedDialFormTriggerProps
 >(({ label, icon: Icon, ...props }, ref) => {
   return (
-    <div
-      ref={ref}
-      {...props}
-      className="flex items-center justify-end gap-3"
-    >
+    <div ref={ref} {...props} className="flex items-center justify-end gap-3">
       <span className="rounded bg-background px-2 py-1 text-muted-foreground">
         {label}
       </span>
