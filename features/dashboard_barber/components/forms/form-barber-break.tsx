@@ -35,12 +35,14 @@ interface BarberBreakFormProps {
   barberId: string;
   barberBreak?: BarberBreak;
   disponibility: Disponibility[];
+  onDialogOpen?: () => void;
 }
 
 export function FormBarberBreak({
   barberId,
   barberBreak,
   disponibility,
+  onDialogOpen,
 }: BarberBreakFormProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedDay, setSelectedDay] = useState<string | null>(null);
@@ -121,7 +123,13 @@ export function FormBarberBreak({
   const isLoading = isEditing ? isUpdating : isCreating;
 
   return (
-    <Dialog open={isOpen} onOpenChange={setIsOpen}>
+    <Dialog
+      open={isOpen}
+      onOpenChange={open => {
+        if (open) onDialogOpen?.();
+        setIsOpen(open);
+      }}
+    >
       <DialogTrigger asChild>
         {isEditing ? (
           <Button variant={"secondary"} disabled={isLoading}>

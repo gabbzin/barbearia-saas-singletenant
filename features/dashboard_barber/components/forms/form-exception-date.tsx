@@ -29,6 +29,7 @@ import { SpeedDialFormTrigger } from "./triggers/speed-dial-form-trigger";
 interface FormExceptionDateProps {
   barberId: string;
   exceptionDate?: ExceptionDate;
+  onDialogOpen?: () => void;
 }
 
 function ExceptionTimeFields() {
@@ -61,6 +62,7 @@ function ExceptionTimeFields() {
 export function FormExceptionDate({
   barberId,
   exceptionDate,
+  onDialogOpen,
 }: FormExceptionDateProps) {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -106,7 +108,13 @@ export function FormExceptionDate({
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={setIsOpen}>
+    <Dialog
+      open={isOpen}
+      onOpenChange={open => {
+        if (open) onDialogOpen?.();
+        setIsOpen(open);
+      }}
+    >
       <DialogTrigger asChild>
         {isEditing ? (
           <Button variant="secondary" disabled={isLoading}>
