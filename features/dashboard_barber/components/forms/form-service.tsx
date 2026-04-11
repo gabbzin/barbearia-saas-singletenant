@@ -21,9 +21,10 @@ import { SpeedDialFormTrigger } from "./triggers/speed-dial-form-trigger";
 interface FormServiceProps {
   barberId: string;
   service?: BarberService;
+  onDialogOpen?: () => void;
 }
 
-export function FormService({ barberId, service }: FormServiceProps) {
+export function FormService({ barberId, service, onDialogOpen }: FormServiceProps) {
   const [isOpen, setIsOpen] = useState(false);
   const { createService, updateService, isCreating, isUpdating } =
     useServicesCRUD(barberId);
@@ -51,7 +52,13 @@ export function FormService({ barberId, service }: FormServiceProps) {
   const isLoading = isEditing ? isUpdating : isCreating;
 
   return (
-    <Dialog open={isOpen} onOpenChange={setIsOpen}>
+    <Dialog
+      open={isOpen}
+      onOpenChange={open => {
+        if (open) onDialogOpen?.();
+        setIsOpen(open);
+      }}
+    >
       <DialogTrigger asChild>
         {isEditing ? (
           <Button variant={"secondary"} disabled={isLoading}>

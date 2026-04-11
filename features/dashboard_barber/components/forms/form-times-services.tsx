@@ -45,6 +45,7 @@ const daysMap = new Map([
 interface FormTimesServicesProps {
   barberId: string;
   defaultValues?: TimesSchemaData[];
+  onDialogOpen?: () => void;
 }
 
 interface DaySelectorProps {
@@ -94,8 +95,11 @@ function DaySelector({
 export default function FormTimesServices({
   barberId,
   defaultValues,
+  onDialogOpen,
 }: FormTimesServicesProps) {
   const { saveSettings } = useSettingsBarber(barberId);
+
+  const [isOpen, setIsOpen] = useState(false);
 
   const [availabilityByDay, setAvailabilityByDay] = useState<
     Map<number, DayRange>
@@ -146,7 +150,13 @@ export default function FormTimesServices({
   };
 
   return (
-    <Dialog>
+    <Dialog
+      open={isOpen}
+      onOpenChange={open => {
+        if (open) onDialogOpen?.();
+        setIsOpen(open);
+      }}
+    >
       <DialogTrigger asChild>
         <SpeedDialFormTrigger label="Configurar horários" icon={ScissorsIcon} />
       </DialogTrigger>
