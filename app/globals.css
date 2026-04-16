@@ -49,6 +49,8 @@
   --gold-soft: oklch(0.9 0.06 85);
   --gold-strong: oklch(0.72 0.16 75);
   --gold-border: oklch(0.84 0.09 80);
+  --forest: oklch(0.428 0.054 150);
+  --forest-alternative: oklch(0.555 0.065 153.5);
 }
 
 .dark {
@@ -85,6 +87,8 @@
   --gold-soft: oklch(0.32 0.04 80);
   --gold-strong: oklch(0.7 0.18 75);
   --gold-border: oklch(0.78 0.12 80);
+  --forest: oklch(0.428 0.054 150);
+  --forest-alternative: oklch(0.325 0.041 153.5);
 }
 
 @theme inline {
@@ -162,6 +166,8 @@
   --color-gold-soft: var(--gold-soft);
   --color-gold-strong: var(--gold-strong);
   --color-gold-border: var(--gold-border);
+  --color-forest: var(--forest);
+  --color-forest-alternative: var(--forest-alternative);
 
   @keyframes rainbow {
     0% {
