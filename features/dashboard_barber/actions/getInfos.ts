@@ -65,7 +65,9 @@ export const getBarberDashboardInfos = actionClient.action(async () => {
       return booking.date >= startOfDayDate && booking.date <= endOfDayDate;
     });
 
+    /** Agendamentos completos */
     const todayCompleted = todayBookings.filter(b => b.status === "COMPLETED");
+    /** Agendamentos com status SCHEDULED */
     const todayScheduled = todayBookings.filter(b => b.status === "SCHEDULED");
 
     const yesterdayBookings = bookings.filter(booking => {
@@ -102,7 +104,9 @@ export const getBarberDashboardInfos = actionClient.action(async () => {
     /**
      * Total de agendamentos para o dia atual, independentemente do status. Se houver um erro na consulta, retorna 0.
      */
-    const totalSchedulesToday = todayBookings.length;
+    const totalBookingsToday = todayBookings.length;
+
+    const totalScheduledToday = todayScheduled.length;
 
     /**
      * Total do faturamento do dia atual, convertido para BRL. Se houver um erro na consulta, retorna "R$ 0,00".
@@ -117,12 +121,12 @@ export const getBarberDashboardInfos = actionClient.action(async () => {
     /**
      * Total de serviços realizados no dia atual. Se houver um erro na consulta, retorna 0.
      */
-    const servicesPerformed = todayCompleted.length;
+    const bookingsPerformed = todayCompleted.length;
 
     /**
      * Total de serviços realizados no dia anterior. Se houver um erro na consulta, retorna 0.
      */
-    const yesterdayServicesPerformed = yesterdayBookings.filter(
+    const bookingsPerformedYesterday = yesterdayBookings.filter(
       booking => booking.status === "COMPLETED",
     ).length;
 
@@ -149,7 +153,7 @@ export const getBarberDashboardInfos = actionClient.action(async () => {
     const today = new Date().getDay();
 
     const ordered = Array.from(weekMap.entries()).sort(
-      ([a], [b]) => (a === today ? 7 : a) - (b === today ? 7 : b),
+      ([a], [b]) => ((today - b + 7) % 7) - ((today - a + 7) % 7),
     );
 
     const daysOfWeekMap = {
@@ -183,11 +187,12 @@ export const getBarberDashboardInfos = actionClient.action(async () => {
         ? 0
         : ((todayTotal - yesterdayTotal) / yesterdayTotal) * 100;
 
+    /** Progresso dos agendamentos */
     const progressBookings =
-      totalSchedulesToday === 0
+      totalBookingsToday === 0
         ? 0
-        : ((totalSchedulesToday - bookingsNotConfirmedToday) /
-            totalSchedulesToday) *
+        : ((totalScheduledToday - bookingsNotConfirmedToday) /
+            totalBookingsToday) *
           100;
 
     /** Informações consolidadas sobre agendamentos do dia atual */
@@ -195,7 +200,7 @@ export const getBarberDashboardInfos = actionClient.action(async () => {
       /** Próximos 5 agendamentos programados para o barbeiro a partir do momento atual */
       next: nextBookings,
       /** Total de agendamentos marcados para hoje */
-      totalScheduledToday: totalSchedulesToday,
+      totalScheduledToday: totalScheduledToday,
       /** Quantidade de agendamentos não confirmados até o horário atual */
       pendingConfirmationToday: bookingsNotConfirmedToday,
       /** Diferença entre pendentes e já realizados para visualizar progresso em porcentagem */
@@ -210,8 +215,8 @@ export const getBarberDashboardInfos = actionClient.action(async () => {
         /** Valor bruto em centavos para cálculos mais precisos */
         rawInCents: todayTotal,
       },
-      /** Total de serviços/atendimentos completados hoje */
-      servicesPerformed,
+      /** Total de agendamentos realizados hoje */
+      bookingsPerformed,
     };
 
     /** Dados do dia anterior para comparação */
@@ -224,8 +229,8 @@ export const getBarberDashboardInfos = actionClient.action(async () => {
         /** Agregação completa do Prisma do dia anterior */
         aggregate: yesterdayBillingAgg,
       },
-      /** Total de serviços completados no dia anterior */
-      servicesPerformed: yesterdayServicesPerformed,
+      /** Total de agendamentos realizados no dia anterior */
+      bookingsPerformed: bookingsPerformedYesterday,
     };
 
     /** Métricas de crescimento e variação entre períodos */

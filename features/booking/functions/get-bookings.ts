@@ -21,6 +21,7 @@ export async function getBookingsBarber(
         gte: untilNow ? new Date() : startDay,
         lte: endDay,
       },
+      status: "SCHEDULED",
     },
     include: {
       user: true,
