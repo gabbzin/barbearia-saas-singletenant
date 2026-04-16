@@ -28,6 +28,7 @@ import { SpeedDialFormTrigger } from "./forms/triggers/speed-dial-form-trigger";
 interface NewBookingManualDialogProps {
   barberId: string;
   speedDial?: boolean;
+  onDialogOpen?: () => void;
 }
 
 const newBookingSchema = z.object({
@@ -57,6 +58,7 @@ type newBookingSchemaType = z.infer<typeof newBookingSchema>;
 export function NewBookingManualDialog({
   barberId,
   speedDial = false,
+  onDialogOpen,
 }: NewBookingManualDialogProps) {
   // Constante de tempo
   const today = new Date();
@@ -107,7 +109,13 @@ export function NewBookingManualDialog({
 
   // React
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog
+      open={open}
+      onOpenChange={value => {
+        if (value) onDialogOpen?.();
+        setOpen(value);
+      }}
+    >
       <DialogTrigger asChild>
         {speedDial ? (
           <SpeedDialFormTrigger icon={PlusIcon} label="Novo agendamento" />
