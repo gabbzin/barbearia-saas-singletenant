@@ -24,7 +24,6 @@ export async function getBookingsBarber(
     },
     include: {
       user: true,
-      service: true,
     },
     orderBy: {
       date: "asc",
@@ -53,7 +52,7 @@ export async function getBookingsClient(userId: string) {
       userId: userId,
     },
     include: {
-      service: true,
+      services: true,
       barber: {
         include: {
           user: true,
@@ -76,7 +75,7 @@ export async function getNextBookingClient(userId: string) {
       },
     },
     include: {
-      service: true,
+      services: true,
       barber: {
         include: {
           user: true,
@@ -99,7 +98,7 @@ export async function getLastBookingClient(userId: string) {
       },
     },
     include: {
-      service: true,
+      services: true,
       barber: {
         include: {
           user: true,
