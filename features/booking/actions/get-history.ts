@@ -31,7 +31,9 @@ export const getHistory = actionClient.action(async () => {
     },
   });
 
-  if (!history) {
+  console.log(history);
+
+  if (!history || history.length === 0) {
     return { history: null };
   }
 
