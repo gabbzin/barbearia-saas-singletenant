@@ -99,7 +99,7 @@ export default async function BarberDashboardPage() {
           <CardInfo
             Icon={Scissors}
             title="Realizados"
-            value={dash?.todayData.servicesPerformed}
+            value={dash?.todayData.bookingsPerformed}
             variant="basic"
             details={
               <Progress
