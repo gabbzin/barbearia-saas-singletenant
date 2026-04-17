@@ -97,6 +97,7 @@
   --font-geist: "Geist", "sans-serif";
   --font-poppins: "Poppins", "sans-serif";
   --font-roboto: "Roboto", "sans-serif";
+  --font-newsreader: "Newsreader", "serif";
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
