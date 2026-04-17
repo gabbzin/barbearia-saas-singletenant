@@ -7,7 +7,7 @@ import { useAction } from "next-safe-action/hooks";
 import { useState } from "react";
 import { toast } from "sonner";
 import type { BookingClient } from "@/features/booking/components/booking-client";
-import CancelAlertDialog from "@/features/booking/components/cancel-booking-alert-dialog";
+import CancelAlertDialog from "@/shared/components/cancel-alert-dialog";
 import { cancelBookingAction } from "@/features/booking/functions/cancel-booking";
 import { cancelBookingCheckoutSession } from "@/features/booking/functions/cancel-booking-checkout-session";
 import { PhoneItem } from "@/shared/components/phone-item";
@@ -154,7 +154,7 @@ export function CancelBooking({
 
           {/* Telefones */}
           <div className="flex flex-col gap-3">
-              <PhoneItem phone={booking.barber.phone} />
+            <PhoneItem phone={booking.barber.phone} />
           </div>
         </div>
 
