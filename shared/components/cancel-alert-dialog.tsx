@@ -9,8 +9,8 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from "../../../shared/components/ui/alert-dialog";
-import { Button } from "../../../shared/components/ui/button";
+} from "./ui/alert-dialog";
+import { Button } from "./ui/button";
 
 interface CancelAlertDialogProps {
   handleCancel: () => void;
