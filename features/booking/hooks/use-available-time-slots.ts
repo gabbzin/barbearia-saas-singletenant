@@ -18,8 +18,6 @@ export function useAvailableTimeSlots(
 
   const servicesKey = servicesIds?.slice().sort().join(",") ?? "";
 
-  console.log("Pode executar? ",!!selectedDate && !!barberId && (servicesIds?.length ?? 0) > 0);
-
   const { data: availableTimeSlots, isPending: isAvailableTimePending } =
     useQuery<string[]>({
       queryKey: [

@@ -13,6 +13,7 @@ import { toast } from "sonner";
 import { useAvailableTimeSlots } from "@/features/booking/hooks/use-available-time-slots";
 import { useCartStore } from "../store/cart.store";
 import { SheetFooter } from "@/shared/components/ui/sheet";
+import { convertBRL } from "@/utils/convertBRL";
 
 type payMethods = "cartao" | "pix" | "dinheiro";
 
@@ -24,7 +25,10 @@ export function CheckoutView() {
   const [selectedTime, setSelectedTime] = useState<string | undefined>();
   const [payMethod, setPayMethod] = useState<payMethods>("cartao");
 
-  const { items, barberId } = useCartStore();
+  const { items, barberId, getTotalDuration, getTotalPrice } = useCartStore();
+
+  const duration = getTotalDuration();
+  const price = convertBRL(getTotalPrice());
 
   const itemsIds = items.map(item => item.serviceId);
   const barberIdForQuery = barberId ?? undefined;
@@ -160,6 +164,14 @@ export function CheckoutView() {
                     <p>{selectedTime}</p>
                   </div>
                 )}
+                <div className="flex items-center justify-between text-muted-foreground text-sm">
+                  <p>Duração</p>
+                  <p>{duration} minutos</p>
+                </div>
+                <div className="flex items-center justify-between text-muted-foreground text-sm">
+                  <p>Preço Total</p>
+                  <p>{price}</p>
+                </div>
               </div>
             </div>
           </>
