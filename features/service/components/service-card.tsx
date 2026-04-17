@@ -1,10 +1,12 @@
+"use client";
+
 import type { BarberService } from "@prisma/client";
 import Image from "next/image";
 import { Button } from "@/shared/components/ui/button";
 import { convertBRL } from "@/utils/convertBRL";
 import { Card, CardContent } from "@/shared/components/ui/card";
 import { ArrowRightIcon, ShoppingCartIcon } from "lucide-react";
-import { useBookingCart } from "@/features/cart/store/cart.store";
+import { useCartStore } from "@/features/cart/store/cart.store";
 import { toast } from "sonner";
 
 interface ServiceCardProps {
@@ -19,14 +21,18 @@ interface handleAddToCartProps {
 }
 
 export function ServiceCard({ service }: ServiceCardProps) {
-  const addItem = useBookingCart(state => state.addItem);
+  const addItem = useCartStore(state => state.addItem);
   const priceInReais = convertBRL(service.priceInCents);
   const priceAgreed =
     service.priceInCents === 0 ? "Valor a combinar" : priceInReais;
 
   const handleAddToCart = (item: handleAddToCartProps, barberId: string) => {
-    addItem(item, barberId);
-    toast.success("Serviço adicionado ao carrinho");
+    const { success, message } = addItem(item, barberId);
+    if (success) {
+      toast.success(message);
+    } else {
+      toast.error(message);
+    }
   };
 
   return (

@@ -1,4 +1,4 @@
-import CancelAlertDialog from "@/features/booking/components/cancel-booking-alert-dialog";
+import CancelAlertDialog from "@/shared/components/cancel-alert-dialog";
 import {
   Dialog,
   DialogContent,
