@@ -4,7 +4,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getBarberById } from "@/features/barber/services/barbers.repository";
-import { ServiceItem } from "@/features/service/components/service-item";
 import { PhoneItem } from "@/shared/components/phone-item";
 import { ProfilePhoto } from "@/shared/components/profile-photo";
 import { AnimatedThemeToggler } from "@/shared/components/ui/animated-theme-toggler";
@@ -17,6 +16,7 @@ import {
 import { Separator } from "@/shared/components/ui/separator";
 import { imagePaths } from "@/shared/constants/images";
 import { clientRoutes } from "@/shared/constants/routes";
+import { ServiceCard } from "@/features/service/components/service-card";
 
 const BarberPage = async ({ params }: { params: Promise<{ id: string }> }) => {
   const { id } = await params;
@@ -100,14 +100,7 @@ const BarberPage = async ({ params }: { params: Promise<{ id: string }> }) => {
             <PageSectionTitle>Serviços</PageSectionTitle>
             <div className="grid gap-4 md:grid-cols-2">
               {barber.services.map(service => (
-                <ServiceItem
-                  key={service.id}
-                  service={{
-                    ...service,
-                    // biome-ignore lint/style/noNonNullAssertion: <User tem que existir aqui>
-                    barber: { ...barber, user: barber.user! },
-                  }}
-                />
+                <ServiceCard key={service.id} service={service} />
               ))}
             </div>
           </PageSection>
