@@ -171,7 +171,6 @@ model Plan {
 model Booking {
   id                   String        @id @default(uuid())
   date                 DateTime      @db.Timestamptz(6)
-  servicesId           String[]
   userId               String
   barberId             String
   userSubscriptionId   String?
