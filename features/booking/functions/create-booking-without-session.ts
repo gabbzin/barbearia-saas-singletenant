@@ -1,7 +1,6 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { addMinutes, endOfDay, startOfDay } from "date-fns";
 import { returnValidationErrors } from "next-safe-action";
 import z from "zod";
 import { verifySession } from "@/features/user/repository/user.repository";
@@ -22,7 +21,6 @@ export const createBookingWithoutSession = actionClient
   .inputSchema(inputSchema)
   .action(async ({ parsedInput }) => {
     const { servicesIds, date, name, phone, paymentMethod } = parsedInput;
-    const uniqueServicesIds = [...new Set(servicesIds)];
 
     const session = await verifySession();
 
@@ -38,25 +36,13 @@ export const createBookingWithoutSession = actionClient
       });
     }
 
-    if (uniqueServicesIds.length !== servicesIds.length) {
-      return returnValidationErrors(inputSchema, {
-        _errors: ["Não é permitido selecionar o mesmo serviço mais de uma vez."],
-      });
-    }
-
     const services = await prisma.barberService.findMany({
       where: {
-        id: { in: uniqueServicesIds },
-      },
-      select: {
-        id: true,
-        barberId: true,
-        priceInCents: true,
-        durationInMinutes: true,
+        id: { in: servicesIds },
       },
     });
 
-    if (services.length !== uniqueServicesIds.length) {
+    if (services.length !== servicesIds.length) {
       return returnValidationErrors(inputSchema, {
         _errors: ["Um ou mais serviços não foram encontrados."],
       });
@@ -79,58 +65,6 @@ export const createBookingWithoutSession = actionClient
       0,
     );
 
-    const totalDurationInMinutes = services.reduce(
-      (sum, service) => sum + service.durationInMinutes,
-      0,
-    );
-
-    if (date < new Date()) {
-      return returnValidationErrors(inputSchema, {
-        _errors: ["Não é possível agendar em uma data passada."],
-      });
-    }
-
-    const proposedStart = date;
-    const proposedEnd = addMinutes(date, totalDurationInMinutes);
-    const dayStart = startOfDay(date);
-    const dayEnd = endOfDay(date);
-
-    const existingBookings = await prisma.booking.findMany({
-      where: {
-        status: "SCHEDULED",
-        barberId,
-        date: {
-          gte: dayStart,
-          lte: dayEnd,
-        },
-      },
-      select: {
-        date: true,
-        services: {
-          select: {
-            durationInMinutes: true,
-          },
-        },
-      },
-    });
-
-    const hasConflict = existingBookings.some(existingBooking => {
-      const existingStart = existingBooking.date;
-      const existingDurationInMinutes = existingBooking.services.reduce(
-        (sum, service) => sum + service.durationInMinutes,
-        0,
-      );
-      const existingEnd = addMinutes(existingStart, existingDurationInMinutes);
-
-      return proposedStart < existingEnd && proposedEnd > existingStart;
-    });
-
-    if (hasConflict) {
-      return returnValidationErrors(inputSchema, {
-        _errors: ["Já existe um agendamento nesse intervalo de horário."],
-      });
-    }
-
     const booking = await prisma.booking.create({
       data: {
         barberId,
@@ -140,7 +74,7 @@ export const createBookingWithoutSession = actionClient
         paymentMethod,
         priceInCents: totalPriceInCents,
         services: {
-          connect: uniqueServicesIds.map(id => ({ id })),
+          connect: servicesIds.map(id => ({ id })),
         },
         userId,
       },
