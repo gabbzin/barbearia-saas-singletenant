@@ -9,7 +9,7 @@
 
 ## Objetivo da v1.8
 
-Finalizar a refatoração do dashboard do barbeiro com foco na experiência operacional do dia, implementando a linha do tempo de hoje com dados confiáveis, leitura rápida e boa responsividade.
+Finalizar a refatoração do dashboard do barbeiro com foco na experiência operacional do dia e na base do e-commerce, implementando a linha do tempo de hoje, o fluxo de ações rápidas e a experiência de carrinho/combos com dados confiáveis, leitura rápida e boa responsividade.
 
 ## Escopo da v1.8
 
@@ -18,6 +18,15 @@ Finalizar a refatoração do dashboard do barbeiro com foco na experiência oper
 - Destacar visualmente horário atual, próximos atendimentos e concluídos/cancelados.
 - Garantir comportamento responsivo para desktop e mobile.
 - Manter consistência visual com a nova landing e com os padrões atuais do sistema.
+- Estruturar a experiência de e-commerce com carrinho, resumo de itens e montagem de combos.
+
+## Diretriz de interação rápida
+
+- A navegação principal de ações do dashboard do barbeiro deve ser mobile-first.
+- O fluxo de criação e configuração deve viver em um sheet/painel principal, e não apenas em um menu de botões.
+- No mobile, o sheet deve ocupar a área útil com leitura e toque confortáveis.
+- No desktop, a mesma experiência deve continuar usável, com apresentação mais ampla e organizada.
+- O gatilho visual pode variar por breakpoint, mas a lógica central deve ser compartilhada.
 
 ## Critérios de aceite
 
@@ -51,6 +60,20 @@ Finalizar a refatoração do dashboard do barbeiro com foco na experiência oper
 - [ ] Validar responsividade da timeline em mobile e desktop.
 - [ ] Revisar consistência com o restante do dashboard.
 - [ ] Executar testes manuais do fluxo diário do barbeiro.
+
+### Fase 5 - Ações rápidas do dashboard
+
+- [ ] Consolidar os atalhos de criação/configuração em uma superfície principal de interação.
+- [ ] Garantir que o mesmo fluxo funcione bem em mobile e desktop.
+- [ ] Evitar duplicidade de lógica entre atalhos visuais e telas de formulário.
+
+### Fase 6 - E-commerce
+
+- [ ] Implementar adição de itens ao carrinho a partir da vitrine/listagem.
+- [ ] Exibir resumo do carrinho com quantidade, subtotal e remoção de itens.
+- [ ] Permitir montagem de combos com serviços e/ou produtos associados.
+- [ ] Validar regras básicas de composição de combo antes do checkout.
+- [ ] Garantir fluidez da experiência em mobile e desktop.
 
 ## Fora de escopo da v1.8
 

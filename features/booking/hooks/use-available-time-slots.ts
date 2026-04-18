@@ -1,3 +1,4 @@
+/** biome-ignore-all lint/style/noNonNullAssertion: <Sempre terá valor> */
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
@@ -6,8 +7,8 @@ import { toast } from "sonner";
 import { getDateAvailableTimeSlots } from "@/features/booking/functions/get-date-available-time-slots";
 
 export function useAvailableTimeSlots(
-  barberId: string,
-  serviceId: string,
+  barberId?: string,
+  servicesIds?: string[],
   selectedDate?: Date,
   bookingBufferBool = true,
 ) {
@@ -15,20 +16,21 @@ export function useAvailableTimeSlots(
     ? format(selectedDate, "yyyy-MM-dd")
     : null;
 
+  const servicesKey = servicesIds?.slice().sort().join(",") ?? "";
+
   const { data: availableTimeSlots, isPending: isAvailableTimePending } =
     useQuery<string[]>({
       queryKey: [
         "date-available-time-slots",
         barberId,
-        serviceId,
+        servicesKey,
         selectedDateKey,
       ],
       queryFn: async () => {
         const result = await getDateAvailableTimeSlots({
-          barberId,
-          serviceId,
+          barberId: barberId!,
+          servicesIds: servicesIds!,
           bookingBufferBool,
-          // biome-ignore lint/style/noNonNullAssertion: <Sempre vai ter valor aqui>
           date: selectedDate!,
         });
 
@@ -43,7 +45,7 @@ export function useAvailableTimeSlots(
 
         return result?.data || [];
       },
-      enabled: !!selectedDate && !!serviceId,
+      enabled: !!selectedDate && !!barberId && (servicesIds?.length ?? 0) > 0,
     });
 
   return { availableTimeSlots, isAvailableTimePending };

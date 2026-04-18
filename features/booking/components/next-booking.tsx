@@ -8,6 +8,7 @@ import {
   CalendarIcon,
   CalendarX2Icon,
   EllipsisIcon,
+  FrownIcon,
   MapPinIcon,
   PlusIcon,
   ScissorsIcon,
@@ -27,6 +28,7 @@ import {
 } from "@/shared/components/ui/card";
 import { clientRoutes } from "@/shared/constants/routes";
 import { useBarbershopStore } from "@/stores/barbershop.store";
+import { getBookingServiceFullLabel } from "@/utils/booking-services-label";
 import { formatarHoraLocal } from "@/utils/date-formatters";
 import AddEventCalendar from "../functions/download-ics";
 import type { getNextBookingClient } from "../functions/get-bookings";
@@ -52,14 +54,14 @@ export function NextBooking({
   if (!nextBooking) {
     return (
       <Card>
-        <CardContent className="mx-auto flex w-3/5 flex-col items-center gap-4 py-6 text-center">
+        <CardContent className="mx-auto flex w-full flex-col items-center gap-4 py-6 text-center">
           <IconBadge
-            icon={<CalendarX2Icon size={24} />}
+            icon={lastBookingDate ? <CalendarX2Icon /> : <FrownIcon />}
             variant="mutedSoft"
             size="lg"
           />
           <div>
-            <p className="mt-2 font-bold">Você ainda não tem horário marcado</p>
+            <p className="font-bold">Você ainda não tem horário marcado</p>
             <p className="text-muted-foreground text-sm">
               {lastBookingDate ? (
                 <span>
@@ -67,8 +69,10 @@ export function NextBooking({
                   {Math.floor(
                     (Date.now() - lastBookingDate.getTime()) /
                       (1000 * 60 * 60 * 24),
-                  )}
-                  dias. Que tal dar um trato no visual essa semana?
+                  )}{" "}
+                  dias.
+                  <br />
+                  Que tal dar um trato no visual?
                 </span>
               ) : (
                 "Você nunca marcou um horário. Vamos agendar um!"
@@ -90,6 +94,7 @@ export function NextBooking({
   }
 
   const bookingDate = new Date(nextBooking.date);
+  const serviceFullLabel = getBookingServiceFullLabel(nextBooking.services);
 
   const day = format(bookingDate, "dd");
   const month = format(bookingDate, "MMM", {
@@ -99,7 +104,7 @@ export function NextBooking({
 
   // Atualizar para usar dados reais do nextBooking
   const eventConfig: CalendarOptions = {
-    title: `${nextBooking?.service.name} com ${nextBooking?.barber.user?.name}`,
+    title: `${serviceFullLabel} com ${nextBooking?.barber.user?.name}`,
     start: bookingDate,
     end: timeEnd,
     description: `Agendamento de serviço na barbearia com ${nextBooking?.barber.user?.name}.`,
@@ -128,7 +133,9 @@ export function NextBooking({
           <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-gold-strong"></span>
           Próximo Agendamento
         </Badge>
-        <CardTitle className="text-2xl">{nextBooking?.service.name}</CardTitle>
+        <CardTitle className="text-2xl">
+          {serviceFullLabel}
+        </CardTitle>
       </CardHeader>
 
       <CardContent>

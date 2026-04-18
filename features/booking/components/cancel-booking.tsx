@@ -7,7 +7,7 @@ import { useAction } from "next-safe-action/hooks";
 import { useState } from "react";
 import { toast } from "sonner";
 import type { BookingClient } from "@/features/booking/components/booking-client";
-import CancelAlertDialog from "@/features/booking/components/cancel-booking-alert-dialog";
+import CancelAlertDialog from "@/shared/components/cancel-alert-dialog";
 import { cancelBookingAction } from "@/features/booking/functions/cancel-booking";
 import { cancelBookingCheckoutSession } from "@/features/booking/functions/cancel-booking-checkout-session";
 import { PhoneItem } from "@/shared/components/phone-item";
@@ -23,6 +23,7 @@ import {
   SheetTrigger,
 } from "@/shared/components/ui/sheet";
 import { imagePaths } from "@/shared/constants/images";
+import { getBookingServiceFullLabel } from "@/utils/booking-services-label";
 import { formatarHoraLocal } from "@/utils/date-formatters";
 
 interface CancelBookingProps {
@@ -86,7 +87,12 @@ export function CancelBooking({
   const formattedPrice = new Intl.NumberFormat("pt-BR", {
     style: "currency",
     currency: "BRL",
-  }).format(booking.service.priceInCents / 100);
+  }).format(
+    booking.services.reduce((sum, service) => sum + service.priceInCents, 0) /
+      100,
+  );
+
+  const serviceFullLabel = getBookingServiceFullLabel(booking.services);
 
   const formattedDate = booking.date.toLocaleDateString("pt-BR", {
     day: "2-digit",
@@ -135,7 +141,7 @@ export function CancelBooking({
           {/* Card de Informações do Agendamento */}
           <Card className="flex flex-col gap-3 p-3">
             <div className="flex items-center justify-between">
-              <h3 className="font-bold">{booking.service.name}</h3>
+              <h3 className="font-bold">{serviceFullLabel}</h3>
               <p className="font-bold text-sm">{formattedPrice}</p>
             </div>
             <div className="flex items-center justify-between text-muted-foreground text-sm">
@@ -154,7 +160,7 @@ export function CancelBooking({
 
           {/* Telefones */}
           <div className="flex flex-col gap-3">
-              <PhoneItem phone={booking.barber.phone} />
+            <PhoneItem phone={booking.barber.phone} />
           </div>
         </div>
 

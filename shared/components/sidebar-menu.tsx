@@ -17,7 +17,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { authClient } from "@/lib/auth-client";
-import CancelAlertDialog from "../../features/booking/components/cancel-booking-alert-dialog";
+import CancelAlertDialog from "./cancel-alert-dialog";
 import {
   authRoutes,
   barberRoutes,

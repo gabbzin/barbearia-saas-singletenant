@@ -23,7 +23,7 @@ export const getHistory = actionClient.action(async () => {
       date: "desc",
     },
     include: {
-      service: {
+      services: {
         select: {
           name: true,
         },
@@ -31,7 +31,7 @@ export const getHistory = actionClient.action(async () => {
     },
   });
 
-  if (!history) {
+  if (!history || history.length === 0) {
     return { history: null };
   }
 

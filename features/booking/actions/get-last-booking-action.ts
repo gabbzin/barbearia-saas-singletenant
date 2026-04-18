@@ -18,6 +18,6 @@ export const getLastBookingAction = actionClient.action(async () => {
   if (!lastBooking) {
     return null;
   }
-
+  
   return lastBooking;
 });

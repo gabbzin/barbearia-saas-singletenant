@@ -18,10 +18,10 @@ export const getNotConfirmedBookings = actionClient.action(async () => {
       status: "SCHEDULED",
       date: {
         lt: now,
-      }
+      },
     },
     include: {
-      service: true,
+      services: true,
       user: true,
     },
     orderBy: {

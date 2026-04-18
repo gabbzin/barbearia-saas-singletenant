@@ -3,6 +3,7 @@ import { CardTable } from "@/features/dashboard_barber/components/tables/card-ta
 import { NextBookingsCard } from "@/features/dashboard_barber/components/next-bookings-card";
 import { Badge } from "@/shared/components/ui/badge";
 import { TableCell, TableRow } from "@/shared/components/ui/table";
+import { getBookingServiceShortLabel } from "@/utils/booking-services-label";
 import { formatarHoraLocal } from "@/utils/date-formatters";
 
 type NextBooking = Awaited<ReturnType<typeof getBookingsBarber>>[number];
@@ -35,7 +36,7 @@ export function NextBookingsSection({ bookings }: NextBookingsSectionProps) {
                 </div>
               </TableCell>
               <TableCell className="px-6 py-4 font-semibold text-muted-foreground text-sm">
-                {booking.service.name}
+                {getBookingServiceShortLabel(booking.services)}
               </TableCell>
               <TableCell className="px-6 py-4 text-sm">
                 <p className="font-semibold">

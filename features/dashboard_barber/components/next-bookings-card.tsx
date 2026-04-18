@@ -1,15 +1,16 @@
 import { PhotoAndName } from "@/shared/components/photo-and-name";
 import { Badge } from "@/shared/components/ui/badge";
 import { Card, CardContent } from "@/shared/components/ui/card";
+import { getBookingServiceShortLabel } from "@/utils/booking-services-label";
 import { formatarHoraLocal } from "@/utils/date-formatters";
 
 interface NextBookingCardItem {
   id: string;
   date: Date;
   status: string;
-  service: {
+  services: {
     name: string;
-  };
+  }[];
   client: {
     name: string;
     image: string | null;
@@ -34,7 +35,7 @@ export function NextBookingsCard({ bookings }: NextBookingsCardProps) {
                 <PhotoAndName
                   imageUrl={booking.client.image ?? ""}
                   name={booking.client.name}
-                  mutedPhrase={booking.service.name}
+                  mutedPhrase={getBookingServiceShortLabel(booking.services)}
                   reverseText={true}
                 />
                 <div className="flex flex-col items-end justify-center gap-0.5">

@@ -1,65 +1,45 @@
-"use client";
-
-import type { Barber, BarberService, User } from "@prisma/client";
-import { ptBR } from "date-fns/locale";
-import { useRouter } from "next/navigation";
-import { useAction } from "next-safe-action/hooks";
+import { ptBR } from "date-fns/locale/pt-BR";
 import { useState } from "react";
-import { toast } from "sonner";
-import { createBooking } from "@/features/booking/functions/create-booking";
-import { useAvailableTimeSlots } from "@/features/booking/hooks/use-available-time-slots";
-import type { SubscriptionInfo } from "@/features/user/repository/user.repository";
+import { Calendar } from "@/shared/components/ui/calendar";
+import { Separator } from "@/shared/components/ui/separator";
+import { Spinner } from "@/shared/components/ui/spinner";
+import { Button } from "@/shared/components/ui/button";
 import { isPastTimeSlot } from "@/utils/isPastTimeSlot";
-import { clientRoutes } from "../constants/routes";
-import PagamentForm, { type payMethods } from "./form/pagament-form";
-import { SpinLoader } from "./spinLoader";
-import { Button } from "./ui/button";
-import { Calendar } from "./ui/calendar";
-import { Separator } from "./ui/separator";
-import { SheetContent, SheetHeader, SheetTitle } from "./ui/sheet";
-import { Spinner } from "./ui/spinner";
+import PagamentForm from "@/shared/components/form/pagament-form";
+import { SpinLoader } from "@/shared/components/spinLoader";
+import { createBooking } from "@/features/booking/functions/create-booking";
+import { useAction } from "next-safe-action/hooks";
+import { toast } from "sonner";
+import { useAvailableTimeSlots } from "@/features/booking/hooks/use-available-time-slots";
+import { useCartStore } from "../store/cart.store";
+import { SheetFooter } from "@/shared/components/ui/sheet";
+import { convertBRL } from "@/utils/convertBRL";
 
-interface AppointmentSheetProps {
-  setSheetOpen: (open: boolean) => void;
-  service: BarberService & {
-    barber: Barber & {
-      user: User;
-    };
-  };
-  plan?: SubscriptionInfo;
-}
+type payMethods = "cartao" | "pix" | "dinheiro";
 
-const AppointmentSheet = ({
-  setSheetOpen,
-  service,
-  plan,
-}: AppointmentSheetProps) => {
-  const router = useRouter();
+const today = new Date();
+today.setHours(0, 0, 0, 0);
+
+export function CheckoutView() {
   const [selectedDate, setSelectedDate] = useState<Date | undefined>();
   const [selectedTime, setSelectedTime] = useState<string | undefined>();
   const [payMethod, setPayMethod] = useState<payMethods>("cartao");
 
-  const { executeAsync, isPending: isBookingPending } =
-    useAction(createBooking);
-  // const { executeAsync: executeCheckoutAsync, isPending: isCheckoutPending } =
-  //   useAction(createBookingCheckoutSession);
+  const { items, barberId, getTotalDuration, getTotalPrice, clearCart } =
+    useCartStore();
 
+  const duration = getTotalDuration();
+  const price = convertBRL(getTotalPrice());
+
+  const itemsIds = items.map(item => item.serviceId);
+  const barberIdForQuery = barberId ?? undefined;
+
+  const { executeAsync, isPending } = useAction(createBooking);
   const { availableTimeSlots, isAvailableTimePending } = useAvailableTimeSlots(
-    service.barberId,
-    service.id,
+    barberIdForQuery,
+    itemsIds,
     selectedDate,
   );
-
-  const handleDateSelect = (date: Date | undefined) => {
-    setSelectedDate(date);
-  };
-
-  const isPending = isBookingPending;
-
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-
-  const priceInReaisInteger = Math.floor(service.priceInCents / 100);
 
   const formattedDate = selectedDate
     ? selectedDate.toLocaleDateString("pt-BR", {
@@ -70,11 +50,13 @@ const AppointmentSheet = ({
 
   const isConfirmDisabled = !selectedDate || !selectedTime;
 
-  const handleConfirm = async () => {
-    if (!selectedDate || !selectedTime) return;
+  const handleDateSelect = (date: Date | undefined) => {
+    setSelectedDate(date);
+    setSelectedTime(undefined);
+  };
 
-    // biome-ignore lint/suspicious/noExplicitAny: <Não precisa tipar aqui>
-    let result: any;
+  const handleConfirm = async () => {
+    if (!selectedDate || !selectedTime || !barberIdForQuery) return;
 
     const timeSplitted = selectedTime.split(":");
     const hours = timeSplitted[0];
@@ -84,63 +66,31 @@ const AppointmentSheet = ({
 
     date.setHours(Number(hours), Number(minutes), 0, 0);
 
-    // if (payMethod === "cartao" && !plan?.hasPlan) {
-    //   result = await executeCheckoutAsync({
-    //     serviceId: service.id,
-    //     date,
-    //   });
-    // } else {
-    result = await executeAsync({
-      serviceId: service.id,
+    const result = await executeAsync({
+      barberId: barberIdForQuery,
+      servicesIds: itemsIds,
       date,
       paymentMethod: payMethod,
     });
-    // }
 
     if (result.serverError || result.validationErrors) {
       toast.error(result.validationErrors?._errors?.[0]);
       return;
     }
 
-    if (payMethod === "cartao" && result.data && "url" in result.data) {
-      if (result.data.url) {
-        window.location.href = result.data.url;
-        return;
-      }
-    }
-
     // Redirect to bookings page after successful booking
-    router.push(clientRoutes.bookings);
+    // router.push(clientRoutes.bookings);
 
     toast.success("Agendamento criado com sucesso!");
     setSelectedDate(undefined);
     setSelectedTime(undefined);
-    setSheetOpen(false);
+    clearCart();
+    // setSheetOpen(false);
   };
 
-  let priceFree = priceInReaisInteger;
-  // Isolar lógica em outro lugar depois
-  if (
-    service.name.toLowerCase() === "corte de cabelo" &&
-    (plan?.name?.toLowerCase() === "corte ilimitado" ||
-      plan?.name?.toLowerCase() === "corte e barba ilimitados")
-  ) {
-    priceFree = 0;
-  } else if (
-    service.name.toLowerCase() === "barba" &&
-    (plan?.name?.toLowerCase() === "barba ilimitada" ||
-      plan?.name?.toLowerCase() === "corte e barba ilimitados")
-  ) {
-    priceFree = 0;
-  }
-
   return (
-    <SheetContent className="w-92.5 overflow-y-auto p-0">
-      <div className="flex h-full flex-col gap-6">
-        <SheetHeader className="px-5 pt-6">
-          <SheetTitle className="font-bold text-lg">Fazer Reserva</SheetTitle>
-        </SheetHeader>
-
+    <div className="flex h-full flex-col gap-5">
+      <div className="flex flex-1 flex-col gap-5">
         <div className="flex flex-col gap-4 px-5">
           <Calendar
             mode="single"
@@ -151,16 +101,15 @@ const AppointmentSheet = ({
             locale={ptBR}
           />
         </div>
-
         {selectedDate && (
           <>
             <Separator />
-
+            {/* Horários */}
             <div className="flex px-5">
               <div className="flex flex-1 items-center gap-4 overflow-x-auto [&::-webkit-scrollbar]:hidden">
                 {isAvailableTimePending ? (
-                  <div className="flex w-full flex-1 justify-center">
-                    <Spinner />
+                  <div className="flex w-full flex-1 items-center justify-center">
+                    <Spinner /> Buscando horários...
                   </div>
                 ) : (
                   <div className="flex flex-1 justify-center gap-3">
@@ -188,6 +137,7 @@ const AppointmentSheet = ({
 
             <Separator />
 
+            {/* Formulário de pagamento */}
             <div className="flex flex-col gap-3 px-5">
               <PagamentForm
                 payMethod={payMethod}
@@ -197,19 +147,9 @@ const AppointmentSheet = ({
 
             <Separator />
 
+            {/* Card de informações */}
             <div className="flex flex-col gap-3 px-5">
               <div className="flex w-full flex-col gap-3 rounded-[10px] border border-border border-solid bg-card p-3">
-                <div className="flex items-center justify-between">
-                  <p className="font-bold text-base text-card-foreground">
-                    {service.name}
-                  </p>
-                  <p className="font-bold text-card-foreground text-sm">
-                    {service.priceInCents === 0
-                      ? "A combinar"
-                      : `R$${priceFree},00`}
-                  </p>
-                </div>
-
                 <div className="flex items-center justify-between text-muted-foreground text-sm">
                   <p>Método de pagamento</p>
                   <p className="capitalize">
@@ -220,35 +160,34 @@ const AppointmentSheet = ({
                   <p>Data</p>
                   <p>{formattedDate}</p>
                 </div>
-
                 {selectedTime && (
                   <div className="flex items-center justify-between text-muted-foreground text-sm">
                     <p>Horário</p>
                     <p>{selectedTime}</p>
                   </div>
                 )}
-
                 <div className="flex items-center justify-between text-muted-foreground text-sm">
-                  <p>Barbeiro</p>
-                  <p>{service.barber.user.name}</p>
+                  <p>Duração</p>
+                  <p>{duration} minutos</p>
+                </div>
+                <div className="flex items-center justify-between text-muted-foreground text-sm">
+                  <p>Preço Total</p>
+                  <p>{price}</p>
                 </div>
               </div>
-            </div>
-
-            <div className="px-5 pb-6">
-              <Button
-                className="w-full rounded-full"
-                disabled={isConfirmDisabled || isPending}
-                onClick={handleConfirm}
-              >
-                {isPending ? <SpinLoader /> : "Confirmar"}
-              </Button>
             </div>
           </>
         )}
       </div>
-    </SheetContent>
+      <SheetFooter>
+        <Button
+          className="w-full rounded-full"
+          disabled={isConfirmDisabled || isPending}
+          onClick={handleConfirm}
+        >
+          {isPending ? <SpinLoader /> : "Confirmar"}
+        </Button>
+      </SheetFooter>
+    </div>
   );
-};
-
-export default AppointmentSheet;
+}

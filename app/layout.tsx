@@ -1,5 +1,12 @@
 import type { Metadata } from "next";
-import { Geist, Inter, Manrope, Poppins, Roboto } from "next/font/google";
+import {
+  Geist,
+  Inter,
+  Manrope,
+  Newsreader,
+  Poppins,
+  Roboto,
+} from "next/font/google";
 import "./globals.css";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Toaster } from "sonner";
@@ -35,6 +42,11 @@ const poppins = Poppins({
   subsets: ["latin"],
 });
 
+const newsReader = Newsreader({
+  variable: "--font-newsreader",
+  subsets: ["latin"],
+});
+
 export async function generateMetadata(): Promise<Metadata> {
   const info = await getInfosBarbershop();
   return {
@@ -54,13 +66,13 @@ export default async function RootLayout({
   return (
     <html lang="pt-BR">
       <body
-        className={`${inter.variable} ${manrope.variable} ${geist.variable} ${roboto.variable} ${poppins.variable} antialiased`}
+        className={`${inter.variable} ${manrope.variable} ${geist.variable} ${roboto.variable} ${poppins.variable} ${newsReader.variable} antialiased`}
       >
         <AppHydrator barbershopData={barbershop} userData={user} />
         <QueryProvider>
           <TooltipProvider>
             {children}
-            <Toaster />
+            <Toaster position={"top-right"} />
             <SpeedInsights />
           </TooltipProvider>
         </QueryProvider>

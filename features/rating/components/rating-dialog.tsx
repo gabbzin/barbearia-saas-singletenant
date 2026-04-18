@@ -13,6 +13,7 @@ import {
   DialogTitle,
 } from "@/shared/components/ui/dialog";
 import { Input } from "@/shared/components/ui/input";
+import { getBookingServiceFullLabel } from "@/utils/booking-services-label";
 import { RatingAction } from "../actions/rating-action";
 import { InputStars } from "./input-stars";
 
@@ -31,6 +32,8 @@ export function RatingDialog({ lastBooking }: RatingDialogProps) {
   if (!hasBooking || !lastBooking) {
     return null;
   }
+
+  const serviceFullLabel = getBookingServiceFullLabel(lastBooking.services);
 
   const handleSubmit = async () => {
     const payload = {
@@ -67,7 +70,7 @@ export function RatingDialog({ lastBooking }: RatingDialogProps) {
         <div className="flex flex-col gap-6">
           <div className="space-y-3">
             <p>
-              Seu último atendimento foi {lastBooking.service.name} com o{" "}
+              Seu ultimo atendimento foi {serviceFullLabel} com o{" "}
               {lastBooking.barber.user?.name}
             </p>
             <p>Como foi sua experiência com esse atendimento?</p>

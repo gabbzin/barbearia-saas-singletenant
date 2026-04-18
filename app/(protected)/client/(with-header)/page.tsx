@@ -8,7 +8,11 @@ import { NextBooking } from "@/features/booking/components/next-booking";
 import { RatingDialog } from "@/features/rating/components/rating-dialog";
 import { ClientNavs } from "@/shared/components/client-navs";
 import { HistoryList } from "@/shared/components/history-list";
-import { Alert, AlertDescription, AlertTitle } from "@/shared/components/ui/alert";
+import {
+  Alert,
+  AlertDescription,
+  AlertTitle,
+} from "@/shared/components/ui/alert";
 import { PageSection, PageSectionTitle } from "@/shared/components/ui/page";
 import { imagePaths } from "@/shared/constants/images";
 
@@ -26,7 +30,9 @@ export default async function Home() {
       <PageSection>
         <NextBooking
           nextBooking={nextBooking.data?.nextBooking ?? null}
-          lastBookingDate={nextBooking.data?.lastDate ?? null}
+          lastBookingDate={
+            history.data?.history ? history.data?.history[0].date : null
+          }
         />
       </PageSection>
 
@@ -34,7 +40,8 @@ export default async function Home() {
         <Alert>
           <AlertTitle>Planos de assinatura em desenvolvimento</AlertTitle>
           <AlertDescription>
-            Em breve você poderá gerenciar um plano de assinatura exclusivo por aqui.
+            Em breve você poderá gerenciar um plano de assinatura exclusivo por
+            aqui.
           </AlertDescription>
         </Alert>
       </PageSection>

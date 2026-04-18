@@ -91,7 +91,9 @@ async function seedBookingsOnly() {
         status: "COMPLETED",
         userId: clientUser.id,
         barberId: barber.id,
-        serviceId: service.id,
+        services: {
+          connect: [{ id: service.id }],
+        },
         paidWithSubscription: false,
         priceInCents: service.priceInCents,
         customerName: `Seed gráfico ${String(index + 1).padStart(2, "0")}`,

@@ -24,10 +24,16 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: "https",
+        hostname: "tp9a32tu7d1qyqaz.public.blob.vercel-storage.com",
+        port: "",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
         hostname: "i.pravatar.cc",
         port: "",
         pathname: "/**",
-      }
+      },
     ],
   },
   serverExternalPackages: ["@prisma/client", "prisma"],

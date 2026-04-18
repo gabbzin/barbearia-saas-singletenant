@@ -1,4 +1,5 @@
 import { redirect } from "next/navigation";
+import { Cart } from "@/features/cart";
 import { verifySession } from "@/features/user/repository/user.repository";
 
 interface ProtectedUserLayoutProps {
@@ -14,5 +15,10 @@ export default async function ProtectedUserLayout({
     return redirect("/barber/dashboard");
   }
 
-  return children;
+  return (
+    <>
+      <Cart />
+      {children}
+    </>
+  );
 }

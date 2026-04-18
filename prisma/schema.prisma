@@ -12,7 +12,7 @@ model User {
   name             String
   email            String        @unique
   emailVerified    Boolean       @default(false)
-  role             userRole      @default(USER)
+  role             UserRole      @default(USER)
   passwordHash     String?
   image            String?
   createdAt        DateTime      @default(now())
@@ -111,6 +111,8 @@ model BarberService {
   durationInMinutes Int       @default(30)
   barber            Barber    @relation(fields: [barberId], references: [id])
   bookings          Booking[]
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @default(now()) @updatedAt
 
   @@index([barberId])
 }
@@ -146,6 +148,9 @@ model Subscription {
   plan                 Plan?               @relation(fields: [planId], references: [id])
   user                 User                @relation(fields: [userId], references: [id], onDelete: Cascade)
 
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+
   @@index([userId])
   @@map("subscription")
 }
@@ -154,19 +159,18 @@ model Plan {
   id            String         @id
   name          String
   description   String
+  imageUrl      String?
   priceInCents  Int
   stripePriceId String?        @unique
+  benefits      String[]
+  subscriptions Subscription[]
   createdAt     DateTime       @default(now())
   updatedAt     DateTime       @updatedAt
-  benefits      String[]
-  imageUrl      String?
-  subscriptions Subscription[]
 }
 
 model Booking {
   id                   String        @id @default(uuid())
   date                 DateTime      @db.Timestamptz(6)
-  serviceId            String
   userId               String
   barberId             String
   userSubscriptionId   String?
@@ -174,17 +178,20 @@ model Booking {
   stripeChargeId       String?       @unique
   stripeEventId        String?       @unique
   cancelledAt          DateTime?     @db.Timestamptz(6)
-  createdAt            DateTime      @default(now())
   status               BookingStatus @default(SCHEDULED)
-  updatedAt            DateTime      @updatedAt
   priceInCents         Int
   customerName         String?
   customerPhone        String?
   paymentMethod        String?
-  barber               Barber        @relation(fields: [barberId], references: [id])
-  service              BarberService @relation(fields: [serviceId], references: [id])
-  user                 User          @relation(fields: [userId], references: [id])
-  rating               Rating?
+
+  // Relations
+  barber    Barber          @relation(fields: [barberId], references: [id])
+  services  BarberService[]
+  user      User            @relation(fields: [userId], references: [id])
+  rating    Rating?
+  // Timestamps
+  createdAt DateTime        @default(now())
+  updatedAt DateTime        @default(now()) @updatedAt
 
   @@index([userId])
   @@index([barberId, date])
@@ -202,17 +209,18 @@ model Disponibility {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
+
   @@unique([barberId, dayOfWeek])
 }
 
 model ExceptionDate {
-  id               String   @id @default(uuid())
+  id               String    @id @default(uuid())
   barberId         String
   startTime        DateTime? @db.Time()
   endTime          DateTime? @db.Time()
-  isClosedFullTime Boolean  @default(true)
-  date             DateTime
-  barber           Barber   @relation(fields: [barberId], references: [id], onDelete: Cascade)
+  isClosedFullTime Boolean   @default(true)
+  date             DateTime  @db.Timestamptz(6)
+  barber           Barber    @relation(fields: [barberId], references: [id], onDelete: Cascade)
 
   @@index([barberId, date])
 }
@@ -248,7 +256,7 @@ enum SubscriptionStatus {
   INCOMPLETE
 }
 
-enum userRole {
+enum UserRole {
   USER
   ADMIN
   BARBER
