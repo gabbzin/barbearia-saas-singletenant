@@ -46,6 +46,7 @@ interface FormTimesServicesProps {
   barberId: string;
   defaultValues?: TimesSchemaData[];
   onDialogOpen?: () => void;
+  onDialogClose?: () => void;
 }
 
 interface DaySelectorProps {
@@ -96,6 +97,7 @@ export default function FormTimesServices({
   barberId,
   defaultValues,
   onDialogOpen,
+  onDialogClose,
 }: FormTimesServicesProps) {
   const { saveSettings } = useSettingsBarber(barberId);
 
@@ -154,6 +156,7 @@ export default function FormTimesServices({
       open={isOpen}
       onOpenChange={open => {
         if (open) onDialogOpen?.();
+        if (!open) onDialogClose?.();
         setIsOpen(open);
       }}
     >

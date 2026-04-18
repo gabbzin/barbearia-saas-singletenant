@@ -23,6 +23,16 @@ export function SpeedDial({
   disponibility,
 }: SpeedDialProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const [isAnyDialogOpen, setIsAnyDialogOpen] = useState(false);
+
+  const handleDialogClose = () => {
+    setIsAnyDialogOpen(false);
+  };
+
+  const handleDialogOpen = () => {
+    setIsOpen(false);
+    setIsAnyDialogOpen(true);
+  };
 
   return (
     <>
@@ -43,36 +53,42 @@ export function SpeedDial({
           <NewBookingManualDialog
             barberId={barberId}
             speedDial={true}
-            onDialogOpen={() => setIsOpen(false)}
+            onDialogOpen={handleDialogOpen}
+            onDialogClose={handleDialogClose}
           />
           <FormExceptionDate
             barberId={barberId}
-            onDialogOpen={() => setIsOpen(false)}
+            onDialogOpen={handleDialogOpen}
+            onDialogClose={handleDialogClose}
           />
           <FormTimesServices
             barberId={barberId}
             defaultValues={defaultTimes}
-            onDialogOpen={() => setIsOpen(false)}
+            onDialogOpen={handleDialogOpen}
+            onDialogClose={handleDialogClose}
           />
           <FormService
             barberId={barberId}
-            onDialogOpen={() => setIsOpen(false)}
+            onDialogOpen={handleDialogOpen}
+            onDialogClose={handleDialogClose}
           />
           <FormBarberBreak
             barberId={barberId}
             disponibility={disponibility}
-            onDialogOpen={() => setIsOpen(false)}
+            onDialogOpen={handleDialogOpen}
+            onDialogClose={handleDialogClose}
           />
         </div>
 
-        {/* Botão Principal (FAB) */}
-        <Button
-          size="icon"
-          className={`h-14 w-14 rounded-full shadow-xl transition-transform duration-300 ${isOpen ? "rotate-45" : "rotate-0"}`}
-          onClick={() => setIsOpen(!isOpen)}
-        >
-          <Plus className="size-6" />
-        </Button>
+        {!isAnyDialogOpen && (
+          <Button
+            size="icon"
+            className={`h-14 w-14 rounded-full shadow-xl transition-transform duration-300 ${isOpen ? "rotate-45" : "rotate-0"}`}
+            onClick={() => setIsOpen(!isOpen)}
+          >
+            <Plus className="size-6" />
+          </Button>
+        )}
       </div>
     </>
   );

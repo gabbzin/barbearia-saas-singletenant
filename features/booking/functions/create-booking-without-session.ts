@@ -10,7 +10,7 @@ import { prisma } from "@/lib/prisma";
 import { barberRoutes } from "@/shared/constants/routes";
 
 const inputSchema = z.object({
-  serviceId: z.uuid(),
+  servicesIds: z.array(z.uuid()).min(1),
   date: z.date(),
   name: z.string(),
   phone: z.string(),
@@ -20,7 +20,7 @@ const inputSchema = z.object({
 export const createBookingWithoutSession = actionClient
   .inputSchema(inputSchema)
   .action(async ({ parsedInput }) => {
-    const { serviceId, date, name, phone, paymentMethod } = parsedInput;
+    const { servicesIds, date, name, phone, paymentMethod } = parsedInput;
 
     const session = await verifySession();
 
@@ -30,19 +30,40 @@ export const createBookingWithoutSession = actionClient
       });
     }
 
-    const service = await prisma.barberService.findUnique({
+    if (!session.barberId) {
+      return returnValidationErrors(inputSchema, {
+        _errors: ["Barbeiro não vinculado à sessão."],
+      });
+    }
+
+    const services = await prisma.barberService.findMany({
       where: {
-        id: serviceId,
+        id: { in: servicesIds },
       },
     });
 
-    if (!service) {
+    if (services.length !== servicesIds.length) {
       return returnValidationErrors(inputSchema, {
-        _errors: ["Serviço não encontrado."],
+        _errors: ["Um ou mais serviços não foram encontrados."],
       });
     }
-    const barberId = session?.barberId || service.barberId;
+
+    const hasDifferentBarber = services.some(
+      service => service.barberId !== session.barberId,
+    );
+
+    if (hasDifferentBarber) {
+      return returnValidationErrors(inputSchema, {
+        _errors: ["Os serviços selecionados não pertencem ao barbeiro logado."],
+      });
+    }
+
+    const barberId = session.barberId;
     const userId = `${GHOST_USER_ID}`;
+    const totalPriceInCents = services.reduce(
+      (sum, service) => sum + service.priceInCents,
+      0,
+    );
 
     const booking = await prisma.booking.create({
       data: {
@@ -51,9 +72,9 @@ export const createBookingWithoutSession = actionClient
         customerPhone: phone,
         date,
         paymentMethod,
-        priceInCents: service.priceInCents,
+        priceInCents: totalPriceInCents,
         services: {
-          connect: [{ id: serviceId }],
+          connect: servicesIds.map(id => ({ id })),
         },
         userId,
       },

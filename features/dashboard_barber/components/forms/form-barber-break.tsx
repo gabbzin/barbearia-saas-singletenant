@@ -36,6 +36,7 @@ interface BarberBreakFormProps {
   barberBreak?: BarberBreak;
   disponibility: Disponibility[];
   onDialogOpen?: () => void;
+  onDialogClose?: () => void;
 }
 
 export function FormBarberBreak({
@@ -43,6 +44,7 @@ export function FormBarberBreak({
   barberBreak,
   disponibility,
   onDialogOpen,
+  onDialogClose,
 }: BarberBreakFormProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedDay, setSelectedDay] = useState<string | null>(null);
@@ -127,6 +129,7 @@ export function FormBarberBreak({
       open={isOpen}
       onOpenChange={open => {
         if (open) onDialogOpen?.();
+        if (!open) onDialogClose?.();
         setIsOpen(open);
       }}
     >

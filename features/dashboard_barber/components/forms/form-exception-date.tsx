@@ -1,6 +1,7 @@
 "use client";
 
 import type { ExceptionDate } from "@prisma/client";
+import { formatInTimeZone } from "date-fns-tz";
 import { CalendarDaysIcon, PencilIcon } from "lucide-react";
 import { useState } from "react";
 import { useFormContext, useWatch } from "react-hook-form";
@@ -23,13 +24,13 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/shared/components/ui/dialog";
-import { formatInTimeZone } from "date-fns-tz";
 import { SpeedDialFormTrigger } from "./triggers/speed-dial-form-trigger";
 
 interface FormExceptionDateProps {
   barberId: string;
   exceptionDate?: ExceptionDate;
   onDialogOpen?: () => void;
+  onDialogClose?: () => void;
 }
 
 function ExceptionTimeFields() {
@@ -63,6 +64,7 @@ export function FormExceptionDate({
   barberId,
   exceptionDate,
   onDialogOpen,
+  onDialogClose,
 }: FormExceptionDateProps) {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -112,6 +114,7 @@ export function FormExceptionDate({
       open={isOpen}
       onOpenChange={open => {
         if (open) onDialogOpen?.();
+        if (!open) onDialogClose?.();
         setIsOpen(open);
       }}
     >

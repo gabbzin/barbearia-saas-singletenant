@@ -22,9 +22,15 @@ interface FormServiceProps {
   barberId: string;
   service?: BarberService;
   onDialogOpen?: () => void;
+  onDialogClose?: () => void;
 }
 
-export function FormService({ barberId, service, onDialogOpen }: FormServiceProps) {
+export function FormService({
+  barberId,
+  service,
+  onDialogOpen,
+  onDialogClose,
+}: FormServiceProps) {
   const [isOpen, setIsOpen] = useState(false);
   const { createService, updateService, isCreating, isUpdating } =
     useServicesCRUD(barberId);
@@ -56,6 +62,7 @@ export function FormService({ barberId, service, onDialogOpen }: FormServiceProp
       open={isOpen}
       onOpenChange={open => {
         if (open) onDialogOpen?.();
+        if (!open) onDialogClose?.();
         setIsOpen(open);
       }}
     >
