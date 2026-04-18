@@ -11,6 +11,7 @@ import {
   TabsTrigger,
 } from "@/shared/components/ui/tabs";
 import { imagePaths } from "@/shared/constants/images";
+import { getBookingServiceShortLabel } from "@/utils/booking-services-label";
 import type { getBookingsClient } from "../functions/get-bookings";
 
 interface BookingsClientProps {
@@ -22,10 +23,10 @@ export type BookingClient = {
   date: Date;
   stripeChargeId?: string | null;
   status: "SCHEDULED" | "PENDING" | "COMPLETED" | "CANCELLED";
-  service: {
+  services: {
     name: string;
     priceInCents: number;
-  };
+  }[];
   barber: {
     name: string;
     imageUrl: string;
@@ -156,10 +157,10 @@ const BookingDetails = ({ bookings, onClick }: BookingDetailsProps) => {
       date: booking.date,
       stripeChargeId: booking.stripeChargeId,
       status: booking.status,
-      service: {
-        name: booking.service.name,
-        priceInCents: booking.service.priceInCents,
-      },
+      services: booking.services.map(service => ({
+        name: service.name,
+        priceInCents: service.priceInCents,
+      })),
       barber: {
         name: booking.barber.user?.name ?? "Barbeiro",
         imageUrl: booking.barber.user?.image ?? imagePaths.defaultAvatar,
@@ -170,7 +171,7 @@ const BookingDetails = ({ bookings, onClick }: BookingDetailsProps) => {
     return (
       <BookingItem
         key={booking.id}
-        serviceName={booking.service.name}
+        serviceName={getBookingServiceShortLabel(booking.services)}
         date={booking.date}
         counterPart={{
           name: booking.barber.user?.name ?? "Barbeiro",

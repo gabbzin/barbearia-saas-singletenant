@@ -30,7 +30,12 @@ export function HistoryList({ history }: HistoryListProps) {
                   <ScissorsIcon size={24} strokeWidth={2.5} />
                 </div>
                 <div className="items-center text-sm">
-                  <p className="font-bold">{booking.service.name}</p>
+                  <p className="font-bold">
+                    {booking.services?.reduce(
+                      (acc, service) => `${acc + service.name}, `,
+                      "",
+                    )}
+                  </p>
                   <p>{formatarDataHoraLocal(booking.date)}</p>
                 </div>
               </div>

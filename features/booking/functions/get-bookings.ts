@@ -25,6 +25,7 @@ export async function getBookingsBarber(
     },
     include: {
       user: true,
+      services: true,
     },
     orderBy: {
       date: "asc",

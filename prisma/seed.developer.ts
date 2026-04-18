@@ -302,7 +302,6 @@ async function seedDatabase() {
           status: "COMPLETED",
           userId: clientUser.id,
           barberId: firstBarber.id,
-          servicesId: [service.id],
           services: {
             connect: [{ id: service.id }],
           },

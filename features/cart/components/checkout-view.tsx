@@ -25,7 +25,8 @@ export function CheckoutView() {
   const [selectedTime, setSelectedTime] = useState<string | undefined>();
   const [payMethod, setPayMethod] = useState<payMethods>("cartao");
 
-  const { items, barberId, getTotalDuration, getTotalPrice } = useCartStore();
+  const { items, barberId, getTotalDuration, getTotalPrice, clearCart } =
+    useCartStore();
 
   const duration = getTotalDuration();
   const price = convertBRL(getTotalPrice());
@@ -83,6 +84,7 @@ export function CheckoutView() {
     toast.success("Agendamento criado com sucesso!");
     setSelectedDate(undefined);
     setSelectedTime(undefined);
+    clearCart();
     // setSheetOpen(false);
   };
 

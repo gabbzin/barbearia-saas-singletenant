@@ -48,7 +48,9 @@ export async function handleCheckoutCompleted(
 
     await prisma.booking.create({
       data: {
-        serviceId,
+        services: {
+          connect: [{ id: serviceId }],
+        },
         date,
         userId,
         barberId,

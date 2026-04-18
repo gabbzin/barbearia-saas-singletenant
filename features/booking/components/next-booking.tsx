@@ -28,6 +28,7 @@ import {
 } from "@/shared/components/ui/card";
 import { clientRoutes } from "@/shared/constants/routes";
 import { useBarbershopStore } from "@/stores/barbershop.store";
+import { getBookingServiceFullLabel } from "@/utils/booking-services-label";
 import { formatarHoraLocal } from "@/utils/date-formatters";
 import AddEventCalendar from "../functions/download-ics";
 import type { getNextBookingClient } from "../functions/get-bookings";
@@ -93,6 +94,7 @@ export function NextBooking({
   }
 
   const bookingDate = new Date(nextBooking.date);
+  const serviceFullLabel = getBookingServiceFullLabel(nextBooking.services);
 
   const day = format(bookingDate, "dd");
   const month = format(bookingDate, "MMM", {
@@ -102,7 +104,7 @@ export function NextBooking({
 
   // Atualizar para usar dados reais do nextBooking
   const eventConfig: CalendarOptions = {
-    title: `${nextBooking?.service.name} com ${nextBooking?.barber.user?.name}`,
+    title: `${serviceFullLabel} com ${nextBooking?.barber.user?.name}`,
     start: bookingDate,
     end: timeEnd,
     description: `Agendamento de serviço na barbearia com ${nextBooking?.barber.user?.name}.`,
@@ -131,7 +133,9 @@ export function NextBooking({
           <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-gold-strong"></span>
           Próximo Agendamento
         </Badge>
-        <CardTitle className="text-2xl">{nextBooking?.service.name}</CardTitle>
+        <CardTitle className="text-2xl">
+          {serviceFullLabel}
+        </CardTitle>
       </CardHeader>
 
       <CardContent>

@@ -16,6 +16,7 @@ import {
   TabsList,
   TabsTrigger,
 } from "@/shared/components/ui/tabs";
+import { getBookingServiceShortLabel } from "@/utils/booking-services-label";
 import { cancelBookingAction } from "@/features/booking/functions/cancel-booking";
 
 export function ScheduleCard() {
@@ -132,13 +133,16 @@ export function ScheduleCard() {
                       otherActionText="Cancelar agendamento"
                       isLoading={isPending || isCancelPending}
                       title="Confirmar Agendamento"
-                      infos={
-                        <span>
-                          Você está prestes a confirmar o agendamento de{" "}
-                          <strong>{booking.service.name}</strong> para{" "}
-                          <strong>
-                            {new Date(booking.date).toLocaleDateString(
-                              "pt-BR",
+                        infos={
+                          <span>
+                            Você está prestes a confirmar o agendamento de{" "}
+                            <strong>
+                              {getBookingServiceShortLabel(booking.services)}
+                            </strong>{" "}
+                            para{" "}
+                            <strong>
+                              {new Date(booking.date).toLocaleDateString(
+                                "pt-BR",
                               {
                                 day: "2-digit",
                                 month: "2-digit",
@@ -154,7 +158,9 @@ export function ScheduleCard() {
                     >
                       <BookingItem
                         key={booking.id}
-                        serviceName={booking.service.name}
+                        serviceName={getBookingServiceShortLabel(
+                          booking.services,
+                        )}
                         date={booking.date}
                         counterPart={{
                           name: booking.client.name,
@@ -174,7 +180,9 @@ export function ScheduleCard() {
                     return (
                       <BookingItem
                         key={booking.id}
-                        serviceName={booking.service.name}
+                        serviceName={getBookingServiceShortLabel(
+                          booking.services,
+                        )}
                         date={booking.date}
                         counterPart={{
                           name: booking.client.name,

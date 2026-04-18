@@ -73,12 +73,12 @@ export function NewBookingManualDialog({
   const { services } = useServicesCRUD(barberId);
   const { executeAsync } = useAction(createBookingWithoutSession);
 
-  const { availableTimeSlots, isAvailableTimePending } = useAvailableTimeSlots(
-    barberId,
-    selectedServiceId,
-    selectedDate,
-    false,
-  );
+  // const { availableTimeSlots, isAvailableTimePending } = useAvailableTimeSlots(
+  //   barberId,
+  //   selectedServiceId,
+  //   selectedDate,
+  //   false,
+  // );
 
   // Funções
   const handleCreateBooking = async (data: newBookingSchemaType) => {
@@ -206,7 +206,7 @@ export function NewBookingManualDialog({
             </div>
             <div className="space-y-1.5">
               <Label htmlFor="manual-booking-date">Hora</Label>
-              <SelectForm
+              {/* <SelectForm
                 name="time"
                 placeholder="Selecione o horário"
                 items={
@@ -216,7 +216,7 @@ export function NewBookingManualDialog({
                   })) || []
                 }
                 disabled={isAvailableTimePending}
-              />
+              /> */}
             </div>
           </div>
           <div className="space-y-1.5"></div>

@@ -71,7 +71,9 @@ export const createBooking = actionClient
         data: {
           barberId,
           userId: user.id,
-          servicesId: servicesIds,
+          services: {
+            connect: servicesIds.map(id => ({ id })),
+          },
           date,
           paymentMethod,
           priceInCents: totalPriceInCents,

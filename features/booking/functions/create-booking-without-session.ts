@@ -52,7 +52,9 @@ export const createBookingWithoutSession = actionClient
         date,
         paymentMethod,
         priceInCents: service.priceInCents,
-        serviceId: serviceId,
+        services: {
+          connect: [{ id: serviceId }],
+        },
         userId,
       },
     });
