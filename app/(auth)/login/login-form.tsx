@@ -69,6 +69,7 @@ export default function LoginForm() {
               label="Senha"
               type="password"
               placeholder="Digite sua senha"
+              enableErrors={false}
             />
             <ForgotPasswordButton />
           </div>
