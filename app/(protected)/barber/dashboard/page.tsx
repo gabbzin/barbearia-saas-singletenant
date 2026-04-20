@@ -73,11 +73,11 @@ export default async function BarberDashboardPage() {
 
       <PageSection>
         <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-          <div>
+          <div className="text-center md:text-left">
             <h1 className="font-extrabold text-2xl tracking-tight md:text-3xl">
               Dashboard de <span className="text-primary">Gestão</span>
             </h1>
-            <p className="mt-1 font-medium text-muted-foreground text-sm italic">
+            <p className="font-medium text-muted-foreground text-sm italic">
               Aqui está o resumo estratégico do seu dia.
             </p>
           </div>
