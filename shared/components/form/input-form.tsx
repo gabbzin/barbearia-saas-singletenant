@@ -19,6 +19,7 @@ interface InputFormProps<T extends FieldValues> {
   mask?: "currency" | "phone" | "";
   minLength?: number;
   maxLength?: number;
+  enableErrors?: boolean;
 }
 
 const formatCurrency = (value: number) => {
@@ -48,6 +49,7 @@ const InputForm = <T extends FieldValues>({
   mask,
   maxLength,
   minLength,
+  enableErrors = true,
 }: InputFormProps<T>) => {
   const context = useFormContext<T>();
   const control = propsControl || context?.control;
@@ -102,9 +104,11 @@ const InputForm = <T extends FieldValues>({
                 maxLength={maxLength}
                 minLength={minLength}
               />
-              <p className="text-red-500 text-sm">
-                {fieldState.error?.message}
-              </p>
+              {enableErrors && fieldState.error && (
+                <p className="text-red-500 text-sm">
+                  {fieldState.error?.message}
+                </p>
+              )}
             </>
           );
         }}

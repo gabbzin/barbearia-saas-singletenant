@@ -6,6 +6,7 @@ import { z } from "zod";
 import { actionClient } from "@/lib/actionClient";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { timeStringToDate } from "@/utils/convertTimes";
 
 // Schema de validação para criar um barbeiro
 const createBarberSchema = z.object({
@@ -43,8 +44,8 @@ export const createBarber = actionClient
             createMany: {
               data: [1, 2, 3, 4, 5].map(day => ({
                 dayOfWeek: day,
-                startTime: "09:00",
-                endTime: "18:00",
+                startTime: timeStringToDate("09:00"),
+                endTime: timeStringToDate("18:00"),
               })),
             },
           },

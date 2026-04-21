@@ -46,6 +46,7 @@ export default async function BarberDashboardPage() {
     },
   });
 
+  // Refatorar e rever o uso disso (aparenta ser inutil)
   const horariosData = defaultTimes.data?.horariosData ?? null;
   const defaultTimesValues = defaultTimes.data?.defaultTimes ?? undefined;
 
@@ -55,7 +56,7 @@ export default async function BarberDashboardPage() {
 
   return (
     <main className="flex flex-col gap-2">
-      {!horariosData && (
+      {!disponibility && (
         <PageSection>
           <Alert>
             <AlertTitle className="flex items-center gap-2">
@@ -73,11 +74,11 @@ export default async function BarberDashboardPage() {
 
       <PageSection>
         <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-          <div>
+          <div className="text-center md:text-left">
             <h1 className="font-extrabold text-2xl tracking-tight md:text-3xl">
               Dashboard de <span className="text-primary">Gestão</span>
             </h1>
-            <p className="mt-1 font-medium text-muted-foreground text-sm italic">
+            <p className="font-medium text-muted-foreground text-sm italic">
               Aqui está o resumo estratégico do seu dia.
             </p>
           </div>

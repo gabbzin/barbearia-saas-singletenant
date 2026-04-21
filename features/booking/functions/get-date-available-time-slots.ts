@@ -10,6 +10,7 @@ import { prisma } from "@/lib/prisma";
 import {
   createRange,
   minutesToTime,
+  timeDateToString,
   timeToMinutes,
 } from "@/utils/convertTimes";
 
@@ -113,12 +114,8 @@ export const getDateAvailableTimeSlots = actionClient
       const exceptionRanges = exceptions
         .filter(e => e.startTime && e.endTime)
         .map(exception => {
-          const startTime = exception.startTime
-            ?.toISOString()
-            .slice(11, 16) as string;
-          const endTime = exception.endTime
-            ?.toISOString()
-            .slice(11, 16) as string;
+          const startTime = timeDateToString(exception.startTime as Date);
+          const endTime = timeDateToString(exception.endTime as Date);
           return createRange(startTime, endTime);
         });
 
