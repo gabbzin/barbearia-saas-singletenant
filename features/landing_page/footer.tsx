@@ -3,6 +3,7 @@ import { Clock3, MapPin, MousePointerClickIcon, Phone } from "lucide-react";
 import Link from "next/link";
 import { LogoLink } from "@/shared/components/logo-link";
 import { AuroraText } from "@/shared/components/ui/aurora-text";
+import { timeDateToString } from "@/utils/convertTimes";
 
 const LINKS = [
   { href: "#services", label: "Servicos" },
@@ -16,8 +17,8 @@ interface FooterProps {
     phone: string;
     disponibility: {
       dayOfWeek: number;
-      startTime: string;
-      endTime: string;
+      startTime: Date;
+      endTime: Date;
     }[];
   } | null;
 }
@@ -68,7 +69,7 @@ export function Footer({ barberInfos }: FooterProps) {
                   {barberInfos?.disponibility.map(day => (
                     // biome-ignore format: Manter estrutura assim
                     <p key={day.dayOfWeek} className="text-sm">
-                      {diasDaSemana[day.dayOfWeek]}: {day.startTime}-{day.endTime}
+                      {diasDaSemana[day.dayOfWeek]}: {timeDateToString(day.startTime)}-{timeDateToString(day.endTime)}
                     </p>
                   ))}
                 </div>

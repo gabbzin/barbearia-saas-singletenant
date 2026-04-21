@@ -1,6 +1,7 @@
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { imagePaths } from "@/shared/constants/images";
+import { timeStringToDate } from "@/utils/convertTimes";
 
 type LucasService = {
   name: string;
@@ -166,8 +167,8 @@ async function seedLucasBarbershop() {
       data: {
         barberId: barber.id,
         dayOfWeek: workingDay.dayOfWeek,
-        startTime: workingDay.startTime,
-        endTime: workingDay.endTime,
+        startTime: timeStringToDate(workingDay.startTime),
+        endTime: timeStringToDate(workingDay.endTime),
       },
     });
   }

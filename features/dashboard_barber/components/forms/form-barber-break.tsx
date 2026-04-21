@@ -18,7 +18,7 @@ import {
   DialogHeader,
   DialogTrigger,
 } from "@/shared/components/ui/dialog";
-import { createRange } from "@/utils/convertTimes";
+import { createRange, timeDateToString } from "@/utils/convertTimes";
 import { SpeedDialFormTrigger } from "./triggers/speed-dial-form-trigger";
 
 export const dias = [
@@ -101,8 +101,8 @@ export function FormBarberBreak({
         dayOfWeek: String(
           barberBreak.dayOfWeek,
         ) as BarberBreakFormSchemaType["dayOfWeek"],
-        startTime: barberBreak.startTime,
-        endTime: barberBreak.endTime,
+        startTime: timeDateToString(barberBreak.startTime),
+        endTime: timeDateToString(barberBreak.endTime),
       }
     : undefined;
 

@@ -121,8 +121,8 @@ model BarberBreak {
   id        String @id @default(uuid())
   barberId  String
   dayOfWeek Int
-  startTime String
-  endTime   String
+  startTime DateTime @db.Time()
+  endTime   DateTime @db.Time()
   barber    Barber @relation(fields: [barberId], references: [id], onDelete: Cascade)
 
   createdAt DateTime @default(now())
@@ -202,8 +202,8 @@ model Booking {
 model Disponibility {
   id        String @id @default(uuid())
   barberId  String
-  startTime String
-  endTime   String
+  startTime DateTime @db.Time()
+  endTime   DateTime @db.Time()
   dayOfWeek Int
   barber    Barber @relation(fields: [barberId], references: [id], onDelete: Cascade)
 

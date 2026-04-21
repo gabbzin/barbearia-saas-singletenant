@@ -6,6 +6,7 @@ import { actionClient } from "@/lib/actionClient";
 import { DEFAULT_TIMEZONE } from "@/lib/consts";
 import { prisma } from "@/lib/prisma";
 import { formatInTimeZone } from "date-fns-tz";
+import { timeDateToString } from "@/utils/convertTimes";
 
 export const getBarberDefaultTimes = actionClient.action(async () => {
   const session = await verifySession();
@@ -40,8 +41,8 @@ export const getBarberDefaultTimes = actionClient.action(async () => {
 
   const defaultTimes: TimesSchemaData[] = horariosData.map(disponibility => ({
     day: disponibility.dayOfWeek,
-    horario_abertura: disponibility.startTime,
-    horario_fechamento: disponibility.endTime,
+    horario_abertura: timeDateToString(disponibility.startTime),
+    horario_fechamento: timeDateToString(disponibility.endTime),
   }));
 
   return { horariosData: todayDisponibility, defaultTimes };

@@ -1,6 +1,7 @@
 import { auth } from "@/lib/auth";
 import { GHOST_USER_ID } from "@/lib/consts";
 import { prisma } from "@/lib/prisma";
+import { timeStringToDate } from "@/utils/convertTimes";
 
 type SeedUserInput = {
   name: string;
@@ -327,14 +328,14 @@ async function seedDatabase() {
             },
           },
           update: {
-            startTime: startTime,
-            endTime: endTime,
+            startTime: timeStringToDate(startTime),
+            endTime: timeStringToDate(endTime),
           },
           create: {
             barberId: barber.id,
             dayOfWeek: day,
-            startTime: startTime,
-            endTime: endTime,
+            startTime: timeStringToDate(startTime),
+            endTime: timeStringToDate(endTime),
           },
         });
       }

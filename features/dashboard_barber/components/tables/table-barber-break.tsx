@@ -4,6 +4,7 @@ import { AlertTriangleIcon } from "lucide-react";
 import { useBarberBreakCRUD } from "@/features/barber/hooks/use-barber-breaks";
 import { Alert, AlertTitle } from "@/shared/components/ui/alert";
 import { TableCell, TableRow } from "@/shared/components/ui/table";
+import { timeDateToString } from "@/utils/convertTimes";
 import { dias } from "../forms/form-barber-break";
 import { CardTable } from "./card-table";
 
@@ -38,7 +39,8 @@ export function TableBarberBreak({ barberId }: TableBarberBreakProps) {
           <TableRow key={barberBreak.id} className="w-full border-t">
             <TableCell className="px-6 py-4">{barberBreak.dayOfWeek}</TableCell>
             <TableCell className="px-6 py-4">
-              {barberBreak.startTime}-{barberBreak.endTime}
+              {timeDateToString(barberBreak.startTime)}-
+              {timeDateToString(barberBreak.endTime)}
             </TableCell>
           </TableRow>
         ))

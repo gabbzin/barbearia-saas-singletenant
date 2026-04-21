@@ -4,6 +4,7 @@ import { z } from "zod";
 import { timesSchema } from "@/features/booking/schema/timesSchema";
 import { actionClient } from "@/lib/actionClient";
 import { prisma } from "@/lib/prisma";
+import { timeDateToString, timeStringToDate } from "@/utils/convertTimes";
 
 const barberIdSchema = z.object({ barberId: z.string() });
 
@@ -24,8 +25,8 @@ export const getSettingsByBarberIdAction = actionClient
         barberId,
         availabilities: disponibilities.map(d => ({
           day: d.dayOfWeek,
-          startTime: d.startTime,
-          endTime: d.endTime,
+          startTime: timeDateToString(d.startTime),
+          endTime: timeDateToString(d.endTime),
         })),
       },
     };
@@ -44,14 +45,14 @@ export const createDisponibilityAction = actionClient
         },
       },
       update: {
-        startTime: horario_abertura,
-        endTime: horario_fechamento,
+        startTime: timeStringToDate(horario_abertura),
+        endTime: timeStringToDate(horario_fechamento),
       },
       create: {
         barberId,
         dayOfWeek: day,
-        startTime: horario_abertura,
-        endTime: horario_fechamento,
+        startTime: timeStringToDate(horario_abertura),
+        endTime: timeStringToDate(horario_fechamento),
       },
     });
 

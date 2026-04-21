@@ -4,6 +4,7 @@ import { z } from "zod";
 import { verifySession } from "@/features/user/repository/user.repository";
 import { actionClient } from "@/lib/actionClient";
 import { prisma } from "@/lib/prisma";
+import { timeStringToDate } from "@/utils/convertTimes";
 
 const barberIdSchema = z.object({ barberId: z.string() });
 const barberBreakIdSchema = z.object({ barberBreakId: z.string() });
@@ -33,8 +34,8 @@ export const createBarberBreakAction = actionClient
       data: {
         barberId: parsedInput.barberId,
         dayOfWeek: parsedInput.dayOfWeek,
-        startTime: parsedInput.startTime,
-        endTime: parsedInput.endTime,
+        startTime: timeStringToDate(parsedInput.startTime),
+        endTime: timeStringToDate(parsedInput.endTime),
       },
     });
 
@@ -51,8 +52,8 @@ export const patchBarberBreakAction = actionClient
       where: { id: parsedInput.barberBreakId },
       data: {
         dayOfWeek: parsedInput.dayOfWeek,
-        startTime: parsedInput.startTime,
-        endTime: parsedInput.endTime,
+        startTime: timeStringToDate(parsedInput.startTime),
+        endTime: timeStringToDate(parsedInput.endTime),
       },
     });
 
