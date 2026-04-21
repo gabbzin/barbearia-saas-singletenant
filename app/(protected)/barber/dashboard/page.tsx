@@ -29,6 +29,7 @@ import {
 } from "@/shared/components/ui/card";
 import { PageSection, PageSectionTitle } from "@/shared/components/ui/page";
 import { Progress } from "@/shared/components/ui/progress";
+import { timeDateToString } from "@/utils/convertTimes";
 
 export const dynamic = "force-dynamic";
 
@@ -133,7 +134,7 @@ export default async function BarberDashboardPage() {
             title={horariosData?.endTime ? "Trabalho até:" : "Dia de hoje"}
             value={
               horariosData?.endTime
-                ? horariosData.endTime
+                ? timeDateToString(horariosData.endTime)
                 : format(new Date(), "dd 'de' MMM")
             }
             variant="basic"
