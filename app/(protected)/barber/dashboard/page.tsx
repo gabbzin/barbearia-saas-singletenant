@@ -11,7 +11,6 @@ import {
 import CardInfo from "@/features/barber/components/card-info";
 import { getBarberDefaultTimes } from "@/features/dashboard_barber/actions/getDefaultTimes";
 import { getBarberDashboardInfos } from "@/features/dashboard_barber/actions/getInfos";
-import { getTimeline } from "@/features/dashboard_barber/actions/getTimeline";
 import { BarChartGraph } from "@/features/dashboard_barber/components/charts/barchart-comp";
 import MainCardDashboard from "@/features/dashboard_barber/components/main-dashboard-card";
 import { NewBookingManualDialog } from "@/features/dashboard_barber/components/new-booking-manual-dialog";
@@ -20,7 +19,6 @@ import { SpeedDial } from "@/features/dashboard_barber/components/SpeedDial";
 import { TableBarberBreak } from "@/features/dashboard_barber/components/tables/table-barber-break";
 import { ServiceList } from "@/features/dashboard_barber/components/tables/table-service";
 import { TableSettings } from "@/features/dashboard_barber/components/tables/table-settings";
-import { TimelineBarber } from "@/features/dashboard_barber/components/timeline-barber";
 import { prisma } from "@/lib/prisma";
 import { Alert, AlertTitle } from "@/shared/components/ui/alert";
 import {
@@ -35,10 +33,9 @@ import { Progress } from "@/shared/components/ui/progress";
 export const dynamic = "force-dynamic";
 
 export default async function BarberDashboardPage() {
-  const [{ data: dash }, defaultTimes, { data: timeline }] = await Promise.all([
+  const [{ data: dash }, defaultTimes] = await Promise.all([
     getBarberDashboardInfos(),
     getBarberDefaultTimes(),
-    getTimeline(),
   ]);
 
   const barberId = dash?.barberId ? dash.barberId : null;
@@ -142,11 +139,6 @@ export default async function BarberDashboardPage() {
             variant="basic"
           />
         </section>
-      </PageSection>
-
-      <PageSection>
-        <PageSectionTitle>Linha do tempo</PageSectionTitle>
-        <TimelineBarber timeline={timeline ?? null} />
       </PageSection>
 
       <PageSection>
