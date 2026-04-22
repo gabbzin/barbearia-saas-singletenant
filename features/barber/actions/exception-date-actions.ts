@@ -1,9 +1,11 @@
 "use server";
 
+import { formatInTimeZone, fromZonedTime } from "date-fns-tz";
 import { z } from "zod";
 import { exceptionDateFormSchema } from "@/features/barber/schema/exception-date-schema";
 import { verifySession } from "@/features/user/repository/user.repository";
 import { actionClient } from "@/lib/actionClient";
+import { DEFAULT_TIMEZONE } from "@/lib/consts";
 import { prisma } from "@/lib/prisma";
 
 const barberIdSchema = z.object({ barberId: z.string() });
@@ -31,9 +33,8 @@ function getTimeOrNull(value: string | undefined, isClosedFullTime: boolean) {
 }
 
 function getDateAtStartOfDay(value: Date) {
-  const date = new Date(value);
-  date.setHours(0, 0, 0, 0);
-  return date;
+  const dateInTimezone = formatInTimeZone(value, DEFAULT_TIMEZONE, "yyyy-MM-dd");
+  return fromZonedTime(`${dateInTimezone}T00:00:00.000`, DEFAULT_TIMEZONE);
 }
 
 export const getExceptionDatesByBarberIdAction = actionClient

@@ -55,7 +55,12 @@ export function useExceptionDates(barberId: string) {
   };
 
   const createExceptionDate = async (input: ExceptionDateFormSchemaType) => {
-    const result = await execCreate({ ...input, barberId });
+    const result = await execCreate({
+      ...input,
+      barberId,
+      startTime: input.startTime,
+      endTime: input.endTime,
+    });
 
     if (!result?.data?.exceptionDate) {
       toast.error("Erro ao criar exceção de data.");
@@ -74,6 +79,8 @@ export function useExceptionDates(barberId: string) {
     const result = await execUpdate({
       exceptionDateId: input.exceptionDateId,
       ...input.data,
+      startTime: input.data.startTime,
+      endTime: input.data.endTime,
     });
 
     if (!result?.data?.exceptionDate) {
