@@ -9,6 +9,10 @@ export const barberBreakFormSchema = z
     endTime: z.string().regex(/^([01]\d|2[0-3]):([0-5]\d)$/, {
       message: "Use o formato HH:mm (ex: 18:00)",
     }),
+    motivo: z.preprocess(
+      value => (typeof value === "string" && value.trim() === "" ? undefined : value),
+      z.string().max(255).optional(),
+    ),
   })
   .refine(
     data => {

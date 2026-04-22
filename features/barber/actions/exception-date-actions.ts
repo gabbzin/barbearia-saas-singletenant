@@ -84,6 +84,7 @@ export const createExceptionDateAction = actionClient
           parsedInput.isClosedFullTime,
         ),
         isClosedFullTime: parsedInput.isClosedFullTime,
+        motivo: parsedInput.motivo,
       },
     });
 
@@ -124,6 +125,7 @@ export const patchExceptionDateAction = actionClient
           parsedInput.isClosedFullTime,
         ),
         isClosedFullTime: parsedInput.isClosedFullTime,
+        motivo: parsedInput.motivo,
       },
     });
 

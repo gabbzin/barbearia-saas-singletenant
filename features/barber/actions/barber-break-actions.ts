@@ -13,6 +13,7 @@ const barberBreakSchema = z.object({
   dayOfWeek: z.number().int().min(0).max(6),
   startTime: z.string(),
   endTime: z.string(),
+  motivo: z.string().optional(),
 });
 
 export const getBarberBreaksByBarberIdAction = actionClient
@@ -36,6 +37,7 @@ export const createBarberBreakAction = actionClient
         dayOfWeek: parsedInput.dayOfWeek,
         startTime: timeStringToDate(parsedInput.startTime),
         endTime: timeStringToDate(parsedInput.endTime),
+        motivo: parsedInput.motivo,
       },
     });
 
@@ -54,6 +56,7 @@ export const patchBarberBreakAction = actionClient
         dayOfWeek: parsedInput.dayOfWeek,
         startTime: timeStringToDate(parsedInput.startTime),
         endTime: timeStringToDate(parsedInput.endTime),
+        motivo: parsedInput.motivo,
       },
     });
 

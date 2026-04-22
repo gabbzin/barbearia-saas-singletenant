@@ -10,6 +10,7 @@ import {
   barberBreakFormSchema,
 } from "@/features/barber/schema/barber-break-schema";
 import GenericForm from "@/shared/components/form/generic-form";
+import InputForm from "@/shared/components/form/input-form";
 import { SelectForm } from "@/shared/components/form/select-form";
 import { Button } from "@/shared/components/ui/button";
 import {
@@ -103,15 +104,16 @@ export function FormBarberBreak({
         ) as BarberBreakFormSchemaType["dayOfWeek"],
         startTime: timeDateToString(barberBreak.startTime),
         endTime: timeDateToString(barberBreak.endTime),
+        motivo: barberBreak.motivo ?? "",
       }
     : undefined;
 
   const handleSubmit = async (data: BarberBreakFormSchemaType) => {
-    console.log("Enviando aqui chefe");
     const payload = {
       dayOfWeek: Number(data.dayOfWeek),
       startTime: data.startTime,
       endTime: data.endTime,
+      motivo: data.motivo,
     };
 
     if (isEditing && barberBreak) {
@@ -119,6 +121,7 @@ export function FormBarberBreak({
     } else {
       await createBarberBreak({ barberId, ...payload });
     }
+    onDialogClose?.();
     setIsOpen(false);
   };
 
@@ -182,6 +185,12 @@ export function FormBarberBreak({
             groupLabels="Hora"
             placeholder="Horário de término"
             items={slots}
+          />
+
+          <InputForm<BarberBreakFormSchemaType>
+            name="motivo"
+            label="Motivo (opcional)"
+            placeholder="Ex.: almoço, compromisso pessoal"
           />
         </GenericForm>
       </DialogContent>

@@ -4,6 +4,10 @@ export const exceptionDateFormSchema = z
   .object({
     date: z.date({ message: "Selecione uma data" }),
     isClosedFullTime: z.boolean().default(false),
+    motivo: z.preprocess(
+      value => (typeof value === "string" && value.trim() === "" ? undefined : value),
+      z.string().max(255).optional(),
+    ),
     startTime: z.preprocess(
       value => (value === "" ? undefined : value),
       z

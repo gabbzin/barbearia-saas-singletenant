@@ -1,3 +1,4 @@
+import { AlertCircle } from "lucide-react";
 import {
   Timeline,
   TimelineDate,
@@ -7,47 +8,13 @@ import {
   TimelineSeparator,
   TimelineTitle,
 } from "@/shared/components/ui/timeline";
-
-const items = [
-  {
-    id: 1,
-    title: "Inicio de trabalho",
-    hour: "08:00",
-  },
-  {
-    hour: "09:00",
-    id: 2,
-    title: "Corte de cabelo com Lucas",
-  },
-  {
-    id: 3,
-    title: "Inicio do horário de almoço",
-    hour: "12:00",
-  },
-  {
-    id: 4,
-    hour: "14:00",
-    title: "Fim do horário de almoço",
-  },
-  {
-    id: 7,
-    hour: "16:00",
-    title: "Barba com Carlos",
-  },
-  {
-    id: 6,
-    hour: "19:00",
-    title: "Fim do turno",
-  },
-];
+import type { TimelineArray } from "../actions/getTimeline";
+import { formatInTimeZone } from "date-fns-tz";
+import { DEFAULT_TIMEZONE } from "@/lib/consts";
+import { timeToMinutes } from "@/utils/convertTimes";
 
 interface TimelineBarberProps {
-  timeline: {
-    disponibility?: any;
-    barberBreaks?: any;
-    exceptionDates?: any;
-    bookings?: any;
-  } | null;
+  timeline: TimelineArray | null;
 }
 
 export function TimelineBarber({ timeline }: TimelineBarberProps) {
@@ -55,16 +22,33 @@ export function TimelineBarber({ timeline }: TimelineBarberProps) {
     return;
   }
 
+  if (timeline.length === 0) {
+    return (
+      <div className="flex flex-col items-center gap-2 rounded-md border p-4">
+        <AlertCircle className="h-10 w-10" />
+        <span>Não há eventos para exibir neste dia.</span>
+      </div>
+    );
+  }
+
+  const nowMinutes = timeToMinutes(
+    formatInTimeZone(new Date(), DEFAULT_TIMEZONE, "HH:mm"),
+  );
+  const nextEventIndex = timeline.findIndex(item => {
+    return timeToMinutes(item.eventTime) > nowMinutes;
+  });
+  const value = nextEventIndex === -1 ? timeline.length : nextEventIndex + 1;
+
   return (
-    <Timeline defaultValue={6} orientation="horizontal">
-      {items.map(item => (
-        <TimelineItem key={item.id} step={item.id}>
+    <Timeline defaultValue={value} orientation="horizontal">
+      {timeline?.map((item, index) => (
+        <TimelineItem key={item.id} step={index + 1}>
           <TimelineHeader>
-            <TimelineSeparator />
-            <TimelineDate>{item.hour}</TimelineDate>
-            <TimelineTitle className="text-xs sm:-mt-0.5 lg:text-sm">
-              {item.title}
+            <TimelineDate>{item.eventTime}</TimelineDate>
+            <TimelineTitle className="text-xs sm:-mt-0.5">
+              {item.description}
             </TimelineTitle>
+            <TimelineSeparator />
             <TimelineIndicator />
           </TimelineHeader>
         </TimelineItem>

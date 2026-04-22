@@ -30,14 +30,18 @@ import {
 import { PageSection, PageSectionTitle } from "@/shared/components/ui/page";
 import { Progress } from "@/shared/components/ui/progress";
 import { timeDateToString } from "@/utils/convertTimes";
+import { getTimeline } from "@/features/dashboard_barber/actions/getTimeline";
+import { TimelineBarber } from "@/features/dashboard_barber/components/timeline-barber";
 
 export const dynamic = "force-dynamic";
 
 export default async function BarberDashboardPage() {
-  const [{ data: dash }, defaultTimes] = await Promise.all([
-    getBarberDashboardInfos(),
-    getBarberDefaultTimes(),
-  ]);
+  const [{ data: dash }, defaultTimes, { data: timelineData }] =
+    await Promise.all([
+      getBarberDashboardInfos(),
+      getBarberDefaultTimes(),
+      getTimeline(),
+    ]);
 
   const barberId = dash?.barberId ? dash.barberId : null;
 
@@ -140,6 +144,12 @@ export default async function BarberDashboardPage() {
             variant="basic"
           />
         </section>
+      </PageSection>
+
+      <PageSection>
+        <div className="w-full overflow-x-auto [&::-webkit-scrollbar]:hidden">
+          <TimelineBarber timeline={timelineData?.finalArray ?? null} />
+        </div>
       </PageSection>
 
       <PageSection>
