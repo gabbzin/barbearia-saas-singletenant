@@ -118,12 +118,13 @@ model BarberService {
 }
 
 model BarberBreak {
-  id        String @id @default(uuid())
+  id        String   @id @default(uuid())
   barberId  String
   dayOfWeek Int
   startTime DateTime @db.Time()
   endTime   DateTime @db.Time()
-  barber    Barber @relation(fields: [barberId], references: [id], onDelete: Cascade)
+  motivo    String?
+  barber    Barber   @relation(fields: [barberId], references: [id], onDelete: Cascade)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
@@ -220,6 +221,7 @@ model ExceptionDate {
   endTime          DateTime? @db.Time()
   isClosedFullTime Boolean   @default(true)
   date             DateTime  @db.Timestamptz(6)
+  motivo           String?
   barber           Barber    @relation(fields: [barberId], references: [id], onDelete: Cascade)
 
   @@index([barberId, date])
