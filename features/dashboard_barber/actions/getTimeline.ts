@@ -11,6 +11,7 @@ type TimelineItem = {
   eventTime: string;
   description: string;
   sortMinutes: number;
+  isCurrent?: boolean;
 };
 
 export type TimelineArray = Array<Omit<TimelineItem, "sortMinutes">>;
@@ -115,6 +116,10 @@ export const getTimeline = actionClient.action(async () => {
       return null;
     }
 
+    const nowInMinutes = timeToMinutes(
+      formatInTimeZone(now, DEFAULT_TIMEZONE, "HH:mm"),
+    );
+
     const isClosedFullTime = exceptionDates.some(item => {
       return item.isClosedFullTime === true;
     });
@@ -150,8 +155,26 @@ export const getTimeline = actionClient.action(async () => {
       return a.sortMinutes - b.sortMinutes;
     });
 
+    let currentIndex = -1;
+
+    for (let i = 0; i < finalArray.length; i++) {
+      if (finalArray[i].sortMinutes < nowInMinutes) {
+        currentIndex = i;
+      } else {
+        break;
+      }
+    }
+
+    if (currentIndex === -1 && finalArray.length > 0) {
+      currentIndex = 0;
+    }
+
     return {
-      finalArray: finalArray.map(({ sortMinutes, ...item }) => item),
+      finalArray: finalArray.map(({ sortMinutes, ...item }, index) => ({
+        ...item,
+        isCurrent: index === currentIndex,
+      })),
+      currentIndex,
     };
   } catch (error) {
     console.error("Error fetching timeline data:", error);
@@ -215,18 +238,14 @@ function formatInfos({ result, finalArray }: formatInfosProps) {
       id = `break_${item.id}`;
       type = "break";
       eventTime = timeDateToString(item.startTime);
-      description = "Ínicio do intervalo fixo";
-
-      if (item.motivo) {
-        description = `${description}: ${item.motivo}`;
-      }
+      description = `Intervalo ${item.motivo}`;
 
       if (item.endTime) {
         finalArray.push({
           id: `break_end_${item.id}`,
           type,
           eventTime: timeDateToString(item.endTime),
-          description: "Fim do intervalo fixo",
+          description: `Intervalo ${item.motivo} (fim)`,
           sortMinutes: getTimelineItemSortMinutes({
             startTime: item.endTime,
           }),

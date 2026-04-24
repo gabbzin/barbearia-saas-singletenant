@@ -1,37 +1,20 @@
-import { format } from "date-fns";
-import {
-  AlertCircle,
-  AlertCircleIcon,
-  Banknote,
-  Clock7Icon,
-  PiggyBankIcon,
-  Scissors,
-  UserIcon,
-} from "lucide-react";
-import CardInfo from "@/features/barber/components/card-info";
+import { AlertCircle, PiggyBankIcon } from "lucide-react";
 import { getBarberDefaultTimes } from "@/features/dashboard_barber/actions/getDefaultTimes";
 import { getBarberDashboardInfos } from "@/features/dashboard_barber/actions/getInfos";
+import { getTimeline } from "@/features/dashboard_barber/actions/getTimeline";
 import { BarChartGraph } from "@/features/dashboard_barber/components/charts/barchart-comp";
 import MainCardDashboard from "@/features/dashboard_barber/components/main-dashboard-card";
 import { NewBookingManualDialog } from "@/features/dashboard_barber/components/new-booking-manual-dialog";
-import { NextBookingsSection } from "@/features/dashboard_barber/components/next-bookings-section";
 import { SpeedDial } from "@/features/dashboard_barber/components/SpeedDial";
 import { TableBarberBreak } from "@/features/dashboard_barber/components/tables/table-barber-break";
 import { ServiceList } from "@/features/dashboard_barber/components/tables/table-service";
 import { TableSettings } from "@/features/dashboard_barber/components/tables/table-settings";
+import { TimelineBarber } from "@/features/dashboard_barber/components/timeline-barber";
 import { prisma } from "@/lib/prisma";
 import { Alert, AlertTitle } from "@/shared/components/ui/alert";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/shared/components/ui/card";
 import { PageSection, PageSectionTitle } from "@/shared/components/ui/page";
-import { Progress } from "@/shared/components/ui/progress";
-import { timeDateToString } from "@/utils/convertTimes";
-import { getTimeline } from "@/features/dashboard_barber/actions/getTimeline";
-import { TimelineBarber } from "@/features/dashboard_barber/components/timeline-barber";
+import { NextBookingsCard } from "@/features/dashboard_barber/components/next-bookings-card";
+import { Badge } from "@/shared/components/ui/badge";
 
 export const dynamic = "force-dynamic";
 
@@ -52,7 +35,6 @@ export default async function BarberDashboardPage() {
   });
 
   // Refatorar e rever o uso disso (aparenta ser inutil)
-  const horariosData = defaultTimes.data?.horariosData ?? null;
   const defaultTimesValues = defaultTimes.data?.defaultTimes ?? undefined;
 
   if (!barberId) {
@@ -78,7 +60,7 @@ export default async function BarberDashboardPage() {
       )}
 
       <PageSection>
-        <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+        <div className="hidden gap-4 md:flex md:items-center md:justify-between">
           <div className="text-center md:text-left">
             <h1 className="font-extrabold text-2xl tracking-tight md:text-3xl">
               Dashboard de <span className="text-primary">Gestão</span>
@@ -91,99 +73,71 @@ export default async function BarberDashboardPage() {
             <NewBookingManualDialog barberId={barberId} />
           </div>
         </div>
-
-        <MainCardDashboard
-          Icon={PiggyBankIcon}
-          title="Faturamento de hoje"
-          value={dash?.todayData.billing.formatted}
-          growthPercentage={dash?.comparisonsData.billingGrowthPercentage ?? 0}
-        />
       </PageSection>
 
       <PageSection>
-        <section className="grid grid-cols-2 gap-3 md:grid-cols-2 lg:grid-cols-5">
-          <CardInfo
-            Icon={Scissors}
-            title="Realizados"
-            value={dash?.todayData.bookingsPerformed}
-            variant="basic"
-            details={
-              <Progress
-                value={dash?.bookingsData.progressToday}
-                className="w-[60%] text-black"
-              />
-            }
-          />
-          <CardInfo
-            Icon={UserIcon}
-            title="Marcados Total"
-            value={dash?.bookingsData.totalScheduledToday}
-            variant="basic"
-          />
-          <CardInfo
-            Icon={Banknote}
-            title="Faturamento"
+        <section className="grid grid-cols-1 gap-3 md:grid-cols-2">
+          <MainCardDashboard
+            Icon={PiggyBankIcon}
+            title="Faturamento de hoje"
             value={dash?.todayData.billing.formatted}
-            variant="green"
-            classNameCard="hidden lg:block"
-          />
-          <CardInfo
-            Icon={AlertCircleIcon}
-            title="Pendentes"
-            value={dash?.bookingsData.pendingConfirmationToday}
-            variant="basic"
-          />
-          <CardInfo
-            Icon={Clock7Icon}
-            title={horariosData?.endTime ? "Trabalho até:" : "Dia de hoje"}
-            value={
-              horariosData?.endTime
-                ? timeDateToString(horariosData.endTime)
-                : format(new Date(), "dd 'de' MMM")
+            growthPercentage={
+              dash?.comparisonsData.billingGrowthPercentage ?? 0
             }
-            variant="basic"
           />
+          {/* <MainCardDashboard
+            Icon={Scissors}
+            title="Agendamentos"
+            value={
+              <span>
+                {dash?.todayData.bookingsPerformed}/
+                {dash?.bookingsData.totalScheduledToday}
+              </span>
+            }
+            progress={dash?.bookingsData.progressToday}
+          /> */}
         </section>
       </PageSection>
 
       <PageSection>
-        <div className="w-full overflow-x-auto [&::-webkit-scrollbar]:hidden">
-          <TimelineBarber timeline={timelineData?.finalArray ?? null} />
+        <PageSectionTitle className="flex items-center justify-between">
+          Resumo do seu dia{" "}
+          <Badge variant="success">
+            {dash?.todayData.bookingsPerformed}/
+            {dash?.bookingsData.totalScheduledToday} concluídos
+          </Badge>{" "}
+        </PageSectionTitle>
+        <div className="w-full flex-1 overflow-x-auto [&::-webkit-scrollbar]:hidden">
+          <TimelineBarber
+            timeline={timelineData?.finalArray ?? []}
+            currentIndex={timelineData?.currentIndex}
+          />
         </div>
       </PageSection>
 
       <PageSection>
-        <div className="grid grid-cols-1 gap-6 xl:grid-cols-2">
-          <div className="grid gap-2">
-            <PageSectionTitle className="md:hidden">
-              Próximos agendamentos
-            </PageSectionTitle>
-            <NextBookingsSection bookings={dash?.bookingsData.next} />
-          </div>
+        <div className="grid gap-4">
+          <PageSectionTitle className="">
+            Próximos agendamentos
+          </PageSectionTitle>
+          <NextBookingsCard bookings={dash?.bookingsData.next} />
+        </div>
+      </PageSection>
 
-          <div className="grid gap-2">
-            <PageSectionTitle className="md:hidden">
-              Faturamento Semenal
-            </PageSectionTitle>
-            <Card variant={"basic"}>
-              <CardHeader className="hidden border-b px-6 py-2 md:block">
-                <CardTitle className="font-bold text-lg">
-                  Faturamento Semanal
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <BarChartGraph
-                  chartConfig={{
-                    saldoEmReais: {
-                      label: "Saldo",
-                      color: "#6366F1",
-                    },
-                  }}
-                  data={dash?.analyticsData.weeklyBillingData ?? []}
-                />
-              </CardContent>
-            </Card>
-          </div>
+      <PageSection>
+        <PageSectionTitle className="md:hidden">
+          Faturamento Semanal
+        </PageSectionTitle>
+        <div>
+          <BarChartGraph
+            chartConfig={{
+              saldoEmReais: {
+                label: "Saldo",
+                color: "#6366F1",
+              },
+            }}
+            data={dash?.analyticsData.weeklyBillingData ?? []}
+          />
         </div>
       </PageSection>
 

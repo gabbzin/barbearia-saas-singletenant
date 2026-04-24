@@ -33,7 +33,7 @@ export default function CardInfo({
           {Icon && <Icon className="size-5 text-primary/50" />}
         </CardTitle>
       </CardHeader>
-      <CardContent className={`${pxCard}`}>
+      <CardContent className={`${pxCard} py-2`}>
         <p className="font-bold font-geist text-xl">{value}</p>
       </CardContent>
       <CardFooter className={`${pxCard}`}>

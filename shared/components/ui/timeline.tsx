@@ -134,7 +134,7 @@ function TimelineIndicator({
     <div
       aria-hidden="true"
       className={cn(
-        "group-data-[orientation=horizontal]/timeline:-top-6 group-data-[orientation=horizontal]/timeline:-translate-y-1/2 group-data-[orientation=vertical]/timeline:-left-6 group-data-[orientation=vertical]/timeline:-translate-x-1/2 absolute size-4 rounded-full border-2 border-primary/20 group-data-[orientation=vertical]/timeline:top-0 group-data-[orientation=horizontal]/timeline:left-0 group-data-completed/timeline-item:border-primary",
+        "absolute size-4 rounded-full border-2 border-primary/20 group-data-[orientation=horizontal]/timeline:-top-6 group-data-[orientation=vertical]/timeline:top-0 group-data-[orientation=horizontal]/timeline:left-0 group-data-[orientation=vertical]/timeline:-left-6 group-data-[orientation=vertical]/timeline:-translate-x-1/2 group-data-[orientation=horizontal]/timeline:-translate-y-1/2 group-data-completed/timeline-item:border-primary",
         className,
       )}
       data-slot="timeline-indicator"
@@ -150,21 +150,26 @@ interface TimelineItemProps extends React.HTMLAttributes<HTMLDivElement> {
   step: number;
 }
 
-function TimelineItem({ step, className, ...props }: TimelineItemProps) {
-  const { activeStep } = useTimeline();
+const TimelineItem = React.forwardRef<HTMLDivElement, TimelineItemProps>(
+  ({ step, className, ...props }, ref) => {
+    const { activeStep } = useTimeline();
 
-  return (
-    <div
-      className={cn(
-        "group/timeline-item relative flex flex-1 flex-col gap-0.5 group-data-[orientation=vertical]/timeline:ms-8 group-data-[orientation=horizontal]/timeline:mt-8 group-data-[orientation=horizontal]/timeline:not-last:pe-8 group-data-[orientation=vertical]/timeline:not-last:pb-12 has-[+[data-completed]]:[&_[data-slot=timeline-separator]]:bg-primary",
-        className,
-      )}
-      data-completed={step <= activeStep || undefined}
-      data-slot="timeline-item"
-      {...props}
-    />
-  );
-}
+    return (
+      <div
+        ref={ref}
+        className={cn(
+          "group/timeline-item relative flex flex-1 flex-col gap-0.5 has-[+[data-completed]]:**:data-[slot=timeline-separator]:bg-primary group-data-[orientation=vertical]/timeline:ms-8 group-data-[orientation=horizontal]/timeline:mt-8 group-data-[orientation=horizontal]/timeline:not-last:pe-8 group-data-[orientation=vertical]/timeline:not-last:pb-12",
+          className,
+        )}
+        data-completed={step <= activeStep || undefined}
+        data-slot="timeline-item"
+        {...props}
+      />
+    );
+  },
+);
+
+TimelineItem.displayName = "TimelineItem";
 
 // TimelineSeparator
 function TimelineSeparator({
