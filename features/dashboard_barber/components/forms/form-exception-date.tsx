@@ -88,12 +88,14 @@ export function FormExceptionDate({
           DEFAULT_TIMEZONE,
           "HH:mm",
         ),
+        motivo: exceptionDate.motivo ?? "",
       }
     : {
         date: new Date(),
         isClosedFullTime: false,
         startTime: "",
         endTime: "",
+        motivo: "",
       };
 
   const handleSubmit = async (data: ExceptionDateFormSchemaType) => {
@@ -106,6 +108,7 @@ export function FormExceptionDate({
       await createExceptionDate(data);
     }
 
+    onDialogClose?.();
     setIsOpen(false);
   };
 
@@ -156,6 +159,12 @@ export function FormExceptionDate({
           <CheckboxForm<ExceptionDateFormSchemaType>
             name="isClosedFullTime"
             label="Fechar o dia inteiro"
+          />
+
+          <InputForm<ExceptionDateFormSchemaType>
+            name="motivo"
+            label="Motivo (opcional)"
+            placeholder="Ex.: feriado, manutenção, evento"
           />
 
           <ExceptionTimeFields />

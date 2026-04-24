@@ -26,7 +26,7 @@ const MAX_BOOKINGS_CARDS = 5;
 export function NextBookingsCard({ bookings }: NextBookingsCardProps) {
   const bookingsList = bookings?.slice(0, MAX_BOOKINGS_CARDS) ?? [];
   return (
-    <div className="grid gap-2 md:hidden">
+    <div className="grid gap-2 md:grid-cols-2 xl:grid-cols-3">
       {bookingsList.length > 0 ? (
         bookingsList.map(booking => {
           return (

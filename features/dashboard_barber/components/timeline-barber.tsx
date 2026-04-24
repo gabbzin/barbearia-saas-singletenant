@@ -1,3 +1,8 @@
+"use client";
+
+import { AlertCircle, CheckIcon, ScissorsIcon } from "lucide-react";
+import { useEffect, useRef } from "react";
+import { cn } from "@/lib/utils";
 import {
   Timeline,
   TimelineDate,
@@ -7,65 +12,88 @@ import {
   TimelineSeparator,
   TimelineTitle,
 } from "@/shared/components/ui/timeline";
-
-const items = [
-  {
-    id: 1,
-    title: "Inicio de trabalho",
-    hour: "08:00",
-  },
-  {
-    hour: "09:00",
-    id: 2,
-    title: "Corte de cabelo com Lucas",
-  },
-  {
-    id: 3,
-    title: "Inicio do horário de almoço",
-    hour: "12:00",
-  },
-  {
-    id: 4,
-    hour: "14:00",
-    title: "Fim do horário de almoço",
-  },
-  {
-    id: 7,
-    hour: "16:00",
-    title: "Barba com Carlos",
-  },
-  {
-    id: 6,
-    hour: "19:00",
-    title: "Fim do turno",
-  },
-];
+import type { TimelineArray } from "../actions/getTimeline";
 
 interface TimelineBarberProps {
-  timeline: {
-    disponibility?: any;
-    barberBreaks?: any;
-    exceptionDates?: any;
-    bookings?: any;
-  } | null;
+  timeline: TimelineArray;
+  currentIndex?: number;
 }
 
-export function TimelineBarber({ timeline }: TimelineBarberProps) {
-  if (timeline === null) {
-    return;
+export function TimelineBarber({
+  timeline,
+  currentIndex = 0,
+}: TimelineBarberProps) {
+  const itemsRef = useRef(new Map<string, HTMLDivElement>());
+
+  const setItemRef = (id: string) => (node: HTMLDivElement | null) => {
+    if (node) {
+      itemsRef.current.set(id, node);
+      return;
+    }
+
+    itemsRef.current.delete(id);
+  };
+
+  useEffect(() => {
+    const currentAppointment = timeline.find(item => item.isCurrent);
+
+    if (!currentAppointment) return;
+
+    const node = itemsRef.current.get(currentAppointment.id);
+
+    if (!node) return;
+
+    node.scrollIntoView({
+      behavior: "smooth",
+      block: "nearest",
+      inline: "center",
+    });
+  }, [timeline]);
+
+  if (timeline.length === 0) {
+    return (
+      <div className="flex flex-col items-center gap-2 rounded-md border p-4">
+        <AlertCircle className="h-10 w-10" />
+        <span>Não há eventos para exibir neste dia.</span>
+      </div>
+    );
   }
 
   return (
-    <Timeline defaultValue={6} orientation="horizontal">
-      {items.map(item => (
-        <TimelineItem key={item.id} step={item.id}>
-          <TimelineHeader>
-            <TimelineSeparator />
-            <TimelineDate>{item.hour}</TimelineDate>
-            <TimelineTitle className="text-xs sm:-mt-0.5 lg:text-sm">
-              {item.title}
+    <Timeline
+      defaultValue={currentIndex !== undefined ? currentIndex + 1 : 1}
+      orientation="horizontal"
+      className="flex w-full justify-between pt-2"
+    >
+      {timeline.map((item, index) => (
+        <TimelineItem
+          key={item.id}
+          step={index + 1}
+          ref={setItemRef(item.id)}
+          className="grow"
+        >
+          <TimelineHeader className="">
+            <TimelineDate>{item.eventTime}</TimelineDate>
+            <TimelineTitle className="min-w-20 text-xs sm:-mt-0.5">
+              {item.description}
             </TimelineTitle>
-            <TimelineIndicator />
+            <TimelineSeparator className="w-full" />
+            <TimelineIndicator
+              className={cn(
+                "flex size-6 items-center justify-center p-1",
+                index < currentIndex
+                  ? "border-none bg-emerald-500 text-primary-foreground"
+                  : index === currentIndex
+                    ? "border-none bg-yellow-500 text-primary-foreground"
+                    : "border bg-primary/10",
+              )}
+            >
+              {index < currentIndex ? (
+                <CheckIcon className="text-primary" />
+              ) : index === currentIndex ? (
+                <ScissorsIcon className="text-white" />
+              ) : null}
+            </TimelineIndicator>
           </TimelineHeader>
         </TimelineItem>
       ))}
