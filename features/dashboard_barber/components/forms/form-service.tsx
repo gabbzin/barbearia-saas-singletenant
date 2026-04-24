@@ -52,6 +52,7 @@ export function FormService({
     } else {
       await createService({ barberId, ...data });
     }
+    onDialogClose?.();
     setIsOpen(false);
   };
 

@@ -32,7 +32,7 @@ export const PageSectionScroller = ({
   children: React.ReactNode;
 }) => {
   return (
-    <div className="flex gap-4 overflow-x-auto [&::-webkit-scrollbar]:hidden">
+    <div className="flex w-full gap-4 overflow-x-auto lg:mx-auto lg:max-w-[75%] [&::-webkit-scrollbar]:hidden">
       {children}
     </div>
   );

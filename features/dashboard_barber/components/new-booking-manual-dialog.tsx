@@ -121,6 +121,7 @@ export function NewBookingManualDialog({
     }
 
     toast.success(`Agendamento para ${data.name} criado com sucesso!`);
+    onDialogClose?.();
     setOpen(false);
   };
 

@@ -49,6 +49,7 @@ export function useBarberBreakCRUD(barberId: string) {
     dayOfWeek: number;
     startTime: string;
     endTime: string;
+    motivo?: string;
   }) => {
     const result = await execCreate(input);
     if (!result?.data?.barberBreak) return;
@@ -61,6 +62,7 @@ export function useBarberBreakCRUD(barberId: string) {
     dayOfWeek: number;
     startTime: string;
     endTime: string;
+    motivo?: string;
   }) => {
     const result = await execUpdate(input);
     if (!result?.data?.barberBreak) return;
