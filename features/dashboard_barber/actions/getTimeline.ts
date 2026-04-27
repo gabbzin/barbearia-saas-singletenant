@@ -42,7 +42,6 @@ export const getTimeline = actionClient.action(async () => {
     );
 
     const barberId = session.barberId as string;
-
     const [disponibility, barberBreaks, exceptionDates, bookings] =
       await Promise.all([
         // Buscando disponibilidade do dia de hoje
@@ -230,8 +229,7 @@ function formatInfos({ result, finalArray }: formatInfosProps) {
       // Se tem user, é um booking
       id = `booking_${item.id}`;
       type = "booking";
-      const eventDate = fromZonedTime(item.date, DEFAULT_TIMEZONE);
-      eventTime = formatInTimeZone(eventDate, DEFAULT_TIMEZONE, "HH:mm");
+      eventTime = formatInTimeZone(item.date, DEFAULT_TIMEZONE, "HH:mm");
       description = `Agendamento: ${item.user.name.toLowerCase() === "ghost user" ? item.customerName : item.user.name}`;
     } else {
       // Caso contrário, é um barberBreak
