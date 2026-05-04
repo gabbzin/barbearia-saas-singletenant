@@ -12,12 +12,12 @@ model User {
   name             String
   email            String        @unique
   emailVerified    Boolean       @default(false)
-  role             UserRole      @default(USER)
   passwordHash     String?
   image            String?
   createdAt        DateTime      @default(now())
   updatedAt        DateTime      @default(now()) @updatedAt
   stripeCustomerId String?
+  role             UserRole      @default(USER)
   barberProfile    Barber?       @relation("BarberAccount")
   bookings         Booking[]
   ratings          Rating[]
@@ -102,17 +102,18 @@ model Barber {
 }
 
 model BarberService {
-  id                String    @id @default(uuid())
-  name              String
-  description       String
-  imageUrl          String
-  priceInCents      Int
-  barberId          String
-  durationInMinutes Int       @default(30)
-  barber            Barber    @relation(fields: [barberId], references: [id])
-  bookings          Booking[]
-  createdAt         DateTime  @default(now())
-  updatedAt         DateTime  @default(now()) @updatedAt
+  id                  String    @id @default(uuid())
+  name                String
+  description         String
+  imageUrl            String
+  priceInCents        Int
+  durationInMinutes   Int       @default(30)
+  hasStartingPrice    Boolean?  @default(false) @map("isPriceStartingFrom")
+  barberId            String
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime  @default(now()) @updatedAt
+  barber              Barber    @relation(fields: [barberId], references: [id])
+  bookings            Booking[] @relation("BarberServiceToBooking")
 
   @@index([barberId])
 }
@@ -121,13 +122,12 @@ model BarberBreak {
   id        String   @id @default(uuid())
   barberId  String
   dayOfWeek Int
-  startTime DateTime @db.Time()
-  endTime   DateTime @db.Time()
-  motivo    String?
-  barber    Barber   @relation(fields: [barberId], references: [id], onDelete: Cascade)
-
+  startTime DateTime @db.Time(6)
+  endTime   DateTime @db.Time(6)
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
+  motivo    String?
+  barber    Barber   @relation(fields: [barberId], references: [id], onDelete: Cascade)
 
   @@unique([barberId, dayOfWeek, startTime, endTime])
   @@index([barberId, dayOfWeek])
@@ -146,11 +146,10 @@ model Subscription {
   userId               String              @unique
   planId               String?
   status               SubscriptionStatus? @default(INCOMPLETE)
+  createdAt            DateTime            @default(now())
+  updatedAt            DateTime            @default(now()) @updatedAt
   plan                 Plan?               @relation(fields: [planId], references: [id])
   user                 User                @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now()) @updatedAt
 
   @@index([userId])
   @@map("subscription")
@@ -160,39 +159,36 @@ model Plan {
   id            String         @id
   name          String
   description   String
-  imageUrl      String?
   priceInCents  Int
   stripePriceId String?        @unique
-  benefits      String[]
-  subscriptions Subscription[]
   createdAt     DateTime       @default(now())
   updatedAt     DateTime       @updatedAt
+  benefits      String[]
+  imageUrl      String?
+  subscriptions Subscription[]
 }
 
 model Booking {
-  id                   String        @id @default(uuid())
-  date                 DateTime      @db.Timestamptz(6)
+  id                   String          @id @default(uuid())
+  date                 DateTime        @db.Timestamptz(6)
   userId               String
   barberId             String
   userSubscriptionId   String?
-  paidWithSubscription Boolean       @default(false)
-  stripeChargeId       String?       @unique
-  stripeEventId        String?       @unique
-  cancelledAt          DateTime?     @db.Timestamptz(6)
-  status               BookingStatus @default(SCHEDULED)
+  paidWithSubscription Boolean         @default(false)
+  stripeChargeId       String?         @unique
+  stripeEventId        String?         @unique
+  cancelledAt          DateTime?       @db.Timestamptz(6)
+  createdAt            DateTime        @default(now())
+  status               BookingStatus   @default(SCHEDULED)
+  updatedAt            DateTime        @default(now()) @updatedAt
   priceInCents         Int
   customerName         String?
   customerPhone        String?
   paymentMethod        String?
-
-  // Relations
-  barber    Barber          @relation(fields: [barberId], references: [id])
-  services  BarberService[]
-  user      User            @relation(fields: [userId], references: [id])
-  rating    Rating?
-  // Timestamps
-  createdAt DateTime        @default(now())
-  updatedAt DateTime        @default(now()) @updatedAt
+  barber               Barber          @relation(fields: [barberId], references: [id])
+  user                 User            @relation(fields: [userId], references: [id])
+  rating               Rating?
+  services             BarberService[] @relation("BarberServiceToBooking")
 
   @@index([userId])
   @@index([barberId, date])
@@ -201,15 +197,14 @@ model Booking {
 }
 
 model Disponibility {
-  id        String @id @default(uuid())
+  id        String   @id @default(uuid())
   barberId  String
-  startTime DateTime @db.Time()
-  endTime   DateTime @db.Time()
+  startTime DateTime @db.Time(6)
+  endTime   DateTime @db.Time(6)
   dayOfWeek Int
-  barber    Barber @relation(fields: [barberId], references: [id], onDelete: Cascade)
-
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
+  barber    Barber   @relation(fields: [barberId], references: [id], onDelete: Cascade)
 
   @@unique([barberId, dayOfWeek])
 }
@@ -217,10 +212,10 @@ model Disponibility {
 model ExceptionDate {
   id               String    @id @default(uuid())
   barberId         String
-  startTime        DateTime? @db.Time()
-  endTime          DateTime? @db.Time()
   isClosedFullTime Boolean   @default(true)
   date             DateTime  @db.Timestamptz(6)
+  startTime        DateTime? @db.Time(6)
+  endTime          DateTime? @db.Time(6)
   motivo           String?
   barber           Barber    @relation(fields: [barberId], references: [id], onDelete: Cascade)
 

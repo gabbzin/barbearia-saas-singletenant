@@ -16,7 +16,7 @@ import {
   TabsList,
   TabsTrigger,
 } from "@/shared/components/ui/tabs";
-import { getBookingServiceShortLabel } from "@/utils/booking-services-label";
+import { getBookingServiceFullLabel, getBookingServiceShortLabel } from "@/utils/booking-services-label";
 import { cancelBookingAction } from "@/features/booking/functions/cancel-booking";
 
 export function ScheduleCard() {
@@ -137,7 +137,7 @@ export function ScheduleCard() {
                           <span>
                             Você está prestes a confirmar o agendamento de{" "}
                             <strong>
-                              {getBookingServiceShortLabel(booking.services)}
+                              {getBookingServiceFullLabel(booking.services)}
                             </strong>{" "}
                             para{" "}
                             <strong>
@@ -158,7 +158,7 @@ export function ScheduleCard() {
                     >
                       <BookingItem
                         key={booking.id}
-                        serviceName={getBookingServiceShortLabel(
+                        serviceName={getBookingServiceFullLabel(
                           booking.services,
                         )}
                         date={booking.date}

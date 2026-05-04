@@ -45,12 +45,10 @@ export const getTimeline = actionClient.action(async () => {
     const [disponibility, barberBreaks, exceptionDates, bookings] =
       await Promise.all([
         // Buscando disponibilidade do dia de hoje
-        prisma.disponibility.findUnique({
+        prisma.disponibility.findFirst({
           where: {
-            barberId_dayOfWeek: {
-              barberId,
-              dayOfWeek,
-            },
+            barberId,
+            dayOfWeek,
           },
         }),
         // Buscando os intervalos de break cadastrados para o dia de hoje
