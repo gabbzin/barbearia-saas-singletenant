@@ -30,7 +30,7 @@ const BookingItem = ({
     >
       <div className="flex flex-1 flex-col gap-2 p-4">
         <div className="flex flex-col gap-2">
-          <p className="font-bold text-lg">{serviceName}</p>
+          <p className="font-bold text-base">{serviceName}</p>
           <div className="flex items-center gap-2">
             <Avatar>
               <AvatarImage src={counterPart.imageUrl} />

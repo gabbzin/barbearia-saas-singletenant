@@ -7,23 +7,23 @@ import {
   CardTitle,
 } from "@/shared/components/ui/card";
 import type React from "react";
-import { Progress } from "@/shared/components/ui/progress";
 
 type CardInfoProps = {
   Icon?: LucideIcon;
   title: string;
   value: React.ReactNode;
   growthPercentage?: number;
-  progress?: number;
 };
 
 export default function MainCardDashboard({
   Icon,
   title,
   value,
-  growthPercentage,
-  progress,
+  growthPercentage = 0,
 }: CardInfoProps) {
+
+  console.log(growthPercentage)
+
   return (
     <Card className="relative rounded-4xl bg-indigo-600 py-6 text-white">
       <CardHeader className="px-4">
@@ -36,14 +36,7 @@ export default function MainCardDashboard({
         <p className="font-bold font-geist text-3xl">{value}</p>
       </CardContent>
       <CardFooter className="px-4 text-xs">
-        {progress !== undefined && (
-          <Progress
-            value={progress}
-            className="w-[75%] bg-white/20 text-white"
-          />
-        )}
-
-        {growthPercentage && (
+        {typeof(growthPercentage) === "number" ? (
           <div className="flex items-center gap-2">
             {growthPercentage >= 0 ? (
               <TrendingUp className="size-4 text-green-500" />
@@ -57,7 +50,7 @@ export default function MainCardDashboard({
                 : "à menos do que ontem"}
             </p>
           </div>
-        )}
+        ): null}
       </CardFooter>
     </Card>
   );

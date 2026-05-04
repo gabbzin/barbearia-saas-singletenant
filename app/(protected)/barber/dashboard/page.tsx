@@ -85,17 +85,6 @@ export default async function BarberDashboardPage() {
               dash?.comparisonsData.billingGrowthPercentage ?? 0
             }
           />
-          {/* <MainCardDashboard
-            Icon={Scissors}
-            title="Agendamentos"
-            value={
-              <span>
-                {dash?.todayData.bookingsPerformed}/
-                {dash?.bookingsData.totalScheduledToday}
-              </span>
-            }
-            progress={dash?.bookingsData.progressToday}
-          /> */}
         </section>
       </PageSection>
 

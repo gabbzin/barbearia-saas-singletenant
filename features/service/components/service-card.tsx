@@ -38,7 +38,7 @@ export function ServiceCard({ service }: ServiceCardProps) {
   return (
     <Card variant={"basic"} className="relative p-2 font-inter">
       <CardContent className="flex items-center justify-center gap-5 p-0">
-        <div className="relative size-27.5 shrink-0 overflow-hidden rounded-xl">
+        <div className="relative size-20 shrink-0 overflow-hidden rounded-xl">
           <Image
             src={service.imageUrl}
             alt={service.name}
@@ -49,20 +49,21 @@ export function ServiceCard({ service }: ServiceCardProps) {
 
         <div className="flex grow basis-0 flex-row items-center self-stretch py-1">
           <div className="mt-2 flex w-full flex-col items-start gap-1 self-start text-sm leading-[1.4]">
-            <p className="w-full font-bold text-card-foreground text-md xl:text-lg">
+            <p className="w-full font-bold text-card-foreground text-sm xl:text-lg">
               {service.name}
             </p>
-            <p className="line-clamp-2 w-full font-normal text-muted-foreground text-xs">
-              {service.description}
+            <p className="line-clamp-3 w-full font-normal text-[11px] text-muted-foreground sm:line-clamp-2">
+              {service.description}{" "}
+              {service.hasStartingPrice && "(Valor sujeito a variações)"}
             </p>
           </div>
 
-          <div className="self-end">
-            <div className="absolute top-4 right-0 rounded-l-sm border border-border border-r-0 bg-gold px-2 py-1 font-bold font-inter text-background text-sm">
+          <div className="ml-8 self-end sm:ml-1">
+            <div className="absolute top-0 right-0 rounded-tr-xl bg-gold px-2 py-1 font-bold font-inter text-background text-sm">
               <p className="line-clamp-2 font-inter">{priceAgreed}</p>
             </div>
             <Button
-              className="ml-6 rounded-full font-bold text-xs sm:ml-1"
+              className="rounded-full font-bold text-xs"
               variant={"forest"}
               size={"sm"}
               onClick={() =>

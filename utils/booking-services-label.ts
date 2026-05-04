@@ -30,6 +30,8 @@ export function getBookingServiceFullLabel(services?: ServiceLike[] | null) {
   if (names.length === 0) {
     return FALLBACK_SERVICE_LABEL;
   }
-
-  return names.join(", ");
+  const servicesNames = names.join(", ");
+  const lastIndex = servicesNames.lastIndexOf(", ");
+  
+  return lastIndex !== -1 ? servicesNames.slice(0, lastIndex) + " e " + servicesNames.slice(lastIndex + 2) : servicesNames;
 }
