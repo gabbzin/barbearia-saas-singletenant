@@ -13,7 +13,7 @@ import { TimelineBarber } from "@/features/dashboard_barber/components/timeline-
 import { prisma } from "@/lib/prisma";
 import { Alert, AlertTitle } from "@/shared/components/ui/alert";
 import { PageSection, PageSectionTitle } from "@/shared/components/ui/page";
-import { NextBookingsCard } from "@/features/dashboard_barber/components/next-bookings-card";
+// import { NextBookingsCard } from "@/features/dashboard_barber/components/next-bookings-card";
 import { Badge } from "@/shared/components/ui/badge";
 
 export const dynamic = "force-dynamic";
@@ -104,14 +104,14 @@ export default async function BarberDashboardPage() {
         </div>
       </PageSection>
 
-      <PageSection>
+      {/* <PageSection>
         <div className="grid gap-4">
           <PageSectionTitle className="">
             Próximos agendamentos
           </PageSectionTitle>
           <NextBookingsCard bookings={dash?.bookingsData.next} />
         </div>
-      </PageSection>
+      </PageSection> */}
 
       <PageSection>
         <PageSectionTitle className="md:hidden">

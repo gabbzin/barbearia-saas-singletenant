@@ -228,20 +228,20 @@ function formatInfos({ result, finalArray }: formatInfosProps) {
       id = `booking_${item.id}`;
       type = "booking";
       eventTime = formatInTimeZone(item.date, DEFAULT_TIMEZONE, "HH:mm");
-      description = `Agendamento: ${item.user.name.toLowerCase() === "ghost user" ? item.customerName : item.user.name}`;
+      description = `${item.user.name.toLowerCase() === "ghost user" ? item.customerName : item.user.name}`;
     } else {
       // Caso contrário, é um barberBreak
       id = `break_${item.id}`;
       type = "break";
       eventTime = timeDateToString(item.startTime);
-      description = `Intervalo ${item.motivo}`;
+      description = `${item.motivo}`;
 
       if (item.endTime) {
         finalArray.push({
           id: `break_end_${item.id}`,
           type,
           eventTime: timeDateToString(item.endTime),
-          description: `Intervalo ${item.motivo} (fim)`,
+          description: `${item.motivo} (fim)`,
           sortMinutes: getTimelineItemSortMinutes({
             startTime: item.endTime,
           }),

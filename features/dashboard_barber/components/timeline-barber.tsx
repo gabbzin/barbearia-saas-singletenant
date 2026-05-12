@@ -1,23 +1,25 @@
 "use client";
 
-import { AlertCircle, CheckIcon, ScissorsIcon } from "lucide-react";
+import { AlertCircle } from "lucide-react";
 import { useEffect, useRef } from "react";
-import { cn } from "@/lib/utils";
 import {
   Timeline,
   TimelineDate,
   TimelineHeader,
-  TimelineIndicator,
   TimelineItem,
   TimelineSeparator,
   TimelineTitle,
 } from "@/shared/components/ui/timeline";
 import type { TimelineArray } from "../actions/getTimeline";
+import { InfoCardTimeline } from "./info-card-timeline";
 
 interface TimelineBarberProps {
   timeline: TimelineArray;
   currentIndex?: number;
 }
+
+const classNameSeparatorTimeline =
+  "group-data-[orientation=horizontal]/timeline:w-[calc(100%-1rem-0.3rem)] group-data-[orientation=horizontal]/timeline:translate-x-6";
 
 export function TimelineBarber({
   timeline,
@@ -70,30 +72,28 @@ export function TimelineBarber({
           key={item.id}
           step={index + 1}
           ref={setItemRef(item.id)}
-          className="grow"
+          className="grow has-[+[data-completed]]:**:data-[slot=timeline-separator]:bg-emerald-500"
         >
           <TimelineHeader className="">
             <TimelineDate>{item.eventTime}</TimelineDate>
-            <TimelineTitle className="min-w-20 text-xs sm:-mt-0.5">
+            <TimelineTitle className="line-clamp-2 min-w-24 text-xs sm:-mt-0.5">
               {item.description}
             </TimelineTitle>
-            <TimelineSeparator className="w-full" />
-            <TimelineIndicator
-              className={cn(
-                "flex size-6 items-center justify-center p-1",
-                index < currentIndex
-                  ? "border-none bg-emerald-500 text-primary-foreground"
-                  : index === currentIndex
-                    ? "border-none bg-yellow-500 text-primary-foreground"
-                    : "border bg-primary/10",
-              )}
-            >
-              {index < currentIndex ? (
-                <CheckIcon className="text-primary" />
-              ) : index === currentIndex ? (
-                <ScissorsIcon className="text-white" />
-              ) : null}
-            </TimelineIndicator>
+            <TimelineSeparator className={`${classNameSeparatorTimeline}`} />
+            {index === currentIndex ? (
+              <TimelineSeparator
+                className={`bg-yellow-500 group-data-[orientation=horizontal]/timeline:w-[50%]`}
+              />
+            ) : null}
+
+            <InfoCardTimeline
+              index={index}
+              currentIndex={currentIndex}
+              event={{
+                name: item.description,
+                time: item.eventTime,
+              }}
+            />
           </TimelineHeader>
         </TimelineItem>
       ))}
