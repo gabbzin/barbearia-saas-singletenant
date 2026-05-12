@@ -24,6 +24,39 @@ const useTimeline = () => {
   return context;
 };
 
+const timelineIndicatorBaseClass =
+  "absolute size-4 rounded-full border-2 border-primary/20";
+
+const timelineIndicatorHorizontalClass =
+  "group-data-[orientation=horizontal]/timeline:-top-6 group-data-[orientation=horizontal]/timeline:left-0 group-data-[orientation=horizontal]/timeline:-translate-y-1/2";
+
+const timelineIndicatorVerticalClass =
+  "group-data-[orientation=vertical]/timeline:top-0 group-data-[orientation=vertical]/timeline:-left-6 group-data-[orientation=vertical]/timeline:-translate-x-1/2";
+
+const timelineIndicatorCompletedClass =
+  "group-data-completed/timeline-item:border-primary";
+
+const timelineItemBaseClass =
+  "group/timeline-item relative flex flex-1 flex-col gap-0.5";
+
+const timelineItemCompletedClass =
+  "has-[+[data-completed]]:**:data-[slot=timeline-separator]:bg-primary";
+
+const timelineItemHorizontalClass =
+  "group-data-[orientation=horizontal]/timeline:mt-8 group-data-[orientation=horizontal]/timeline:not-last:pe-8";
+
+const timelineItemVerticalClass =
+  "group-data-[orientation=vertical]/timeline:ms-8 group-data-[orientation=vertical]/timeline:not-last:pb-12";
+
+const timelineSeparatorBaseClass =
+  "absolute self-start bg-primary/10 group-last/timeline-item:hidden";
+
+const timelineSeparatorHorizontalClass =
+  "group-data-[orientation=horizontal]/timeline:-top-6 group-data-[orientation=horizontal]/timeline:-translate-y-1/2 group-data-[orientation=horizontal]/timeline:h-0.5 group-data-[orientation=horizontal]/timeline:w-[calc(100%-1rem-0.25rem)] group-data-[orientation=horizontal]/timeline:translate-x-4.5 group-data-[orientation=horizontal]/timeline:mr";
+
+const timelineSeparatorVerticalClass =
+  "group-data-[orientation=vertical]/timeline:-left-6 group-data-[orientation=vertical]/timeline:-translate-x-1/2 group-data-[orientation=vertical]/timeline:h-[calc(100%-1rem-0.25rem)] group-data-[orientation=vertical]/timeline:w-0.5 group-data-[orientation=vertical]/timeline:translate-y-4.5";
+
 // Components
 interface TimelineProps extends React.HTMLAttributes<HTMLDivElement> {
   defaultValue?: number;
@@ -134,7 +167,10 @@ function TimelineIndicator({
     <div
       aria-hidden="true"
       className={cn(
-        "absolute size-4 rounded-full border-2 border-primary/20 group-data-[orientation=horizontal]/timeline:-top-6 group-data-[orientation=vertical]/timeline:top-0 group-data-[orientation=horizontal]/timeline:left-0 group-data-[orientation=vertical]/timeline:-left-6 group-data-[orientation=vertical]/timeline:-translate-x-1/2 group-data-[orientation=horizontal]/timeline:-translate-y-1/2 group-data-completed/timeline-item:border-primary",
+        timelineIndicatorBaseClass,
+        timelineIndicatorHorizontalClass,
+        timelineIndicatorVerticalClass,
+        timelineIndicatorCompletedClass,
         className,
       )}
       data-slot="timeline-indicator"
@@ -158,7 +194,10 @@ const TimelineItem = React.forwardRef<HTMLDivElement, TimelineItemProps>(
       <div
         ref={ref}
         className={cn(
-          "group/timeline-item relative flex flex-1 flex-col gap-0.5 has-[+[data-completed]]:**:data-[slot=timeline-separator]:bg-primary group-data-[orientation=vertical]/timeline:ms-8 group-data-[orientation=horizontal]/timeline:mt-8 group-data-[orientation=horizontal]/timeline:not-last:pe-8 group-data-[orientation=vertical]/timeline:not-last:pb-12",
+          timelineItemBaseClass,
+          timelineItemCompletedClass,
+          timelineItemHorizontalClass,
+          timelineItemVerticalClass,
           className,
         )}
         data-completed={step <= activeStep || undefined}
@@ -180,7 +219,9 @@ function TimelineSeparator({
     <div
       aria-hidden="true"
       className={cn(
-        "group-data-[orientation=horizontal]/timeline:-top-6 group-data-[orientation=horizontal]/timeline:-translate-y-1/2 group-data-[orientation=vertical]/timeline:-left-6 group-data-[orientation=vertical]/timeline:-translate-x-1/2 absolute self-start bg-primary/10 group-last/timeline-item:hidden group-data-[orientation=horizontal]/timeline:h-0.5 group-data-[orientation=vertical]/timeline:h-[calc(100%-1rem-0.25rem)] group-data-[orientation=horizontal]/timeline:w-[calc(100%-1rem-0.25rem)] group-data-[orientation=vertical]/timeline:w-0.5 group-data-[orientation=horizontal]/timeline:translate-x-4.5 group-data-[orientation=vertical]/timeline:translate-y-4.5",
+        timelineSeparatorBaseClass,
+        timelineSeparatorHorizontalClass,
+        timelineSeparatorVerticalClass,
         className,
       )}
       data-slot="timeline-separator"

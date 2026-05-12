@@ -7,8 +7,8 @@ import { createSignature } from "@/features/signature/actions/create-signature";
 import { cn } from "@/lib/utils";
 import { IconBadge } from "@/shared/components/icon-badge";
 import { convertCapitalize } from "@/utils/convertCapitalize";
-import { AuroraText } from "../../../shared/components/ui/aurora-text";
-import { Button } from "../../../shared/components/ui/button";
+import { AuroraText } from "@/shared/components/ui/aurora-text";
+import { Button } from "@/shared/components/ui/button";
 import {
   Card,
   CardContent,
@@ -16,9 +16,9 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "../../../shared/components/ui/card";
-import { CarouselItem } from "../../../shared/components/ui/carousel";
-import { ShimmerButton } from "../../../shared/components/ui/shimmer-button";
+} from "@/shared/components/ui/card";
+import { CarouselItem } from "@/shared/components/ui/carousel";
+import { ShimmerButton } from "@/shared/components/ui/shimmer-button";
 
 type SignatureItemProps = {
   plan: Plan;

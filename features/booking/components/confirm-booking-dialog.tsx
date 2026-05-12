@@ -14,11 +14,10 @@ import { Button } from "@/shared/components/ui/button";
 
 interface ConfirmBookingAlertProps {
   handleConfirm: () => void;
-  otherAction?: () => void;
-  otherActionText?: string;
   isLoading: boolean;
   title: string;
   description?: React.ReactNode;
+  confirmButtonText?: string;
   cancelButtonText?: string;
   children?: React.ReactNode;
   infos?: React.ReactNode;
@@ -26,11 +25,10 @@ interface ConfirmBookingAlertProps {
 
 export default function ConfirmAlertDialog({
   handleConfirm,
-  otherAction,
-  otherActionText,
   isLoading,
   title,
   description,
+  confirmButtonText,
   cancelButtonText,
   children,
   infos,
@@ -48,7 +46,7 @@ export default function ConfirmAlertDialog({
       </AlertDialogTrigger>
       <AlertDialogContent className="flex flex-col gap-8">
         <AlertDialogHeader>
-          <AlertDialogTitle>{title}</AlertDialogTitle>
+          <AlertDialogTitle className="text-xl">{title}</AlertDialogTitle>
           <AlertDialogDescription>
             {description ||
               "Tem certeza que deseja executar esta ação? Esta ação não pode ser desfeita."}
@@ -57,27 +55,22 @@ export default function ConfirmAlertDialog({
             {infos && <span className="mt-4">{infos}</span>}
           </AlertDialogDescription>
         </AlertDialogHeader>
-        <AlertDialogFooter className="grid">
-          <AlertDialogAction
-            onClick={otherAction}
+        <AlertDialogFooter className="flex flex-1 flex-row justify-end gap-2">
+          <AlertDialogCancel
             disabled={isLoading}
-            className="bg-secondary text-secondary-foreground hover:bg-secondary/90"
+            className="bg-secondary/80 hover:bg-secondary/90"
           >
-            {isLoading ? "Executando..." : otherActionText || "Outra ação"}
-          </AlertDialogAction>
+            {cancelButtonText || "Cancelar"}
+          </AlertDialogCancel>
           <AlertDialogAction
             onClick={handleConfirm}
             disabled={isLoading}
             className="bg-primary text-primary-foreground hover:bg-primary/90"
           >
-            {isLoading ? "Executando..." : "Sim, executar ação"}
+            {isLoading
+              ? "Executando..."
+              : confirmButtonText || "Sim, tenho certeza"}
           </AlertDialogAction>
-          <AlertDialogCancel
-            disabled={isLoading}
-            className="bg-destructive/80 hover:bg-destructive/90"
-          >
-            {cancelButtonText || "Não, fechar ação"}
-          </AlertDialogCancel>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>

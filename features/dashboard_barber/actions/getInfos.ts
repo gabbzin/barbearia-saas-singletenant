@@ -23,43 +23,58 @@ export const getBarberDashboardInfos = actionClient.action(async () => {
     const yesterday = subDays(now, 1);
     const endOfDayDate = endOfDay(now);
 
-    const [nextBookings, bookings, graphBookings, disponibility] =
-      await Promise.all([
-        // Próximos agendamentos
-        getBookingsBarber(barberId, now, 5, true),
+    const [
+      nextBookings,
+      bookings,
+      graphBookings,
+      disponibility,
+      totalBookingsToday,
+    ] = await Promise.all([
+      // Próximos agendamentos
+      getBookingsBarber(barberId, now, 5, true),
 
-        // Faturamento e atendimentos realizados ONTEM e HOJE
-        prisma.booking.findMany({
-          where: {
-            barberId: barberId,
-            date: {
-              gte: startOfDay(yesterday),
-              lte: endOfDayDate,
-            },
+      // Faturamento e atendimentos realizados ONTEM e HOJE
+      prisma.booking.findMany({
+        where: {
+          barberId: barberId,
+          date: {
+            gte: startOfDay(yesterday),
+            lte: endOfDayDate,
           },
-        }),
+        },
+      }),
 
-        // Dados de faturamento semanal
-        prisma.booking.findMany({
-          where: {
-            barberId,
-            status: "COMPLETED",
-            date: {
-              gte: subDays(now, 6),
-              lte: endOfDayDate,
-            },
+      // Dados de faturamento semanal
+      prisma.booking.findMany({
+        where: {
+          barberId,
+          status: "COMPLETED",
+          date: {
+            gte: subDays(now, 6),
+            lte: endOfDayDate,
           },
-          select: {
-            date: true,
-            priceInCents: true,
-          },
-        }),
+        },
+        select: {
+          date: true,
+          priceInCents: true,
+        },
+      }),
 
-        prisma.disponibility.findMany({
-          where: { barberId },
-          select: { dayOfWeek: true },
-        }) ?? [],
-      ]);
+      prisma.disponibility.findMany({
+        where: { barberId },
+        select: { dayOfWeek: true },
+      }) ?? [],
+
+      prisma.booking.count({
+        where: {
+          barberId,
+          date: {
+            gte: startOfDayDate,
+            lte: endOfDayDate,
+          },
+        },
+      }),
+    ]);
 
     const todayBookings = bookings.filter(booking => {
       return booking.date >= startOfDayDate && booking.date <= endOfDayDate;
@@ -100,11 +115,6 @@ export const getBarberDashboardInfos = actionClient.action(async () => {
       },
       { priceInCents: 0 },
     );
-
-    /**
-     * Total de agendamentos para o dia atual, independentemente do status. Se houver um erro na consulta, retorna 0.
-     */
-    const totalBookingsToday = todayBookings.length;
 
     const totalScheduledToday = todayScheduled.length;
 
@@ -199,6 +209,8 @@ export const getBarberDashboardInfos = actionClient.action(async () => {
     const bookingsData = {
       /** Próximos 5 agendamentos programados para o barbeiro a partir do momento atual */
       next: nextBookings,
+      /** Todos os agendamentos do dia atual, independentemente do status */
+      totalBookingsToday,
       /** Total de agendamentos marcados para hoje */
       totalScheduledToday: totalScheduledToday,
       /** Quantidade de agendamentos não confirmados até o horário atual */

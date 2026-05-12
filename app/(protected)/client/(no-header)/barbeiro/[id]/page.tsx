@@ -1,5 +1,4 @@
-import { RiInstagramFill } from "@remixicon/react";
-import { ChevronLeft } from "lucide-react";
+import { CheckCircle2Icon, ChevronLeft } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -16,6 +15,8 @@ import {
 import { Separator } from "@/shared/components/ui/separator";
 import { imagePaths } from "@/shared/constants/images";
 import { clientRoutes } from "@/shared/constants/routes";
+import { Badge } from "@/shared/components/ui/badge";
+import { SocialIconComponent } from "@/shared/components/socials/social-icon";
 import { ServiceCard } from "@/features/service/components/service-card";
 
 const BarberPage = async ({ params }: { params: Promise<{ id: string }> }) => {
@@ -30,12 +31,13 @@ const BarberPage = async ({ params }: { params: Promise<{ id: string }> }) => {
   return (
     <PageContainer>
       <div className="flex min-h-screen flex-col">
+        {/* Banner */}
         <div className="relative h-70 w-full">
           <Image
             src={imagePaths.barberBanner}
             alt={"Banner da barbearia"}
             fill
-            className="bg-black object-cover object-center"
+            className="bg-black object-cover object-center brightness-50"
             priority
           />
 
@@ -57,23 +59,46 @@ const BarberPage = async ({ params }: { params: Promise<{ id: string }> }) => {
           </div>
         </div>
 
-        <div className="relative -mt-6 flex flex-col gap-6 rounded-t-3xl bg-background">
+        <div className="relative -mt-6 flex flex-col gap-2 rounded-t-3xl bg-background">
           <PageSection>
-            <div className="mb-1 flex items-center gap-4">
-              <ProfilePhoto
-                initial={barber.user?.name?.charAt(0).toUpperCase() ?? ""}
-                imageUrl={barber.user?.image}
-                size={12}
-              />
+            <div className="-mt-12 mb-1 flex flex-col items-center justify-center gap-2">
+              <div className="relative rounded-full border-2 border-gold">
+                <ProfilePhoto
+                  initial={barber.user?.name?.charAt(0).toUpperCase() ?? ""}
+                  imageUrl={barber.user?.image}
+                  size={20}
+                  enabledGoldEffect={true}
+                />
+                <div className="absolute right-0 bottom-0 rounded-full bg-gold text-primary">
+                  <CheckCircle2Icon />
+                </div>
+              </div>
               <div className="space-y-1">
-                <h1 className="font-bold text-foreground text-xl">
+                <h1 className="text-center font-bold text-foreground text-xl">
                   {barber.user?.name}
                 </h1>
                 {barber.services.length > 0 ? (
-                  <p className="text-muted-foreground text-sm">
+                  <Badge variant={"default_highlight"}>
                     {barber.services.length} serviços disponíveis
-                  </p>
+                  </Badge>
                 ) : null}
+              </div>
+              <div className="mt-1">
+                <div className="flex flex-wrap items-center gap-3">
+                  {barber.socialMedia.map(rs => {
+                    const [width, height] = [32, 32];
+
+                    return (
+                      <Button key={rs.id} size="icon" variant="outline" asChild>
+                        <SocialIconComponent
+                          url={rs.url}
+                          width={width}
+                          height={height}
+                        />
+                      </Button>
+                    );
+                  })}
+                </div>
               </div>
             </div>
           </PageSection>
@@ -81,23 +106,7 @@ const BarberPage = async ({ params }: { params: Promise<{ id: string }> }) => {
           <Separator />
 
           <PageSection>
-            <PageSectionTitle>Redes sociais</PageSectionTitle>
-            <div className="mt-2 flex flex-wrap items-center gap-3">
-              <Button size="icon" variant="outline" asChild>
-                <Link
-                  href={`${barber.socialMedia[0]?.url ?? ""}`}
-                  target="_blank"
-                >
-                  <RiInstagramFill className="size-4" />
-                </Link>
-              </Button>
-            </div>
-          </PageSection>
-
-          <Separator />
-
-          <PageSection>
-            <PageSectionTitle>Serviços</PageSectionTitle>
+            <PageSectionTitle>Serviços Disponíveis</PageSectionTitle>
             <div className="grid gap-4 md:grid-cols-2">
               {barber.services.map(service => (
                 <ServiceCard key={service.id} service={service} />

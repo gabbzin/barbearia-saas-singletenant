@@ -23,6 +23,8 @@ const badgeVariants = cva(
         outline:
           "text-foreground [a&]:hover:bg-accent [a&]:hover:text-accent-foreground",
         mini: "border-transparent bg-primary text-primary-foreground text-[10px] px-1.5 py-0.5",
+        default_highlight:
+          "border-transparent bg-primary text-primary-foreground [a&]:hover:bg-primary/90 font-bold",
       },
     },
     defaultVariants: {

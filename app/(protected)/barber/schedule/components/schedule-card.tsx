@@ -16,7 +16,10 @@ import {
   TabsList,
   TabsTrigger,
 } from "@/shared/components/ui/tabs";
-import { getBookingServiceFullLabel, getBookingServiceShortLabel } from "@/utils/booking-services-label";
+import {
+  getBookingServiceFullLabel,
+  getBookingServiceShortLabel,
+} from "@/utils/booking-services-label";
 import { cancelBookingAction } from "@/features/booking/functions/cancel-booking";
 
 export function ScheduleCard() {
@@ -127,22 +130,19 @@ export function ScheduleCard() {
                         }
                         execute({ bookingId: booking.id });
                       }}
-                      otherAction={() => {
-                        cancelExecute({ bookingId: booking.id });
-                      }}
-                      otherActionText="Cancelar agendamento"
                       isLoading={isPending || isCancelPending}
                       title="Confirmar Agendamento"
-                        infos={
-                          <span>
-                            Você está prestes a confirmar o agendamento de{" "}
-                            <strong>
-                              {getBookingServiceFullLabel(booking.services)}
-                            </strong>{" "}
-                            para{" "}
-                            <strong>
-                              {new Date(booking.date).toLocaleDateString(
-                                "pt-BR",
+                      confirmButtonText="Confirmar agendamento"
+                      infos={
+                        <span>
+                          Você está prestes a confirmar o agendamento de{" "}
+                          <strong>
+                            {getBookingServiceFullLabel(booking.services)}
+                          </strong>{" "}
+                          para{" "}
+                          <strong>
+                            {new Date(booking.date).toLocaleDateString(
+                              "pt-BR",
                               {
                                 day: "2-digit",
                                 month: "2-digit",
