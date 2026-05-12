@@ -93,7 +93,7 @@ export default async function BarberDashboardPage() {
           Resumo do seu dia{" "}
           <Badge variant="success">
             {dash?.todayData.bookingsPerformed}/
-            {dash?.bookingsData.totalScheduledToday} concluídos
+            {dash?.bookingsData.totalBookingsToday} concluídos
           </Badge>{" "}
         </PageSectionTitle>
         <div className="w-full flex-1 overflow-x-auto [&::-webkit-scrollbar]:hidden">
