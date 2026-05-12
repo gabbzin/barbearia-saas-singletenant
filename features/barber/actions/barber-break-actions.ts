@@ -21,7 +21,9 @@ export const getBarberBreaksByBarberIdAction = actionClient
   .action(async ({ parsedInput: { barberId } }) => {
     const barberBreaks = await prisma.barberBreak.findMany({
       where: { barberId },
+      orderBy: { dayOfWeek: "asc" },
     });
+
     return { barberBreaks };
   });
 

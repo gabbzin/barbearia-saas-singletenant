@@ -14,18 +14,31 @@ interface TableBarberBreakProps {
 
 export function TableBarberBreak({ barberId }: TableBarberBreakProps) {
   const { barberBreaks, isLoading } = useBarberBreakCRUD(barberId);
-  // const list = barberBreaks ?? [];
 
   const list = barberBreaks
     ? barberBreaks.map(b => ({ ...b, dayOfWeek: dias[b.dayOfWeek] }))
     : [];
 
+  const barberBreaksFormatted = list.reduce(
+    (acc, current) => {
+      const existing = acc.find(item => item.dayOfWeek === current.dayOfWeek);
+      if (existing) {
+        existing.intervals.push(current);
+      } else {
+        acc.push({ dayOfWeek: current.dayOfWeek, intervals: [current] });
+      }
+
+      return acc;
+    },
+    [] as { dayOfWeek: string; intervals: typeof list }[],
+  );
+
   return (
     <CardTable
       titleCard="Intervalos"
-      tableTitles={["Dia da semana", "Intervalo"]}
+      tableTitles={["Dia da semana", "Intervalos"]}
     >
-      {isLoading && list.length === 0 ? (
+      {isLoading && barberBreaksFormatted.length === 0 ? (
         <TableRow>
           <TableCell
             colSpan={2}
@@ -34,13 +47,19 @@ export function TableBarberBreak({ barberId }: TableBarberBreakProps) {
             Carregando intervalos...
           </TableCell>
         </TableRow>
-      ) : list.length > 0 ? (
-        list.map(barberBreak => (
-          <TableRow key={barberBreak.id} className="w-full border-t">
+      ) : barberBreaksFormatted.length > 0 ? (
+        barberBreaksFormatted.map(barberBreak => (
+          <TableRow
+            key={barberBreak.intervals[0].id}
+            className="w-full border-t"
+          >
             <TableCell className="px-6 py-4">{barberBreak.dayOfWeek}</TableCell>
             <TableCell className="px-6 py-4">
-              {timeDateToString(barberBreak.startTime)}-
-              {timeDateToString(barberBreak.endTime)}
+              {barberBreak.intervals.map(i => (
+                <span key={i.id} className="block">
+                  {timeDateToString(i.startTime)}-{timeDateToString(i.endTime)}
+                </span>
+              ))}
             </TableCell>
           </TableRow>
         ))
