@@ -2,6 +2,7 @@
 
 import type { BarberService } from "@prisma/client";
 import Image from "next/image";
+import { memo } from "react";
 import { Button } from "@/shared/components/ui/button";
 import { convertBRL } from "@/utils/convertBRL";
 import { Card, CardContent } from "@/shared/components/ui/card";
@@ -20,7 +21,7 @@ interface handleAddToCartProps {
   duration: number;
 }
 
-export function ServiceCard({ service }: ServiceCardProps) {
+export const ServiceCard = memo(({ service }: ServiceCardProps) => {
   const addItem = useCartStore(state => state.addItem);
   const priceInReais = convertBRL(service.priceInCents);
   const priceAgreed =
@@ -52,7 +53,7 @@ export function ServiceCard({ service }: ServiceCardProps) {
             <p className="w-full font-bold text-card-foreground text-sm xl:text-lg">
               {service.name}
             </p>
-            <p className="line-clamp-3 w-full font-normal text-[11px] text-muted-foreground sm:line-clamp-2">
+            <p className="line-clamp-2 w-full font-normal text-[11px] text-muted-foreground sm:line-clamp-2">
               {service.description}{" "}
               {service.hasStartingPrice && "(Valor sujeito a variações)"}
             </p>
@@ -87,4 +88,6 @@ export function ServiceCard({ service }: ServiceCardProps) {
       </CardContent>
     </Card>
   );
-}
+});
+
+ServiceCard.displayName = "ServiceCard";

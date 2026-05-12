@@ -14,11 +14,13 @@ export function ProfilePhoto({
   size,
   enabledGoldEffect,
 }: ProfilePhotoProps) {
+  const sizeClass = size && size > 0 ? `size-${size}` : "size-12";
+
   return (
     <div>
       <Avatar
         className={cn(
-          size ? `size-${size}` : "size-12",
+          sizeClass,
           enabledGoldEffect && "shadow-gold/20 shadow-lg",
         )}
       >

@@ -11,6 +11,7 @@ export default async function SignaturePage() {
   return (
     <PageSection>
       <PageSectionTitle>Planos de Assinaturas</PageSectionTitle>
+      
     </PageSection>
   );
 }
