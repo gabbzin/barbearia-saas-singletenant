@@ -21,7 +21,7 @@ export function SocialIconComponent({
         width: width ?? 32,
         height: height ?? 32,
       }}
-      className="rounded-md border border-gray-300"
+      className="rounded-md border-border"
       borderRadius="0"
       target="_blank"
     />

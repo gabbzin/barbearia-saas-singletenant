@@ -60,8 +60,10 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const barbershop = await getInfosBarbershop();
-  const user = await verifySession();
+  const [barbershop, user] = await Promise.all([
+    getInfosBarbershop(),
+    verifySession(),
+  ]);
 
   return (
     <html lang="pt-BR">
