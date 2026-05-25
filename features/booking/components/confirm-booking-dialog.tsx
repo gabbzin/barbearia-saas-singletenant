@@ -19,6 +19,8 @@ interface ConfirmBookingAlertProps {
   description?: React.ReactNode;
   confirmButtonText?: string;
   cancelButtonText?: string;
+  otherActionText?: string;
+  otherAction?: () => void;
   children?: React.ReactNode;
   infos?: React.ReactNode;
 }
@@ -30,6 +32,8 @@ export default function ConfirmAlertDialog({
   description,
   confirmButtonText,
   cancelButtonText,
+  otherActionText,
+  otherAction,
   children,
   infos,
 }: ConfirmBookingAlertProps) {
@@ -55,13 +59,7 @@ export default function ConfirmAlertDialog({
             {infos && <span className="mt-4">{infos}</span>}
           </AlertDialogDescription>
         </AlertDialogHeader>
-        <AlertDialogFooter className="flex flex-1 flex-row justify-end gap-2">
-          <AlertDialogCancel
-            disabled={isLoading}
-            className="bg-secondary/80 hover:bg-secondary/90"
-          >
-            {cancelButtonText || "Cancelar"}
-          </AlertDialogCancel>
+        <AlertDialogFooter className="grid justify-end gap-2">
           <AlertDialogAction
             onClick={handleConfirm}
             disabled={isLoading}
@@ -71,6 +69,21 @@ export default function ConfirmAlertDialog({
               ? "Executando..."
               : confirmButtonText || "Sim, tenho certeza"}
           </AlertDialogAction>
+          <AlertDialogAction
+            onClick={otherAction}
+            disabled={isLoading}
+            className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+          >
+            {isLoading
+              ? "Executando..."
+              : otherActionText || "Sim, tenho certeza"}
+          </AlertDialogAction>
+          <AlertDialogCancel
+            disabled={isLoading}
+            className="bg-secondary/80 hover:bg-secondary/90"
+          >
+            {cancelButtonText || "Cancelar"}
+          </AlertDialogCancel>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>

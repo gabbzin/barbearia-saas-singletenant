@@ -133,6 +133,10 @@ export function ScheduleCard() {
                       isLoading={isPending || isCancelPending}
                       title="Confirmar Agendamento"
                       confirmButtonText="Confirmar agendamento"
+                      otherActionText="Cancelar agendamento"
+                      otherAction={() =>
+                        cancelExecute({ bookingId: booking.id })
+                      }
                       infos={
                         <span>
                           Você está prestes a confirmar o agendamento de{" "}
