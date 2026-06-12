@@ -40,6 +40,7 @@ const nextConfig: NextConfig = {
   outputFileTracingIncludes: {
     "/api/**/*": ["./app/generated/prisma/**/*"],
   },
+  allowedDevOrigins: ['10.8.1.79']
 };
 
 export default nextConfig;
