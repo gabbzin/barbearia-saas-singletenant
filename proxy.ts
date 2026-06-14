@@ -10,7 +10,7 @@ const AUTH_ROUTES = [
   "/reset-password",
   "/verify-account",
 ];
-const PUBLIC_API_ROUTES = ["/api/auth", "/api/stripe/webhook"];
+const PUBLIC_API_ROUTES = ["/api/auth", "/api/stripe/webhook", "/api/graphql"];
 
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
