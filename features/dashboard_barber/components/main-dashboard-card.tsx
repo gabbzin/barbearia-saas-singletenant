@@ -22,8 +22,6 @@ export default function MainCardDashboard({
   growthPercentage = 0,
 }: CardInfoProps) {
 
-  console.log(growthPercentage)
-
   return (
     <Card className="relative rounded-4xl bg-indigo-600 py-6 text-white">
       <CardHeader className="px-4">

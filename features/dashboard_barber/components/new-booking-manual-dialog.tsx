@@ -100,7 +100,6 @@ export function NewBookingManualDialog({
   // Funções
   const handleCreateBooking = async (data: newBookingSchemaType) => {
     const [hours, minutes] = data.time.split(":");
-    console.log("Selected time:", data.time);
 
     const date = new Date(data.date);
     date.setHours(Number(hours), Number(minutes), 0, 0);

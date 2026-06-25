@@ -20,7 +20,7 @@ export const getTimeline = actionClient.action(async () => {
   try {
     const session = await verifySession();
 
-    if (!session || session.role !== "BARBER") {
+    if (session?.role !== "BARBER") {
       throw new Error("Unauthorized");
     }
 

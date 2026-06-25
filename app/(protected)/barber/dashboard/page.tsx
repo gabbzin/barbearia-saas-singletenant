@@ -1,8 +1,7 @@
-import { AlertCircle, PiggyBankIcon } from "lucide-react";
 import { getBarberDefaultTimes } from "@/features/dashboard_barber/actions/getDefaultTimes";
 import { getBarberDashboardInfos } from "@/features/dashboard_barber/actions/getInfos";
 import { getTimeline } from "@/features/dashboard_barber/actions/getTimeline";
-import { BarChartGraph } from "@/features/dashboard_barber/components/charts/barchart-comp";
+// import { BarChartGraph } from "@/features/dashboard_barber/components/charts/barchart-comp";
 import MainCardDashboard from "@/features/dashboard_barber/components/main-dashboard-card";
 import { NewBookingManualDialog } from "@/features/dashboard_barber/components/new-booking-manual-dialog";
 import { SpeedDial } from "@/features/dashboard_barber/components/SpeedDial";
@@ -13,6 +12,7 @@ import { TimelineBarber } from "@/features/dashboard_barber/components/timeline-
 import { prisma } from "@/lib/prisma";
 import { Alert, AlertTitle } from "@/shared/components/ui/alert";
 import { PageSection, PageSectionTitle } from "@/shared/components/ui/page";
+import { AlertCircle, PiggyBankIcon } from "lucide-react";
 // import { NextBookingsCard } from "@/features/dashboard_barber/components/next-bookings-card";
 import { Badge } from "@/shared/components/ui/badge";
 
@@ -117,7 +117,7 @@ export default async function BarberDashboardPage() {
         <PageSectionTitle className="md:hidden">
           Faturamento Semanal
         </PageSectionTitle>
-        <div>
+        {/* <div>
           <BarChartGraph
             chartConfig={{
               saldoEmReais: {
@@ -127,7 +127,7 @@ export default async function BarberDashboardPage() {
             }}
             data={dash?.analyticsData.weeklyBillingData ?? []}
           />
-        </div>
+        </div> */}
       </PageSection>
 
       <PageSection>
