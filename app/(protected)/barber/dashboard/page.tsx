@@ -100,8 +100,8 @@ export default async function BarberDashboardPage() {
         </PageSectionTitle>
         <div className="w-full flex-1 overflow-x-auto [&::-webkit-scrollbar]:hidden">
           <TimelineBarber
-            timeline={timelineData?.finalArray ?? []}
-            currentIndex={timelineData?.currentIndex}
+            timeline={timelineData?.data?.finalArray ?? []}
+            currentIndex={timelineData?.data?.currentIndex}
           />
         </div>
       </PageSection>
