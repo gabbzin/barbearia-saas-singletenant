@@ -27,6 +27,7 @@ export function TimelineBarber({
 }: TimelineBarberProps) {
   const itemsRef = useRef(new Map<string, HTMLDivElement>());
 
+  console.log(timeline)
 
   const setItemRef = (id: string) => (node: HTMLDivElement | null) => {
     if (node) {

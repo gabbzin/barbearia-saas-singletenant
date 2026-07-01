@@ -18,7 +18,7 @@ export function useAvailableTimeSlots(
 
   const servicesKey = servicesIds?.slice().sort().join(",") ?? "";
 
-  const { data: availableTimeSlots, isPending: isAvailableTimePending } =
+  const { data: availableTimeSlots, isPending: isAvailableTimePending, fetchStatus } =
     useQuery<string[]>({
       queryKey: [
         "date-available-time-slots",
@@ -48,5 +48,5 @@ export function useAvailableTimeSlots(
       enabled: !!selectedDate && !!barberId && (servicesIds?.length ?? 0) > 0,
     });
 
-  return { availableTimeSlots, isAvailableTimePending };
+  return { availableTimeSlots, isAvailableTimePending: isAvailableTimePending && fetchStatus !== "idle" };
 }

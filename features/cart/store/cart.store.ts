@@ -111,6 +111,7 @@ export const useCartStore = create<CartStore>()(
           return {
             ...currentState,
             items: state.items ?? [],
+            barberId: state.barberId ?? null,
           };
         }
 

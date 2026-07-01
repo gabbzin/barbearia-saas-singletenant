@@ -1,0 +1,71 @@
+{
+  "Theme": {
+    "modes": ["Light", "Dark"],
+    "variables": {
+      "color.background": {
+        "Light": "#FFFFFF",
+        "Dark": "#121212"
+      },
+      "color.foreground": {
+        "Light": "#171717",
+        "Dark": "#FAFAFA"
+      },
+      "color.card": {
+        "Light": "#FFFFFF",
+        "Dark": "#1C1C1C"
+      },
+      "color.primary": {
+        "Light": "#2F5EA8",
+        "Dark": "#6EA8FF"
+      },
+      "color.primary-foreground": {
+        "Light": "#FFFFFF",
+        "Dark": "#FFFFFF"
+      },
+      "color.secondary": {
+        "Light": "#E5E7EB",
+        "Dark": "#1F3B66"
+      },
+      "color.secondary-foreground": {
+        "Light": "#1F3B66",
+        "Dark": "#FFFFFF"
+      },
+      "color.muted": {
+        "Light": "#F3F4F6",
+        "Dark": "#1A1A1A"
+      },
+      "color.muted-foreground": {
+        "Light": "#6B7280",
+        "Dark": "#9CA3AF"
+      },
+      "color.accent": {
+        "Light": "#E5E7EB",
+        "Dark": "#274A7D"
+      },
+      "color.accent-foreground": {
+        "Light": "#1F3B66",
+        "Dark": "#FFFFFF"
+      },
+      "color.destructive": {
+        "Light": "#EF4444",
+        "Dark": "#EF4444"
+      },
+      "color.destructive-foreground": {
+        "Light": "#FFFFFF",
+        "Dark": "#FFFFFF"
+      },
+      "color.border": {
+        "Light": "#D1D5DB",
+        "Dark": "#2C2C2C"
+      },
+      "color.input": {
+        "Light": "#F3F4F6",
+        "Dark": "#262626"
+      },
+      "color.ring": {
+        "Light": "#2F5EA8",
+        "Dark": "#6EA8FF"
+      }
+    }
+  }
+}

@@ -19,12 +19,14 @@ import { Badge } from "@/shared/components/ui/badge";
 export const dynamic = "force-dynamic";
 
 export default async function BarberDashboardPage() {
-  const [{ data: dash }, defaultTimes, { data: timelineData }] =
+  const [{ data: dash }, defaultTimes, timelineData] =
     await Promise.all([
       getBarberDashboardInfos(),
       getBarberDefaultTimes(),
       getTimeline(),
     ]);
+
+  console.log(timelineData)
 
   const barberId = dash?.barberId ? dash.barberId : null;
 
