@@ -20,6 +20,7 @@ export const clientRoutes = {
 export const barberRoutes = {
   dashboard: "/barber/dashboard",
   schedule: "/barber/schedule",
+  exceptions: "/barber/exceptions",
 } as const;
 
 export const adminRoutes = {

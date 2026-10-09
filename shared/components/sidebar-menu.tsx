@@ -3,6 +3,7 @@
 import type { Barber, User } from "@prisma/client";
 import {
   CalendarIcon,
+  CalendarOffIcon,
   CreditCardIcon,
   HomeIcon,
   LogIn,
@@ -52,6 +53,7 @@ const ROUTES: Route[] = [
 const BARBER_ROUTES: Route[] = [
   { name: "Dashboard", path: barberRoutes.dashboard, icon: HomeIcon },
   { name: "Agenda", path: barberRoutes.schedule, icon: CalendarIcon },
+  { name: "Exceções", path: barberRoutes.exceptions, icon: CalendarOffIcon },
 ];
 
 const ADMIN_ROUTES: Route[] = [
